@@ -1,0 +1,70 @@
+.rdt_Table{
+    min-height: 422px;
+}
+
+
+@media screen and (max-height:720px) {
+    .CardDetail{
+        height: 480px
+      }
+
+      .ScrollHeightAll{
+        height: 375px;
+      }
+
+      .ScrollHeightDynamic{
+        height: 325px;
+      }
+      .ScroolDetail{
+        height: 100px;
+      }
+}
+
+
+@media only screen and (min-height: 721px) and (max-height: 800px)  {
+    .CardDetail{
+        height: 560px
+      }
+
+      .ScrollHeightAll{
+        height: 480px;
+      }
+      .ScrollHeightDynamic{
+        height: 400px;
+      }
+      .ScroolDetail{
+        height: 220px;
+      }
+}
+
+@media only screen and (min-height: 801px) and (max-height: 900px)  {
+    .CardDetail{
+        height: 640px
+      }
+
+      .ScrollHeightAll{
+        height: 560px;
+      }
+      .ScrollHeightDynamic{
+        height: 480px;
+      }
+      .ScroolDetail{
+        height: 300px;
+      }
+}
+
+@media  screen and (min-height: 901px)   {
+    .CardDetail{
+        height: 670px
+      }
+
+      .ScrollHeightAll{
+        height: 600px;
+      }
+      .ScrollHeightDynamic{
+        height: 500px;
+      }
+      .ScroolDetail{
+        height: 320px;
+      }
+}

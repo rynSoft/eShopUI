@@ -1,0 +1,127 @@
+// no timer controller styles
+.container {
+  width: calc(50vw - 1rem);
+  width: 25%;
+  max-width: 150px;
+  margin: 10px auto;
+}
+
+//timer controller styles
+.timer-controller-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  .timer-display {
+    background: linear-gradient(-135deg, #8464be, #8464be);
+    padding: 10px 0;
+    font-family: "Roboto mono", monospace;
+    color: #ffffff;
+    font-size: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2),
+      0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-bottom: 6rem;
+  }
+
+  .buttons-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 25%;
+    margin: 0 auto;
+
+    @media (min-width: 150px) {
+      width: 20%;
+    }
+
+    .timer-controller-btn {
+      padding: 10px 15px;
+      background-color: #ffffff;
+      color: #141313;
+      font-family: "Poppins", sans-serif;
+      font-size: 0.875rem;
+      border-radius: 5px;
+      letter-spacing: 0.02857em;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      text-transform: capitalize;
+      box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%),
+        0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+      transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+        box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+
+      &:hover {
+        box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%),
+          0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
+      }
+
+      &.danger {
+        color: #ffffff;
+        background-color: rgb(220, 0, 78);
+
+        &:hover:enabled {
+          background-color: rgb(154, 0, 54);
+        }
+      }
+
+      &.disabled {
+        color: rgba(0, 0, 0, 0.26);
+        box-shadow: none;
+        background-color: rgba(0, 0, 0, 0.12);
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  @media only screen and (min-width: 575px) and (max-width: 740px) {
+    .jobNameTimer {
+      margin-left: -15px;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .buttonTimer {
+      margin-left: -75px;
+      margin-top: -30px;
+      font-size: 10px !important;
+    }
+    .totalTimer{
+      margin-left: -10px;
+      font-size: 12px;
+      text-align: left;
+    }
+  }
+
+  @media only screen and (min-width: 741px) and (max-width: 975px) {
+    .jobNameTimer {
+
+      font-size: 12px;
+    
+    }
+    .buttonTimer {
+      margin-left: -16px;
+      font-size: 10px !important;
+    }
+    .totalTimer{
+      font-size: 12px;
+  
+    }
+  }
+  @media only screen and (min-width: 976px) and (max-width: 1178px) {
+    .buttonTimer {
+
+      font-size: 11px !important;
+    }
+  }
+}
