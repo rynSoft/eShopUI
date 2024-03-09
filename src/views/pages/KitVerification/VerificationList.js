@@ -16,7 +16,7 @@ const VerificationList = () => {
   const [searchValue, setSearchValue] = useState("");
   return (
     <div>
-      <div className="content-header row">
+      {/* <div className="content-header row">
         <div className="content-header-left col-md-9 col-12 mb-2">
           <div className="row breadcrumbs-top">
             <div className="col-12">
@@ -36,7 +36,7 @@ const VerificationList = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       <Card>
         <Row className="justify-content-end mx-0">
           <Col

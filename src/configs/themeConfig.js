@@ -3,9 +3,10 @@
 //Template config options
 const themeConfig = {
   app: {
-    appName: 'Udea',
+    appName: 'techiz',
     appLogoTemp: require('@src/assets/images/logo/symbol.png').default,
-    appLogoImage: require('@src/assets/images/logo/lgo.png').default,
+    appLogoImage: require('@src/assets/images/logo/techiz.png').default,
+    appLogoImageSmall: require('@src/assets/images/logo/techizSmall.png').default,
 
   },
   layout: {

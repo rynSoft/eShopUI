@@ -300,9 +300,9 @@ const BreakOperationsTable = () => {
               <h2 className='content-header-title float-start mb-0'>{'Mola Listesi'}</h2>
               <div className='breadcrumb-wrapper vs-breadcrumbs d-sm-block d-none col-12'>
                 <Breadcrumb className='ms-1'>
-                  <BreadcrumbItem>
+                  {/* <BreadcrumbItem>
                     <Link to='/'> Dashboard </Link>
-                  </BreadcrumbItem>
+                  </BreadcrumbItem> */}
                   <BreadcrumbItem>
                     <span> Tanımlar </span>
                   </BreadcrumbItem>

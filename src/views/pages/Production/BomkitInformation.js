@@ -4,6 +4,7 @@ import {
 
 } from "reactstrap";
 import DataTable from "react-data-table-component";
+import { useEffect, useState } from "react";
 import "@styles/base/core/menu/menu-types/vertical-menu.scss";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "@styles/base/core/menu/menu-types/vertical-overlay-menu.scss";
@@ -19,17 +20,19 @@ import "./ProductionDetail.css";
 import UILoader from "../../../@core/components/ui-loader";
 
 const BomkitInformation = (props) => {
-  const { bomData,bomInfoBlock } = props
+  const { bomData,bomInfoBlock } = props;
+  const [currentPage, setCurrentPage] = useState(0);
+
   const columnsBokKit = [
     {
       name: "Malzeme",
       selector: (row) => row.material,
-      width: "160px",
+      width: "250px",
     },
     {
       name: "Parti Numarası",
       selector: (row) => row.partyNumber,
-      width: "160px",
+      width: "200px",
     },
     {
       name: "Açıklama",
@@ -42,39 +45,20 @@ const BomkitInformation = (props) => {
       },
     },
   ];
-
-
-
+  
 
   return (
-    <UILoader blocking={bomInfoBlock}>
-      <div className="react-dataTable">
-        <PerfectScrollbar
-          options={{ wheelPropagation: false, suppressScrollX: true }}
-          className="ScrollHeightAll"
-        >
-          <div
-            className="react-dataTable"
-
-            style={{
-              minHeight: window.screen.height * 0.7,
-              maxHeight: window.screen.height *  0.7,
-             
-            }}
-          >
+    <div className={'react-dataTable'} >
             <DataTable
-              selectableRowsNoSelectAll
-              columns={columnsBokKit}
-              className="react-dataTable custom-height"
-              data={bomData}
-              noDataComponent="Bom Kit Verisi Mevcut Değil"
+                selectableRowsNoSelectAll
+                columns={columnsBokKit}
+                data={bomData}
+                pagination
+                paginationPerPage={10}
+                paginationDefaultPage={currentPage + 1}
+                // paginationComponent={() => CustomPagination(searchValue.length ? filteredData : logs, currentPage, (value) => setCurrentPage(value))}
             />
-          </div>
-        </PerfectScrollbar>
-      </div>
-      <Row></Row>
-
-    </UILoader>
+        </div>
   );
 };
 

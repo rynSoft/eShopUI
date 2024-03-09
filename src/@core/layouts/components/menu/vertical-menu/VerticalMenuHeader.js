@@ -1,20 +1,26 @@
 // ** React Imports
-import { useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
+import { useEffect } from "react";
+import { NavLink } from "react-router-dom";
 
 // ** Icons Imports
-import { Disc, X, Circle } from 'react-feather'
+import { Disc, X, Circle } from "react-feather";
 // ** Config
-import themeConfig from '@configs/themeConfig'
+import themeConfig from "@configs/themeConfig";
 
-const VerticalMenuHeader = props => {
+const VerticalMenuHeader = (props) => {
   // ** Props
-  const { menuCollapsed, setMenuCollapsed, setMenuVisibility, setGroupOpen, menuHover } = props
+  const {
+    menuCollapsed,
+    setMenuCollapsed,
+    setMenuVisibility,
+    setGroupOpen,
+    menuHover,
+  } = props;
 
   // ** Reset open group
   useEffect(() => {
-    if (!menuHover && menuCollapsed) setGroupOpen([])
-  }, [menuHover, menuCollapsed])
+    if (!menuHover && menuCollapsed) setGroupOpen([]);
+  }, [menuHover, menuCollapsed]);
 
   // ** Menu toggler component
   const Toggler = () => {
@@ -22,47 +28,47 @@ const VerticalMenuHeader = props => {
       return (
         <Disc
           size={20}
-          data-tour='toggle-icon'
-          className='text-primary toggle-icon d-none d-xl-block'
+          data-tour="toggle-icon"
+          className="text-primary toggle-icon d-none d-xl-block"
           onClick={() => setMenuCollapsed(true)}
         />
-      )
+      );
     } else {
       return (
         <Circle
           size={20}
-          data-tour='toggle-icon'
-          className='text-primary toggle-icon d-none d-xl-block'
+          data-tour="toggle-icon"
+          className="text-primary toggle-icon d-none d-xl-block"
           onClick={() => setMenuCollapsed(false)}
         />
-      )
+      );
     }
-  }
+  };
 
   return (
-    <div className='navbar-header'>
-      <ul className='nav navbar-nav flex-row'>
+    <div className="navbar-header">
 
-
-        <li className='nav-item me-auto'>
-       
-       <NavLink to='/' className='navbar-brand'>
-
-                
-
-          <span className='brand-logo'>
-           <img src={themeConfig.app.appLogoTemp}  alt='logo' />
-         </span>
-         <h2 className='brand-text mb-0'> <img src={themeConfig.app.appLogoImage} alt='logo' style={{height:40,width:150}}/></h2>
-
-      
-    
-       </NavLink>
-     </li>
-
+      <ul className="nav navbar-nav flex-row">
+        <li className="nav-item me-auto">
+          <NavLink to="/" >
+            {/* <span className="brand-logo">
+              <img src={themeConfig.app.appLogoImageSmall} alt="logo"   style={{ height: 40, width: 80 }}  />
+            </span> */}
+     
+            <h2 className="brand-text mb-0"  style={{ textAlign: "center" }}>
+              {" "}
+              <img
+                src={themeConfig.app.appLogoImageSmall}
+                alt="logo"
+                style={{ height: 80, width: 80, justifyContent: "center" }}
+              />
+            </h2>
+          </NavLink>
+        </li>
       </ul>
-    </div>
-  )
-}
+     </div>
+    
+  );
+};
 
-export default VerticalMenuHeader
+export default VerticalMenuHeader;

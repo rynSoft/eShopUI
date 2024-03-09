@@ -19,7 +19,7 @@ import { handleLogin } from '@store/authentication'
 
 // ** Context
 import { AbilityContext } from '@src/utility/context/Can'
-const appLogoImage = require('@src/assets/images/logo/lgo.png').default
+const appLogoImage = require('@src/assets/images/logo/techiz.png').default
 
 // ** Custom Components
 import Avatar from '@components/avatar'
@@ -54,7 +54,7 @@ const Login = () => {
     formState: { errors }
   } = useForm({ defaultValues })
 
-  const logo = require(`@src/assets/images/logo/lgo.png`).default;
+  const logo = require(`@src/assets/images/logo/techiz.png`).default;
   const abilitys =  [
     {
       action: 'manage',
@@ -95,7 +95,7 @@ const Login = () => {
   return (
     <div className='auth-wrapper auth-cover'>
         <span className='brand-logo'>
-          <img className='img-fluid' src={logo} alt='Not authorized page' />
+          <img className='img-fluid' src={logo} alt='Not authorized page' height={150} width={150}/>
         </span>
       <Row className='auth-inner m-0'>
          <Link className='brand-logo' to='/' onClick={e => e.preventDefault()}>
@@ -175,7 +175,7 @@ const Login = () => {
                     <Input
                       autoFocus
                       type='email'
-                      placeholder='udea@udea.com'
+                      placeholder='techiz@techiz.com'
                       invalid={errors.email && true}
                       {...field}
                     />

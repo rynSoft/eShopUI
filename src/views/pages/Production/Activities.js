@@ -54,31 +54,14 @@ const Activities = (props) => {
   return (
     <Fragment>
       <UILoader blocking={infoBlock} >
-      
-      
-    
-
-
-
-    
-          
                            
-                <PerfectScrollbar
-                  options={{ wheelPropagation: false, suppressScrollX: true }}
-                  className="ScrollHeightAll"
-                >
-                  <Col sm="12">
+ 
                     <ProductionLogs
                       style={{ all: "unset" }}
                       productionId={id != null ? Number(id) : null}
                     />
-                  </Col>
-                </PerfectScrollbar>
+       
       
-
-
-
-   
       </UILoader>
 
 

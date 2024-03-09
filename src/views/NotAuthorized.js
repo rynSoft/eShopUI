@@ -20,7 +20,7 @@ const NotAuthorized = () => {
     <div className='misc-wrapper'>
       <Link className='brand-logo' to='/'>
       
-      <img className='fallback-logo' src={logo} alt='logo' width={200}/>
+      <img className='fallback-logo' src={logo} alt='logo' width={100}/>
       </Link>
       <div className='misc-inner p-2 p-sm-3'>
         <div className='w-100 text-center'>

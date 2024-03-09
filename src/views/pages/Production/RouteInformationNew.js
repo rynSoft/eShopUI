@@ -19,22 +19,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { UseSelector, useDispatch } from "react-redux";
 import "@styles/base/core/menu/menu-types/vertical-overlay-menu.scss";
 import { workingActive, workingPassive } from "../../../redux/refreshData";
-import {
-  Check,
-  Clock,
-  Eye,
-  MoreHorizontal,
-  Pause,
-  PlayCircle,
-  Plus,
-  Save,
-  Settings,
-  StopCircle,
-  User,
-  UserMinus,
-  UserPlus,
-  XOctagon,
-} from "react-feather";
+import {Check,Eye} from "react-feather";
 
 import axios from "axios";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -46,65 +31,69 @@ import Avatar from "@components/avatar";
 import "./ProductionDetail.css";
 import UILoader from "../../../@core/components/ui-loader";
 
-
 import toastData from "../../../@core/components/toastData";
 
 const RouteInformationNew = (props) => {
-  const { id,setupVerificationImport,routeData,routeInfoBlock,disabledButton,setDisabledButton} = props
+  const {
+    id,
+    setupVerificationImport,
+    routeData,
+    routeInfoBlock,
+    disabledButton,
+    setDisabledButton,
+  } = props;
   const newWorking = useDispatch();
 
   const routeDataUpdate = (newState, rowId) => {
     setDisabledButton(true);
     axios
-      .put(
-        process.env.REACT_APP_API_ENDPOINT +
-        "api/RouteInfo/UpdateState", { id: rowId, state: newState }
-
-      )
+      .put(process.env.REACT_APP_API_ENDPOINT + "api/RouteInfo/UpdateState", {
+        id: rowId,
+        state: newState,
+      })
       .then((res) => {
         if (res.data.success) {
           loadRouteInfoData();
           toastData("Rota Durumu Güncellendi", true);
-        }
-        else {
+        } else {
           toastData("Rota Durumu Güncellenemedi", false);
         }
         setDisabledButton(false);
       });
-
   };
-
-
 
   const columnsRoute = [
     {
       name: "Rota ADI",
- 
+
       cell: (row) => {
-        return (
-          <div>{row.explanation}</div>
-        );
+        return <div>{row.explanation}</div>;
       },
     },
-
- 
-
 
     {
       name: "DURUM",
       maxWidth: "50px",
       selector: (row) => row.state,
       cell: (row) => {
-        return (
-          disabledButton ? <Badge color={row.state ? "light-info" : "light-info"} style={{ cursor: "pointer" }}><Spinner size="sm" /></Badge>
-            : <Badge color={row.state ? "light-success" : "light-danger"} style={{ cursor: "pointer" }} onClick={() => routeDataUpdate(!row.state, row.id)}>{row.state ? "Aktif" : "Pasif"}</Badge>
-
-
-
+        return disabledButton ? (
+          <Badge
+            color={row.state ? "light-info" : "light-info"}
+            style={{ cursor: "pointer" }}
+          >
+            <Spinner size="sm" />
+          </Badge>
+        ) : (
+          <Badge
+            color={row.state ? "light-success" : "light-danger"}
+            style={{ cursor: "pointer" }}
+            onClick={() => routeDataUpdate(!row.state, row.id)}
+          >
+            {row.state ? "Aktif" : "Pasif"}
+          </Badge>
         );
       },
     },
-
 
     {
       name: "DETAY",
@@ -156,7 +145,7 @@ const RouteInformationNew = (props) => {
     axios
       .post(
         process.env.REACT_APP_API_ENDPOINT +
-        "api/ProductionTimeProcecss/StopVirtual",
+          "api/ProductionTimeProcecss/StopVirtual",
         parameters
       )
       .then((res) => {
@@ -165,57 +154,47 @@ const RouteInformationNew = (props) => {
       });
   };
 
-
-
   return (
-    <UILoader blocking={routeInfoBlock} >
-    <Card className="CardDetail">
-      <CardHeader>
-        <CardTitle tag="h4"></CardTitle>
+    <UILoader blocking={routeInfoBlock}>
+      <Card className="CardDetail">
+        <CardHeader>
+          <CardTitle tag="h4"></CardTitle>
 
-        <Button.Ripple
-          size="sm"
-          disabled={setupVerificationImport}
-          style={{ marginTop: -10 }}
-          color="info"
-          id="sendToSV"
-          onClick={sendToSV}
-        >
-          <Check size={16} />
-        </Button.Ripple>
-        <UncontrolledTooltip placement="right" target="sendToSV">
-          Setup Doğrulamaya Aktar
-        </UncontrolledTooltip>
-      </CardHeader>
+          <Button.Ripple
+            size="sm"
+            disabled={setupVerificationImport}
+            style={{ marginTop: -10 }}
+            color="info"
+            id="sendToSV"
+            onClick={sendToSV}
+          >
+            <Check size={16} />
+          </Button.Ripple>
+          <UncontrolledTooltip placement="right" target="sendToSV">
+            Setup Doğrulamaya Aktar
+          </UncontrolledTooltip>
+        </CardHeader>
 
-
-<Row style={{paddingLeft:10}}>
-
-
-  <Col sm={12}>  
-  
-  <h3>Rota Bilgisi</h3>
-  <div className="react-dataTable">
-        <PerfectScrollbar
-          options={{ wheelPropagation: false, suppressScrollX: true }}
-          className="ScrollHeightAll"
-
-        >
-          <DataTable
-            selectableRowsNoSelectAll
-            columns={columnsRoute}
-            className="react-dataTable"
-            data={routeData}
-          />
-        </PerfectScrollbar>
-      </div></Col>
-</Row>
-
-
-    
-
-    </Card>
-  </UILoader>
+        <Row style={{ paddingLeft: 10 }}>
+          <Col sm={12}>
+            <h3>Rota Bilgisi</h3>
+            <div className="react-dataTable">
+              <PerfectScrollbar
+                options={{ wheelPropagation: false, suppressScrollX: true }}
+                className="ScrollHeightAll"
+              >
+                <DataTable
+                  selectableRowsNoSelectAll
+                  columns={columnsRoute}
+                  className="react-dataTable"
+                  data={routeData}
+                />
+              </PerfectScrollbar>
+            </div>
+          </Col>
+        </Row>
+      </Card>
+    </UILoader>
   );
 };
 

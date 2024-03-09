@@ -29,7 +29,7 @@ const Router = () => {
   const { transition, setTransition } = useRouterTransition()
 
   // ** Default Layout
-  const DefaultLayout = layout === 'horizontal' ? 'HorizontalLayout' : 'VerticalLayout'
+  const DefaultLayout = layout === 'horizontal' ? 'VerticalLayout' : 'HorizontalLayout'
 
   // ** All of the available layouts
   const Layouts = { BlankLayout, VerticalLayout, HorizontalLayout }
