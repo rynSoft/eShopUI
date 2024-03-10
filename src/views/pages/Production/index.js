@@ -347,7 +347,7 @@ const ProductionDetail = (props) => {
                     />
                   </TabPane>
                   <TabPane tabId="4">
-                    <Test />
+                    <Test routeId={id} />
                   </TabPane>
                   {/* <TabPane tabId="6">
                     <RouteInformationNew
