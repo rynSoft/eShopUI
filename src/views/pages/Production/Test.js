@@ -1,6 +1,6 @@
 // App.js
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
@@ -17,7 +17,7 @@ import {
 import PerfectScrollbar from "react-perfect-scrollbar";
 // ** Custom Components
 import AvatarGroup from "@components/avatar-group";
-import { ArrowRightCircle, Copy, PlayCircle, UserPlus } from "react-feather";
+import { ArrowRightCircle, Copy, Delete, PlayCircle, Trash, UserPlus } from "react-feather";
 import { selectThemeColors } from "@utils";
 import Select from "react-select";
 
@@ -68,7 +68,7 @@ const initialData = {
       userList: [],
     },
     {
-      id: "list1-b839df6b-32a7-4df6-98ab-b7e082fff596",
+      id: "list1-b839df6b-32a7-4df6-98ab-b7e082fff599",
       content: "Üretim",
       active: false,
       userList: [],
@@ -94,6 +94,33 @@ const getListStyle = (isDraggingOver) => ({
 
 const Test = () => {
   const [data, setData] = useState(initialData);
+  const loadData = () => {
+    axios
+      .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessTemplate/GetAll")
+      .then((response) => {
+        const initialData2 = {
+          list1: [],
+          list2: []
+        }
+        response.data.data.forEach(data => initialData2.list1.push({
+          id: data.id.toString(),
+          content: data.name,
+          active: true,
+          userList: [],
+          color: data.color,
+          icon: data.icon,
+          version: data.version
+        }))
+
+
+        console.log(initialData2)
+        setData(initialData2);
+
+      });
+  };
+  useEffect(() => {
+    loadData();
+  }, [])
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
@@ -135,20 +162,28 @@ const Test = () => {
       console.log(destination.droppableId);
       console.log(
         "draggedItem:" +
-          draggedItem.id.substring(draggedItem.id.indexOf("-") + 1)
+        draggedItem.id.substring(draggedItem.id.indexOf("-") + 1)
       );
       setData(newData);
     }
   };
+  const removeItem = (index) => {
+    const updatedList = [...data.list2];
+    updatedList.splice(index, 1);
+    setData((prevData) => ({
+      ...prevData,
+      list2: updatedList,
+    }));
+  };
 
   return (
     <DragDropContext onDragEnd={onDragEnd} >
-      <div style={{ display: "flex" ,height:"77vh"}}>
+      <div style={{ display: "flex", height: "77vh" }}>
         <Button outline color="primary">
           <h3 style={{ textAlign: "left" }}> Şablon</h3>
           <PerfectScrollbar
             options={{ wheelPropagation: false, suppressScrollX: true }}
-            // className="ScrollHeightDynamic"
+          // className="ScrollHeightDynamic"
           >
             <CardBody>
               <Droppable droppableId="list1" isDropDisabled={true}>
@@ -176,13 +211,9 @@ const Test = () => {
                           >
                             <Card style={{ height: 100 }}>
                               <Badge
-                                color={
-                                  item.content == "Standart Manual İşlemler"
-                                    ? "light-info"
-                                    : item.content ==
-                                      "Standart Kalite İşlemleri"
-                                    ? "light-warning"
-                                    : "light-success"
+                                color={item.color === null ?
+                                  "light-success" :
+                                  item.color
                                 }
                               >
                                 ----------------------------------
@@ -192,12 +223,9 @@ const Test = () => {
                               </CardBody>
                               <Badge
                                 color={
-                                  item.content == "Standart Manual İşlemler"
-                                    ? "light-info"
-                                    : item.content ==
-                                      "Standart Kalite İşlemleri"
-                                    ? "light-warning"
-                                    : "light-success"
+                                  item.color === null ?
+                                    "light-success" :
+                                    item.color
                                 }
                               >
                                 ----------------------------------
@@ -224,7 +252,7 @@ const Test = () => {
           <h3 style={{ textAlign: "left" }}> Rota Bilgisi</h3>
           <PerfectScrollbar
             options={{ wheelPropagation: false, suppressScrollX: true }}
-            // className="ScrollHeightDynamic"
+          // className="ScrollHeightDynamic"
           >
             <Droppable droppableId="list2">
               {(provided, snapshot) => (
@@ -240,6 +268,7 @@ const Test = () => {
                         <Col style={{ textAlign: "left" }}>KULLANICI</Col>
                         <Col style={{ textAlign: "right" }}>DURUM</Col>
                         <Col style={{ textAlign: "right" }}>ROTA</Col>
+                        <Col style={{ textAlign: "right" }}></Col>
                       </Row>
                     </Card>
                   </div>
@@ -264,7 +293,7 @@ const Test = () => {
                                       <Row>
                                         <Col>
                                           <Col sm={12}>
-                                            <Input placeholder="Makina Adı " />{" "}
+                                            <Input placeholder="Makina Adı " />
                                           </Col>
                                           <Col
                                             sm={12}
@@ -342,7 +371,7 @@ const Test = () => {
                                         <Col style={{ textAlign: "right" }}>
                                           <>
                                             {item.explanation ===
-                                            "KIT_HAZIRLAMA" ? (
+                                              "KIT_HAZIRLAMA" ? (
                                               item.kitHazirlamaState == 1 ? (
                                                 <Avatar
                                                   color="light-success"
@@ -446,13 +475,9 @@ const Test = () => {
                                             {" "}
                                             <Badge
                                               color={
-                                                item.content ==
-                                                "Standart Manual İşlemler"
-                                                  ? "light-info"
-                                                  : item.content ==
-                                                    "Standart Kalite İşlemleri"
-                                                  ? "light-warning"
-                                                  : "light-success"
+                                                item.color === null ?
+                                                  "light-success" :
+                                                  item.color
                                               }
                                               style={{ cursor: "pointer" }}
                                             >
@@ -466,7 +491,6 @@ const Test = () => {
                                     <Row>
                                       <Col>
                                         <Input placeholder="İş Adını Giriniz">
-                                          {" "}
                                         </Input>
                                       </Col>
 
@@ -507,7 +531,7 @@ const Test = () => {
                                       <Col style={{ textAlign: "right" }}>
                                         <>
                                           {item.explanation ===
-                                          "KIT_HAZIRLAMA" ? (
+                                            "KIT_HAZIRLAMA" ? (
                                             item.kitHazirlamaState == 1 ? (
                                               <Avatar
                                                 color="light-success"
@@ -589,19 +613,18 @@ const Test = () => {
                                           {" "}
                                           <Badge
                                             color={
-                                              item.content ==
-                                              "Standart Manual İşlemler"
-                                                ? "light-info"
-                                                : item.content ==
-                                                  "Standart Kalite İşlemleri"
-                                                ? "light-warning"
-                                                : "light-success"
+                                              item.color === null ?
+                                                "light-success" :
+                                                item.color
                                             }
                                             style={{ cursor: "pointer" }}
                                           >
                                             {item.content}
                                           </Badge>
                                         </Col>
+                                      </Col>
+                                      <Col>
+                                        <Trash onClick={(i) => removeItem(i)} />
                                       </Col>
                                     </Row>
                                   )}
@@ -617,6 +640,7 @@ const Test = () => {
                 </div>
               )}
             </Droppable>
+          <Button style={{flex:1,position:"absolute", right:0,bottom:30}}className="btn btn-success" onClick={()=>console.log(data.list2)}>Kaydet</Button>
           </PerfectScrollbar>
         </Button>
       </div>
