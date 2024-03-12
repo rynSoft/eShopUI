@@ -149,7 +149,8 @@ const Test = (props) => {
 
 const checkData = () => {
   const postData = data.list2.map((item, index) => ({
-    routeId: item.id,
+    id: item.id,
+    routeId: item.routeId,
     name: item.name,
     virtualName: convertName(item.name),
     productionId: props.productionId,
