@@ -19,15 +19,12 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 // ** Custom Components
 import AvatarGroup from "@components/avatar-group";
 import { ArrowRightCircle, Copy, Delete, PlayCircle, Trash, UserPlus } from "react-feather";
-import { selectThemeColors } from "@utils";
+
 import Select from "react-select";
 
-import DataTable from "react-data-table-component";
 import "@styles/base/core/menu/menu-types/vertical-menu.scss";
 
-import { UseSelector, useDispatch } from "react-redux";
 import "@styles/base/core/menu/menu-types/vertical-overlay-menu.scss";
-import { workingActive, workingPassive } from "../../../redux/refreshData";
 
 import axios from "axios";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -53,27 +50,15 @@ const getListStyle = (isDraggingOver) => ({
 
 const Test = (props) => {
   const [data, setData] = useState({ list1: [], list2: [] });
+
   const loadData = () => {
     axios
-      .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessTemplate/GetAll")
+      .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessTemplate/GetAllListProductionId?productionId="+ props.productionId)
       .then((response) => {
-        const initialData2 = {
-          list1: [],
-          list2: []
-        }
-        response.data.data.forEach(data => initialData2.list1.push({
-          id: data.id.toString(),
-          workProcessTemplateId: data.id.toString(),
-          content: data.name,
-          active: true,
-          userList: [],
-          color: data.color,
-          icon: data.icon,
-          version: data.version
-        }))
-        setData(initialData2);
+         setData(response.data.data);
       });
   };
+
   useEffect(() => {
     loadData();
   },[])
@@ -148,7 +133,7 @@ const Test = (props) => {
   }
   const handleSave = (postData) => {
     axios.post(
-      process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRoute/AddAll", postData
+      process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRoute/AddorUpdateAll", postData
     ).then((res) => {
       if (res.data.success) {
         toastData("Rota Bilgisi Kaydedildi", true)
@@ -158,12 +143,14 @@ const Test = (props) => {
       }
     }).catch((error) => { toastData("Rota Bilgisi Kaydedilemedi!" + error.message, false) });
   }
+
+
 const checkData = () => {
   const postData = data.list2.map((item, index) => ({
     routeId: item.id,
     name: item.name,
     virtualName: convertName(item.name),
-    productionId: props.routeId,
+    productionId: props.productionId,
     workProcessTemplateId: item.workProcessTemplateId,
     state: item.active,
     order: index + 1,
@@ -501,7 +488,8 @@ return (
 
                                     <Col style={{ color: "white" }}> {/* Kullanıcı */}
                                       <div className="d-flex">
-                                        {item.userList.map((user, key) => (
+                                        
+                                        {/* {item.userList.map((user, key) => (
                                           <div key={key}>
                                             {" "}
                                             <UserMinus
@@ -520,7 +508,7 @@ return (
                                             ></UserMinus>
                                             {user.name} {user.surName}{" "}
                                           </div>
-                                        ))}
+                                        ))} */}
                                         <UserPlus
                                           onClick={() =>
                                             showUserModal("insert", row)

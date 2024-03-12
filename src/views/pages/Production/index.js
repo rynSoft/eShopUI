@@ -50,6 +50,7 @@ const ProductionDetail = (props) => {
   const [productionData, setProductionData] = useState(null);
   const [estimatedTime, setEstimatedTime] = useState(0);
   const [panelCardCount, setpanelCardCount] = useState(0);
+
   useEffect(() => {
     let routeUser = routeData.filter((x) => x.explanation === "DIZGI");
     if (routeUser.length > 0 && routeUser[0]?.userList.length != 0) {
@@ -347,7 +348,7 @@ const ProductionDetail = (props) => {
                     />
                   </TabPane>
                   <TabPane tabId="4">
-                    <Test routeId={id} />
+                    <Test productionId={id} />
                   </TabPane>
                   {/* <TabPane tabId="6">
                     <RouteInformationNew
