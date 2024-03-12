@@ -62,7 +62,6 @@ const Test = (props) => {
   useEffect(() => {
     loadData();
   },[])
-
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
@@ -114,12 +113,15 @@ const Test = (props) => {
   };
 
   const handleProcessName = (value, id) => {
-    const d = data.list2.find(it => it.id === id);
-    d.name = value;
-  }
-  const getProcessName = (id) => {
-    const d = data.list2.find(it => it.id === id);
-    return d.name;
+    setData(prevData => {
+      const updatedList = prevData.list2.map(item => {
+        if (item.id === id) {
+          return { ...item, name: value };
+        }
+        return item;
+      });
+      return { ...prevData, list2: updatedList };
+    });
   }
   function convertName(name) {
     if (name === null || name === undefined || name === "")
@@ -474,6 +476,7 @@ return (
                                             }
                                             style={{ cursor: "pointer" }}
                                           >
+                                            {console.log(item)}
                                             {item.content}
                                           </Badge>
                                         </Col>
@@ -483,7 +486,7 @@ return (
                                 ) : (
                                   <Row>
                                     <Col> {/* Input */}
-                                      <Input placeholder="İş Adını Giriniz" value={getProcessName(provided.draggableProps["data-rfd-draggable-id"])} onChange={item => handleProcessName(item.target.value, provided.draggableProps["data-rfd-draggable-id"])} />
+                                      <Input key={item.id} placeholder="İş Adını Giriniz" value={data.list2.find(item => item.id === provided.draggableProps["data-rfd-draggable-id"]).name || ""} onChange={(e) => handleProcessName(e.target.value, provided.draggableProps["data-rfd-draggable-id"])} />
                                     </Col>
 
                                     <Col style={{ color: "white" }}> {/* Kullanıcı */}
