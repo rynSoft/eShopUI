@@ -134,6 +134,7 @@ const Test = (props) => {
         .replace(/\s+/g, "_");
   }
   const handleSave = (postData) => {
+    console.log(postData);
     axios.post(
       process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRoute/AddorUpdateAll", postData
     ).then((res) => {
@@ -149,8 +150,8 @@ const Test = (props) => {
 
 const checkData = () => {
   const postData = data.list2.map((item, index) => ({
-    id: item.id,
-    routeId: item.routeId,
+    id: item.routeId,
+    routeId: item.id,
     name: item.name,
     virtualName: convertName(item.name),
     productionId: props.productionId,
@@ -159,12 +160,14 @@ const checkData = () => {
     order: index + 1,
   }));
   let check = false;
+
   postData.forEach(d => {
     if (d.name == null) {
       check = true;
       return;
     }
   });
+  
   if (check) {
     toastData("İş Adı Boş Olamaz!", false)
   }
