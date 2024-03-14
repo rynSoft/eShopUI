@@ -23,9 +23,7 @@ import "@styles/base/core/menu/menu-types/vertical-menu.scss";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { UseSelector, useDispatch } from "react-redux";
 import "@styles/base/core/menu/menu-types/vertical-overlay-menu.scss";
-
 import { Fragment, useEffect, useState } from "react";
-
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Link, useHistory } from "react-router-dom";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -37,6 +35,7 @@ import Activities from "./Activities";
 import { Save } from "react-feather";
 import Test from "./Test";
 import RouteInformationNew from "./RouteInformationNew";
+
 const ProductionDetail = (props) => {
   const [id, setId] = useState(props.match.params.id);
   const [bomData, setBomData] = useState([]);
@@ -350,16 +349,8 @@ const ProductionDetail = (props) => {
                   <TabPane tabId="4">
                     <Test productionId={id} />
                   </TabPane>
-                  {/* <TabPane tabId="6">
-                    <RouteInformationNew
-                      id={id}
-                      setupVerificationImport={setupVerificationImport}
-                      routeData={routeData}
-                      routeInfoBlock={routeInfoBlock}
-                      disabledButton={disabledButton}
-                      setDisabledButton={(value) => setDisabledButton(value)}
-                    />
-                  </TabPane> */}
+
+
                 </TabContent>
               </Col>
             </Row>

@@ -59,7 +59,7 @@ const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
   });
 
   const addParameters = {
-    routeInfoId: userModalData.id,
+    workProcessRouteId: Number(userModalData.id),
     userId: userId.value
   };
 
@@ -84,8 +84,8 @@ const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
   }
   const addUser = () => {
     axios.post(
-      process.env.REACT_APP_API_ENDPOINT + "api/RouteInfoUser/Add",
-      addParameters
+      process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteUser/Add",
+      addParameters                         
     ).then((res) => {
       if(res.data.success){
         toastData(userId.label +" İş Atandı", true);
@@ -115,7 +115,7 @@ const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
 
   const deleteUser=()=>{
     axios
-      .delete(process.env.REACT_APP_API_ENDPOINT + "api/RouteInfoUser/Delete?Id="+userModalData.id)
+      .delete(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteUserService/Delete?Id="+userModalData.id)
       .then((res) => {
         if (res.data.success) {
           toastData(userId.label +" İş Silindi", true);
@@ -126,17 +126,9 @@ const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
         }
       })
       .catch((err) =>  toastData(userId.label +" İş Silinemedi", false));
-
-
-   
-
   }
 
-
-
-
   useEffect(() => {
-   
     axios
       .get(process.env.REACT_APP_API_ENDPOINT + "api/Account/GetAllAsync")
       .then((res) => {
@@ -149,7 +141,7 @@ const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
           });
 
           axios
-          .get(process.env.REACT_APP_API_ENDPOINT + "api/RouteInfoUser/GetById?id="+userModalData.id)
+          .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteUserService/GetById?id="+userModalData.id)
           .then((ressponse) => {
             if(ressponse.data.userId!=null){
              let user= dumyUserList.find(xt=>xt.id==ressponse.data.userId);

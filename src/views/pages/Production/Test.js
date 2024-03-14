@@ -1,6 +1,6 @@
 // App.js
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState , Fragment} from "react";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
@@ -24,7 +24,7 @@ import "@styles/base/core/menu/menu-types/vertical-menu.scss";
 import "@styles/base/core/menu/menu-types/vertical-overlay-menu.scss";
 import axios from "axios";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import Avatar from "@components/avatar";
+import UserModal from "./UserModal";
 import toastData from "../../../@core/components/toastData";
 
 const grid = 8;
@@ -55,6 +55,12 @@ const convertName = (name) => {
 
 const Test = (props) => {
   const [data, setData] = useState({ list1: [], list2: [] });
+  const [userModalState, setUserModalState] = useState(false);
+  const [userModalData, setUserModalData] = useState({});
+  const [modalType, setModalType] = useState("");
+
+
+
   const loadData = () => {
     axios
       .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessTemplate/GetAllListProductionId?productionId=" + props.productionId)
@@ -62,9 +68,12 @@ const Test = (props) => {
         setData(response.data.data);
       });
   };
+
   useEffect(() => {
     loadData();
   }, [])
+
+
   const handleSave = (postData) => {
     axios.post(
       process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRoute/AddorUpdateAll", postData
@@ -166,7 +175,26 @@ const Test = (props) => {
       handleSave(postData);
     }
   }
+
+  const showUserModal = (type, row) => {
+    debugger;
+    setModalType(type)
+    setUserModalState(!userModalState);
+    // loadRouteInfoData();
+    setUserModalData(row);
+  };
+
   return (
+    <Fragment>
+    {userModalState && (
+      <UserModal
+        modalType={modalType}
+        closeModal={showUserModal}
+        userModalData={userModalData}
+        productionId={props.productionId}
+      />
+    )}
+
     <Col>
       <Row>
         <DragDropContext onDragEnd={onDragEnd} >
@@ -350,7 +378,7 @@ const Test = (props) => {
                                                 ))}
                                                 <UserPlus
                                                   onClick={() =>
-                                                    showUserModal("insert", row)
+                                                    showUserModal("insert", item)
                                                   }
                                                   style={{
                                                     cursor: "pointer",
@@ -360,7 +388,7 @@ const Test = (props) => {
                                                 ></UserPlus>
                                               </div>
                                             </Col>
-                                            <Col style={{ textAlign: "right" }}>
+                                            {/* <Col style={{ textAlign: "right" }}>
                                               <>
                                                 {item.explanation ===
                                                   "KIT_HAZIRLAMA" ? (
@@ -447,7 +475,7 @@ const Test = (props) => {
                                                   />
                                                 )}
                                               </>
-                                            </Col>
+                                            </Col> */}
 
                                             <Col style={{ textAlign: "right" }}>
                                               <Col>
@@ -511,7 +539,7 @@ const Test = (props) => {
                                         ))} */}
                                               <UserPlus
                                                 onClick={() =>
-                                                  showUserModal("insert", row)
+                                                  showUserModal("insert", item)
                                                 }
                                                 style={{
                                                   cursor: "pointer",
@@ -521,72 +549,7 @@ const Test = (props) => {
                                               ></UserPlus>
                                             </div>
                                           </Col>
-                                          <Col style={{ textAlign: "right" }}> {/* Durum */}
-                                            <>
-                                              {item.explanation ===
-                                                "KIT_HAZIRLAMA" ? (
-                                                item.kitHazirlamaState == 1 ? (
-                                                  <Avatar
-                                                    color="light-success"
-                                                    icon={<PlayCircle size={14} />}
-                                                  />
-                                                ) : item.kitHazirlamaState == 2 ? (
-                                                  <Avatar
-                                                    color="light-danger"
-                                                    icon={<Pause size={14} />}
-                                                  />
-                                                ) : item.kitHazirlamaState == 3 ? (
-                                                  <Avatar
-                                                    color="light-warning"
-                                                    icon={<PlayCircle size={14} />}
-                                                  />
-                                                ) : item.kitHazirlamaState == 4 ? (
-                                                  <Avatar
-                                                    color="light-info"
-                                                    icon={<StopCircle size={14} />}
-                                                  />
-                                                ) : (
-                                                  <Avatar
-                                                    color="light-success"
-                                                    icon={<PlayCircle size={14} />}
-                                                  />
-                                                )
-                                              ) : item.explanation ===
-                                                "DOKUMAN_KONTROLU" ? (
-                                                item.kitDogrulamaState == 1 ? (
-                                                  <Avatar
-                                                    color="light-success"
-                                                    icon={<PlayCircle size={14} />}
-                                                  />
-                                                ) : item.kitDogrulamaState == 2 ? (
-                                                  <Avatar
-                                                    color="light-danger"
-                                                    icon={<Pause size={14} />}
-                                                  />
-                                                ) : item.kitDogrulamaState == 3 ? (
-                                                  <Avatar
-                                                    color="light-warning"
-                                                    icon={<PlayCircle size={14} />}
-                                                  />
-                                                ) : item.kitDogrulamaState == 4 ? (
-                                                  <Avatar
-                                                    color="light-info"
-                                                    icon={<StopCircle size={14} />}
-                                                  />
-                                                ) : (
-                                                  <Avatar
-                                                    color="light-success"
-                                                    icon={<PlayCircle size={14} />}
-                                                  />
-                                                )
-                                              ) : (
-                                                <Avatar
-                                                  color="light-success"
-                                                  icon={<PlayCircle size={14} />}
-                                                />
-                                              )}
-                                            </>
-                                          </Col>
+                             
                                           <Col style={{ textAlign: "right" }}>
                                             <Col> {/* Aktif Pasif */}
                                               {" "}
@@ -641,6 +604,7 @@ const Test = (props) => {
         <Button style={{ position: "absolute", right: 25, bottom: 0, maxWidth: "5%" }} className="btn btn-success" onClick={() => checkData()}>Kaydet</Button>
       </Row>
     </Col>
+    </Fragment>
   );
 };
 
