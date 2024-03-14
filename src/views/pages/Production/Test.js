@@ -135,7 +135,7 @@ const Test = (props) => {
   }
   const checkData = () => {
     const postData = data.list2.map((item, index) => ({
-      id: item.routeId ? item.id : null,
+      id: item.routeId ? item.id : 0,
       routeId: item.routeId ? item.routeId : item.id,
       name: item.name,
       virtualName: convertName(item.name),
