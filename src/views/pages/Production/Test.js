@@ -52,18 +52,7 @@ const convertName = (name) => {
       .replace(/\s+/g, "_");
 }
 
-const handleSave = (postData) => {
-  axios.post(
-    process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRoute/AddorUpdateAll", postData
-  ).then((res) => {
-    if (res.data.success) {
-      toastData("Rota Bilgisi Kaydedildi", true)
-    }
-    else {
-      toastData("Rota Bilgisi Kaydedilemedi!", false)
-    }
-  }).catch((error) => { toastData("Rota Bilgisi Kaydedilemedi!" + error.message, false) });
-}
+
 const Test = (props) => {
   const [data, setData] = useState({ list1: [], list2: [] });
   const loadData = () => {
@@ -76,7 +65,20 @@ const Test = (props) => {
   useEffect(() => {
     loadData();
   }, [])
-
+  const handleSave = (postData) => {
+    axios.post(
+      process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRoute/AddorUpdateAll", postData
+    ).then((res) => {
+      if (res.data.success) {
+        toastData("Rota Bilgisi Kaydedildi", true)
+        loadData();
+      }
+      else {
+        toastData("Rota Bilgisi Kaydedilemedi!", false)
+        loadData();
+      }
+    }).catch((error) => { toastData("Rota Bilgisi Kaydedilemedi!" + error.message, false) });
+  }
   const onDragEnd = (result) => {
     const { source, destination } = result;
     debugger;

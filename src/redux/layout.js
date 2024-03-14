@@ -9,8 +9,8 @@ export const layoutSlice = createSlice({
   initialState: {
     skin: themeConfig.layout.skin,
     isRTL: themeConfig.layout.isRTL,
-    layout: themeConfig.layout.type,
-    lastLayout: themeConfig.layout.type,
+    layout: "vertical",
+    lastLayout: "vertical",
     footerType: themeConfig.layout.footer.type,
     navbarType: themeConfig.layout.navbar.type,
     menuHidden: themeConfig.layout.menu.isHidden,
