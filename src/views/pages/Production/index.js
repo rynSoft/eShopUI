@@ -37,6 +37,8 @@ import Activities from "./Activities";
 import { Save } from "react-feather";
 import Test from "./Test";
 import RouteInformationNew from "./RouteInformationNew";
+import toastData from "../../../@core/components/toastData";
+import Verification from "../KitVerification/Verification";
 const ProductionDetail = (props) => {
   const [id, setId] = useState(props.match.params.id);
   const [bomData, setBomData] = useState([]);
@@ -50,7 +52,8 @@ const ProductionDetail = (props) => {
   const [productionData, setProductionData] = useState(null);
   const [estimatedTime, setEstimatedTime] = useState(0);
   const [panelCardCount, setpanelCardCount] = useState(0);
-
+  const [navItemData, setNavItemData] = useState([]);
+  const [workProcessTemplate, setWorkProcessTemplate] = useState([])
   useEffect(() => {
     let routeUser = routeData.filter((x) => x.explanation === "DIZGI");
     if (routeUser.length > 0 && routeUser[0]?.userList.length != 0) {
@@ -66,7 +69,18 @@ const ProductionDetail = (props) => {
     loadBomInfoData();
     loadRouteInfoData();
     loadInfoData();
+    loadNavItem();
   }, []);
+
+
+  const loadNavItem = () => {
+    axios
+      .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessTemplate/GetAllListProductionId?productionId=" + id)
+      .then((response) => {
+        setNavItemData(response.data.data.list2);
+      })
+      .catch(err => toastData(err.message, false));
+  }
   const loadInfoData = () => {
     setInfoBlock(true);
     axios
@@ -96,8 +110,8 @@ const ProductionDetail = (props) => {
     axios
       .get(
         process.env.REACT_APP_API_ENDPOINT +
-          "api/RouteInfo/GetAllAsyncProductId?id=" +
-          id
+        "api/RouteInfo/GetAllAsyncProductId?id=" +
+        id
       )
       .then((response) => {
         setRouteData(response.data);
@@ -113,8 +127,8 @@ const ProductionDetail = (props) => {
     axios
       .get(
         process.env.REACT_APP_API_ENDPOINT +
-          "api/BomKitInfo/GetAllAsyncProductId?id=" +
-          id
+        "api/BomKitInfo/GetAllAsyncProductId?id=" +
+        id
       )
       .then((response) => {
         setBomData(
@@ -131,7 +145,7 @@ const ProductionDetail = (props) => {
   };
   return (
     <Fragment>
-{/*       
+      {/*       
       <div>
         <div className="content-header row">
           <div className="content-header-left col-md-9 col-12 mb-2">
@@ -204,141 +218,148 @@ const ProductionDetail = (props) => {
                       Bom Kit Bilgisi
                     </NavLink>
                   </NavItem>
-
+                  {navItemData.map(nav => <NavItem>
+                    <NavLink active={active === nav.id}
+                      key={nav.id}
+                      onClick={() => { console.log(nav.id); toggle(nav.id) }}
+                    >
+                      {nav.name}
+                    </NavLink>
+                  </NavItem>)}
                 </Nav>
                 <TabContent className="py-50" activeTab={active}>
                   <TabPane tabId="1">
                     <Row style={{ paddingTop: 10 }}>
-                    <Col sm={3}>
-                    <Card>
-                      <br></br>
-                      <br></br>
-                      <br></br>
-                      {" "}
-                      <dl>
-                        <Row >
-                          <Col sm="6" className="text-end text-uppercase">
-                            <dt>Üretim Emri</dt>
-                          </Col>
-                          <Col sm="6">
-                            <dd>{productionData?.orderNo}</dd>
-                          </Col>
-                        </Row>
-                      </dl>
-                      <dl>
-                        <Row>
-                          <Col sm="6" className="text-end text-uppercase">
-                            <dt>Üretim Adı</dt>
-                          </Col>
-                          <Col sm="6">
-                            <dd>{productionData?.uretimAdi}</dd>
-                          </Col>
-                        </Row>
-                      </dl>
-                      <dl>
-                        <Row>
-                          <Col sm="6" className="text-end text-uppercase">
-                            <dt>Açıklama</dt>
-                          </Col>
-                          <Col sm="6">
-                            <dd>{productionData?.aciklama}</dd>
-                          </Col>
-                        </Row>
-                      </dl>
-                      <dl>
-                        <Row>
-                          <Col sm="6" className="text-end text-uppercase">
-                            <dt>Üretim Adedi</dt>
-                          </Col>
-                          <Col sm="6">
-                            <dd>{productionData?.quantity}</dd>
-                          </Col>
-                        </Row>
-                      </dl>
-                      <dl>
-                        <Row>
-                          <Col sm="6" className="text-end text-uppercase">
-                            <dt>Açılış Tarihi</dt>
-                          </Col>
-                          <Col sm="6">
-                            <dd>
-                              {productionData != null && productionData != ""
-                                ? new Date(
-                                    productionData?.startDate
-                                  ).toLocaleDateString()
-                                : null}
-                            </dd>
-                          </Col>
-                        </Row>
-                      </dl>
-                      <dl>
-                        <Row>
-                          <Col sm="6" className="text-end text-uppercase">
-                            <dt>Ürün Geçiş SÜRESİ</dt>
-                          </Col>
-                          <Col sm="2">
-                            <Input
-                              id="estimated"
-                              bsSize="sm"
-                              placeholder="Süre"
-                              type="number"
-                              onChange={(event) =>
-                                setEstimatedTime(event.target.value)
-                              }
-                              style={{ width: 50 }}
-                              value={estimatedTime}
-                            />
-                          </Col>
-                        </Row>
-                      </dl>
-                      <dl>
-                        <Row>
-                          <Col sm="6" className="text-end text-uppercase">
-                            <dt>Panel Kart Adeti</dt>
-                          </Col>
-                          <Col sm="2">
-                            <Input
-                              id="panelCard"
-                              bsSize="sm"
-                              type="number"
-                              onChange={(event) =>
-                                setpanelCardCount(event.target.value)
-                              }
-                              style={{ width: 50 }}
-                              value={panelCardCount}
-                            />
-                          </Col>
+                      <Col sm={3}>
+                        <Card>
                           <br></br>
                           <br></br>
-                          <Col
-                            sm="12"
-                            style={{ textAlign: "center", marginTop: 20 }}
-                          >
-                            <Button
-                              size="sm"
-                              onClick={() => estimatedTimeController()}
-                            >
-                              <Save size={12} /> Kaydet
-                            </Button>
-                          </Col>
-                        </Row>
-                      </dl>
-                      <br></br>
-                      <br></br>
-                      </Card>
-                    </Col>
-                   
-                    <Col sm={9} style={{paddingTop: 5 }}>
-                    <Activities
-                      id={id}
-                      productionData={productionData}
-                      infoBlock={infoBlock}
-                      setpanelCardCount={(value) => setpanelCardCount(value)}
-                      setEstimatedTime={(value) => setEstimatedTime(value)}
-                      panelCardCount={panelCardCount}
-                      estimatedTime={estimatedTime}
-                    />
-                    </Col>
+                          <br></br>
+                          {" "}
+                          <dl>
+                            <Row >
+                              <Col sm="6" className="text-end text-uppercase">
+                                <dt>Üretim Emri</dt>
+                              </Col>
+                              <Col sm="6">
+                                <dd>{productionData?.orderNo}</dd>
+                              </Col>
+                            </Row>
+                          </dl>
+                          <dl>
+                            <Row>
+                              <Col sm="6" className="text-end text-uppercase">
+                                <dt>Üretim Adı</dt>
+                              </Col>
+                              <Col sm="6">
+                                <dd>{productionData?.uretimAdi}</dd>
+                              </Col>
+                            </Row>
+                          </dl>
+                          <dl>
+                            <Row>
+                              <Col sm="6" className="text-end text-uppercase">
+                                <dt>Açıklama</dt>
+                              </Col>
+                              <Col sm="6">
+                                <dd>{productionData?.aciklama}</dd>
+                              </Col>
+                            </Row>
+                          </dl>
+                          <dl>
+                            <Row>
+                              <Col sm="6" className="text-end text-uppercase">
+                                <dt>Üretim Adedi</dt>
+                              </Col>
+                              <Col sm="6">
+                                <dd>{productionData?.quantity}</dd>
+                              </Col>
+                            </Row>
+                          </dl>
+                          <dl>
+                            <Row>
+                              <Col sm="6" className="text-end text-uppercase">
+                                <dt>Açılış Tarihi</dt>
+                              </Col>
+                              <Col sm="6">
+                                <dd>
+                                  {productionData != null && productionData != ""
+                                    ? new Date(
+                                      productionData?.startDate
+                                    ).toLocaleDateString()
+                                    : null}
+                                </dd>
+                              </Col>
+                            </Row>
+                          </dl>
+                          <dl>
+                            <Row>
+                              <Col sm="6" className="text-end text-uppercase">
+                                <dt>Ürün Geçiş SÜRESİ</dt>
+                              </Col>
+                              <Col sm="2">
+                                <Input
+                                  id="estimated"
+                                  bsSize="sm"
+                                  placeholder="Süre"
+                                  type="number"
+                                  onChange={(event) =>
+                                    setEstimatedTime(event.target.value)
+                                  }
+                                  style={{ width: 50 }}
+                                  value={estimatedTime}
+                                />
+                              </Col>
+                            </Row>
+                          </dl>
+                          <dl>
+                            <Row>
+                              <Col sm="6" className="text-end text-uppercase">
+                                <dt>Panel Kart Adeti</dt>
+                              </Col>
+                              <Col sm="2">
+                                <Input
+                                  id="panelCard"
+                                  bsSize="sm"
+                                  type="number"
+                                  onChange={(event) =>
+                                    setpanelCardCount(event.target.value)
+                                  }
+                                  style={{ width: 50 }}
+                                  value={panelCardCount}
+                                />
+                              </Col>
+                              <br></br>
+                              <br></br>
+                              <Col
+                                sm="12"
+                                style={{ textAlign: "center", marginTop: 20 }}
+                              >
+                                <Button
+                                  size="sm"
+                                  onClick={() => estimatedTimeController()}
+                                >
+                                  <Save size={12} /> Kaydet
+                                </Button>
+                              </Col>
+                            </Row>
+                          </dl>
+                          <br></br>
+                          <br></br>
+                        </Card>
+                      </Col>
+
+                      <Col sm={9} style={{ paddingTop: 5 }}>
+                        <Activities
+                          id={id}
+                          productionData={productionData}
+                          infoBlock={infoBlock}
+                          setpanelCardCount={(value) => setpanelCardCount(value)}
+                          setEstimatedTime={(value) => setEstimatedTime(value)}
+                          panelCardCount={panelCardCount}
+                          estimatedTime={estimatedTime}
+                        />
+                      </Col>
                     </Row>
                   </TabPane>
                   <TabPane tabId="3">
@@ -350,6 +371,16 @@ const ProductionDetail = (props) => {
                   <TabPane tabId="4">
                     <Test productionId={id} />
                   </TabPane>
+                  {navItemData.map(nav => (
+                    <TabPane tabId={nav.id} key={nav.id}>
+                      {nav.whichPage && typeof nav.whichPage === "string" && nav.whichPage.trim() !== "" ? (
+                        React.createElement(nav.whichPage)
+                      ) : (
+                        <p>Bu sekme için bir bileşen belirtilmemiş.</p>
+                      )}
+                    </TabPane>
+                  ))}
+
                   {/* <TabPane tabId="6">
                     <RouteInformationNew
                       id={id}
