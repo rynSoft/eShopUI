@@ -28,12 +28,14 @@ import Avatar from "@components/avatar";
 import toastData from "../../../@core/components/toastData";
 
 const grid = 8;
+
 const getItemStyle = (isDragging, draggableStyle) => ({
   userSelect: "none",
   background: isDragging ? "#6610f2" : "none",
   color: "white",
   ...draggableStyle,
 });
+
 const getListStyle = (isDraggingOver) => ({
   background: isDraggingOver ? "#5856d6" : "none",
   padding: grid,
@@ -49,6 +51,7 @@ const convertName = (name) => {
       .toUpperCase()
       .replace(/\s+/g, "_");
 }
+
 const handleSave = (postData) => {
   axios.post(
     process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRoute/AddorUpdateAll", postData
@@ -73,9 +76,10 @@ const Test = (props) => {
   useEffect(() => {
     loadData();
   }, [])
+
   const onDragEnd = (result) => {
     const { source, destination } = result;
-
+    debugger;
     // If the item is dropped outside a valid droppable
     if (!destination) {
       return;
@@ -104,8 +108,8 @@ const Test = (props) => {
       if (source.droppableId === destination.droppableId) {
       } else {
         tempItem.id = uuidv4();
+        tempItem.workProcessTemplateId = result.draggableId;
       }
-
       const newData = { ...data };
 
       newData[destination.droppableId].splice(destination.index, 0, {
