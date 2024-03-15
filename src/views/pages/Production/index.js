@@ -18,6 +18,7 @@ import {
   Nav,
   NavLink,
 } from "reactstrap";
+import DynamicComponent from './DynamicComponent';
 import DataTable from "react-data-table-component";
 import "@styles/base/core/menu/menu-types/vertical-menu.scss";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -37,16 +38,15 @@ import Test from "./Test";
 import RouteInformationNew from "./RouteInformationNew";
 import toastData from "../../../@core/components/toastData";
 import Verification from "../KitVerification/Verification";
-
 const ProductionDetail = (props) => {
   const [id, setId] = useState(props.match.params.id);
   const [bomData, setBomData] = useState([]);
-  const [bomInfoBlock, setBomInfoBlock] = useState(false); 
   const [infoBlock, setInfoBlock] = useState(false);
   const [routeData, setRouteData] = useState([]);
-  const [routeInfoBlock, setRouteInfoBlock] = useState(false);
+  const [bomInfoBlock, setBomInfoBlock] = useState(false);
   const [active, setActive] = useState("1");
-
+  const [setupVerificationImport, setSetupVerificationImport] = useState(true);
+  const [routeInfoBlock, setRouteInfoBlock] = useState(false);
   const [productionData, setProductionData] = useState(null);
   const [estimatedTime, setEstimatedTime] = useState(0);
   const [panelCardCount, setpanelCardCount] = useState(0);
@@ -62,13 +62,14 @@ const ProductionDetail = (props) => {
     loadInfoData();
     loadNavItem();
   }, []);
+  let x={"params":{"id":id}};
 
 
   const loadNavItem = () => {
     axios
-      .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessTemplate/GetAllListProductionId?productionId=" + id)
+      .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessTemplate/GetNavListProductionId?productionId=" + id)
       .then((response) => {
-        setNavItemData(response.data.data.list2);
+        setNavItemData(response.data.data);
       })
       .catch(err => toastData(err.message, false));
   }
@@ -112,14 +113,6 @@ const ProductionDetail = (props) => {
         setRouteInfoBlock(false);
       });
   };
-
-  function Greeting({ name }) {
-    return (
-      <h1 className="greeting">
-        Hello <i>{name}</i>. Welcome!
-      </h1>
-    );
-  }
   const loadBomInfoData = () => {
     setBomInfoBlock(true);
     axios
@@ -143,6 +136,40 @@ const ProductionDetail = (props) => {
   };
   return (
     <Fragment>
+      {/*       
+      <div>
+        <div className="content-header row">
+          <div className="content-header-left col-md-9 col-12 mb-2">
+            <div className="row breadcrumbs-top">
+              <div className="col-12">
+                <h2 className="content-header-title float-start mb-0">
+                  {"Üretim Plan Listesi"}
+                </h2>
+                <div className="breadcrumb-wrapper vs-breadcrumbs d-sm-block d-none col-12">
+                  <Breadcrumb className="ms-1">
+                    <BreadcrumbItem>
+                      <Link to="/"> Dashboard </Link>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem>
+                      <Link to="/Production"> Üretim Planlama </Link>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem>
+                      <span> Üretim </span>
+                    </BreadcrumbItem>
+                  </Breadcrumb>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="content-header-right text-md-end col-md-3 col-12 d-md-block d-none">
+            <div className="breadcrumb-right"></div>
+          </div>
+        </div>
+
+
+      </div> */}
+
       <div>
         <Row>
           <Col sm={20}>
@@ -185,7 +212,7 @@ const ProductionDetail = (props) => {
                   {navItemData.map(nav => <NavItem>
                     <NavLink active={active === nav.id}
                       key={nav.id}
-                      onClick={() => { console.log(nav.id); toggle(nav.id) }}
+                      onClick={() => {toggle(nav.id) }}
                     >
                       {nav.name}
                     </NavLink>
@@ -336,13 +363,8 @@ const ProductionDetail = (props) => {
                     <Test productionId={id} />
                   </TabPane>
                   {navItemData.map(nav => (
-                    <TabPane tabId={nav.id} key={nav.id}>
-                     <Verification />
-                      {/* {nav.whichPage && typeof nav.whichPage === "string" && nav.whichPage.trim() !== "" ? (
-                        React.createElement(nav.whichPage)
-                      ) : (
-                        <p>Bu sekme için bir bileşen belirtilmemiş.</p>
-                      )} */}
+                      <TabPane tabId={nav.id} key={nav.id}>
+                      {<DynamicComponent key={nav.id} component={nav.whichPage} id={id} match={x}/> }
                     </TabPane>
                   ))}
 
