@@ -52,14 +52,14 @@ const ProductionDetail = (props) => {
   const [panelCardCount, setpanelCardCount] = useState(0);
   const [navItemData, setNavItemData] = useState([]);
   const [workProcessTemplate, setWorkProcessTemplate] = useState([])
-  useEffect(() => {
-    let routeUser = routeData.filter((x) => x.explanation === "DIZGI");
-    if (routeUser.length > 0 && routeUser[0]?.userList.length != 0) {
-      setSetupVerificationImport(false);
-    } else {
-      setSetupVerificationImport(true);
-    }
-  }, [routeData]);
+  // useEffect(() => {
+  //   let routeUser = routeData.filter((x) => x.explanation === "DIZGI");
+  //   if (routeUser.length > 0 && routeUser[0]?.userList.length != 0) {
+  //     setSetupVerificationImport(false);
+  //   } else {
+  //     setSetupVerificationImport(true);
+  //   }
+  // }, [routeData]);
   const toggle = (tab) => {
     setActive(tab);
   };
