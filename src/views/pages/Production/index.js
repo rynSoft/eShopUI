@@ -37,29 +37,22 @@ import Test from "./Test";
 import RouteInformationNew from "./RouteInformationNew";
 import toastData from "../../../@core/components/toastData";
 import Verification from "../KitVerification/Verification";
+
 const ProductionDetail = (props) => {
   const [id, setId] = useState(props.match.params.id);
   const [bomData, setBomData] = useState([]);
-  const [disabledButton, setDisabledButton] = useState(false);
+  const [bomInfoBlock, setBomInfoBlock] = useState(false); 
   const [infoBlock, setInfoBlock] = useState(false);
   const [routeData, setRouteData] = useState([]);
-  const [bomInfoBlock, setBomInfoBlock] = useState(false);
-  const [active, setActive] = useState("1");
-  const [setupVerificationImport, setSetupVerificationImport] = useState(true);
   const [routeInfoBlock, setRouteInfoBlock] = useState(false);
+  const [active, setActive] = useState("1");
+
   const [productionData, setProductionData] = useState(null);
   const [estimatedTime, setEstimatedTime] = useState(0);
   const [panelCardCount, setpanelCardCount] = useState(0);
   const [navItemData, setNavItemData] = useState([]);
   const [workProcessTemplate, setWorkProcessTemplate] = useState([])
-  // useEffect(() => {
-  //   let routeUser = routeData.filter((x) => x.explanation === "DIZGI");
-  //   if (routeUser.length > 0 && routeUser[0]?.userList.length != 0) {
-  //     setSetupVerificationImport(false);
-  //   } else {
-  //     setSetupVerificationImport(true);
-  //   }
-  // }, [routeData]);
+
   const toggle = (tab) => {
     setActive(tab);
   };
@@ -120,6 +113,13 @@ const ProductionDetail = (props) => {
       });
   };
 
+  function Greeting({ name }) {
+    return (
+      <h1 className="greeting">
+        Hello <i>{name}</i>. Welcome!
+      </h1>
+    );
+  }
   const loadBomInfoData = () => {
     setBomInfoBlock(true);
     axios
@@ -143,40 +143,6 @@ const ProductionDetail = (props) => {
   };
   return (
     <Fragment>
-      {/*       
-      <div>
-        <div className="content-header row">
-          <div className="content-header-left col-md-9 col-12 mb-2">
-            <div className="row breadcrumbs-top">
-              <div className="col-12">
-                <h2 className="content-header-title float-start mb-0">
-                  {"Üretim Plan Listesi"}
-                </h2>
-                <div className="breadcrumb-wrapper vs-breadcrumbs d-sm-block d-none col-12">
-                  <Breadcrumb className="ms-1">
-                    <BreadcrumbItem>
-                      <Link to="/"> Dashboard </Link>
-                    </BreadcrumbItem>
-                    <BreadcrumbItem>
-                      <Link to="/Production"> Üretim Planlama </Link>
-                    </BreadcrumbItem>
-                    <BreadcrumbItem>
-                      <span> Üretim </span>
-                    </BreadcrumbItem>
-                  </Breadcrumb>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="content-header-right text-md-end col-md-3 col-12 d-md-block d-none">
-            <div className="breadcrumb-right"></div>
-          </div>
-        </div>
-
-
-      </div> */}
-
       <div>
         <Row>
           <Col sm={20}>
@@ -371,11 +337,12 @@ const ProductionDetail = (props) => {
                   </TabPane>
                   {navItemData.map(nav => (
                     <TabPane tabId={nav.id} key={nav.id}>
-                      {nav.whichPage && typeof nav.whichPage === "string" && nav.whichPage.trim() !== "" ? (
+                     <Verification />
+                      {/* {nav.whichPage && typeof nav.whichPage === "string" && nav.whichPage.trim() !== "" ? (
                         React.createElement(nav.whichPage)
                       ) : (
                         <p>Bu sekme için bir bileşen belirtilmemiş.</p>
-                      )}
+                      )} */}
                     </TabPane>
                   ))}
 

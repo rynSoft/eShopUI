@@ -294,7 +294,7 @@ const Test = (props) => {
                 {/* <h3 style={{ textAlign: "left" }}> Rota Bilgisi</h3> */}
                 <PerfectScrollbar
                   options={{ wheelPropagation: false, suppressScrollX: true }}
-                   className="ScrollHeightDynamic"
+                  className="ScrollHeightDynamic"
                 >
                   <Droppable droppableId="list2">
                     {(provided, snapshot) => (
@@ -307,7 +307,9 @@ const Test = (props) => {
                           <Card>
                             <Row style={{ margin: 10, color: "white" }}>
                               <Col style={{ textAlign: "left" }}>AŞAMA</Col>
-                              <Col style={{ textAlign: "center" }}>KULLANICI</Col>
+                              <Col style={{ textAlign: "center" }}>
+                                KULLANICI
+                              </Col>
                               <Col style={{ textAlign: "right" }}>DURUM</Col>
                               <Col style={{ textAlign: "center" }}>SİL</Col>
                             </Row>
@@ -423,57 +425,55 @@ const Test = (props) => {
                                             </Col>
 
                                             <Col style={{ color: "white" }}>
-                                                  <div className="d-flex">
-                                                    {item?.userList?.map(
-                                                      (user, keys) => (
-                                                        <div key={keys}>
-                                                          {" "}
-                                                          <UserMinus
-                                                            onClick={() =>
-                                                              showUserModal(
-                                                                "delete",
-                                                                {
-                                                                  id: user.id,
-                                                                  explanation:
-                                                                    item.explanation,
-                                                                }
-                                                              )
+                                              <div className="d-flex">
+                                                {item?.userList?.map(
+                                                  (user, keys) => (
+                                                    <div key={keys}>
+                                                      {" "}
+                                                      <UserMinus
+                                                        onClick={() =>
+                                                          showUserModal(
+                                                            "delete",
+                                                            {
+                                                              id: user.id,
+                                                              explanation:
+                                                                item.explanation,
                                                             }
-                                                            style={{
-                                                              cursor: "pointer",
-                                                              marginLeft: 10,
-                                                            }}
-                                                            size={16}
-                                                          ></UserMinus>{" "}
-                                                          <Badge
-                                                            color={
-                                                              colorList[keys]
-                                                            }
-                                                            style={{
-                                                              cursor: "inherit",
-                                                            }}
-                                                          >
-                                                            {user.name}{" "}
-                                                            {user.surName}{" "}
-                                                          </Badge>
-                                                        </div>
-                                                      )
-                                                    )}
-                                                    <UserPlus
-                                                      onClick={() =>
-                                                        showUserModal(
-                                                          "insert",
-                                                          item
-                                                        )
-                                                      }
-                                                      style={{
-                                                        cursor: "pointer",
-                                                        marginLeft: 10,
-                                                      }}
-                                                      size={16}
-                                                    ></UserPlus>
-                                                  </div>
-                                                </Col>
+                                                          )
+                                                        }
+                                                        style={{
+                                                          cursor: "pointer",
+                                                          marginLeft: 10,
+                                                        }}
+                                                        size={16}
+                                                      ></UserMinus>{" "}
+                                                      <Badge
+                                                        color={colorList[keys]}
+                                                        style={{
+                                                          cursor: "inherit",
+                                                        }}
+                                                      >
+                                                        {user.name}{" "}
+                                                        {user.surName}{" "}
+                                                      </Badge>
+                                                    </div>
+                                                  )
+                                                )}
+                                                <UserPlus
+                                                  onClick={() =>
+                                                    showUserModal(
+                                                      "insert",
+                                                      item
+                                                    )
+                                                  }
+                                                  style={{
+                                                    cursor: "pointer",
+                                                    marginLeft: 10,
+                                                  }}
+                                                  size={16}
+                                                ></UserPlus>
+                                              </div>
+                                            </Col>
 
                                             <Col style={{ textAlign: "right" }}>
                                               <Col>
