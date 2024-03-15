@@ -64,7 +64,16 @@ const Test = (props) => {
   const [userModalState, setUserModalState] = useState(false);
   const [userModalData, setUserModalData] = useState({});
   const [modalType, setModalType] = useState("");
-  const [colorList, setcolorList] = useState(["light-success","warning","light-info","error","light-warning","success","light-error","info"]);
+  const [colorList, setcolorList] = useState([
+    "light-success",
+    "warning",
+    "light-info",
+    "error",
+    "light-warning",
+    "success",
+    "light-error",
+    "info",
+  ]);
 
   const loadData = () => {
     axios
@@ -190,10 +199,10 @@ const Test = (props) => {
   };
 
   const showUserModal = (type, row) => {
-    debugger;
     setModalType(type);
     setUserModalState(!userModalState);
     setUserModalData(row);
+    loadData();
   };
 
   return (
@@ -215,7 +224,7 @@ const Test = (props) => {
                 <h3 style={{ textAlign: "left" }}> Şablon</h3>
                 <PerfectScrollbar
                   options={{ wheelPropagation: false, suppressScrollX: true }}
-                  // className="ScrollHeightDynamic"
+                  className="ScrollHeightDynamic"
                 >
                   <CardBody>
                     <Droppable droppableId="list1" isDropDisabled={true}>
@@ -282,10 +291,10 @@ const Test = (props) => {
                 style={{ marginLeft: 10, width: "100%" }}
               >
                 {" "}
-                <h3 style={{ textAlign: "left" }}> Rota Bilgisi</h3>
+                {/* <h3 style={{ textAlign: "left" }}> Rota Bilgisi</h3> */}
                 <PerfectScrollbar
                   options={{ wheelPropagation: false, suppressScrollX: true }}
-                  // className="ScrollHeightDynamic"
+                   className="ScrollHeightDynamic"
                 >
                   <Droppable droppableId="list2">
                     {(provided, snapshot) => (
@@ -298,10 +307,9 @@ const Test = (props) => {
                           <Card>
                             <Row style={{ margin: 10, color: "white" }}>
                               <Col style={{ textAlign: "left" }}>AŞAMA</Col>
-                              <Col style={{ textAlign: "left" }}>KULLANICI</Col>
+                              <Col style={{ textAlign: "center" }}>KULLANICI</Col>
                               <Col style={{ textAlign: "right" }}>DURUM</Col>
-                              <Col style={{ textAlign: "right" }}>ROTA</Col>
-                              <Col style={{ textAlign: "right" }}></Col>
+                              <Col style={{ textAlign: "center" }}>SİL</Col>
                             </Row>
                           </Card>
                         </div>
@@ -318,7 +326,7 @@ const Test = (props) => {
                                 ref={provided.innerRef}
                               >
                                 {data.list2.length > 0 && (
-                                  <Card style={{ marginTop: -26 }}>
+                                  <Card style={{ marginTop: -25 }}>
                                     <CardBody>
                                       <div className="role-heading">
                                         {item.content == "Makina" ? (
@@ -345,117 +353,7 @@ const Test = (props) => {
                                                     }
                                                   />{" "}
                                                 </Col>
-
-                                                {/* 
-                                        <Col sm={12} style={{ marginTop: 10 }}>                   <Select
-                                          isClearable={false}
-                                          className='react-select'
-                                          classNamePrefix='select'
-
-
-                                          placeholder=' kamera seç'
-                                          onChange={(event) => setLineDetail({ value: event.value, label: event.label })}
-                                        /> </Col>
-                                        <Col sm={12} style={{ marginTop: 10 }}>          <Select
-                                          isClearable={false}
-                                          className='react-select'
-                                          classNamePrefix='select'
-
-
-                                          placeholder='kamera seç'
-
-                                          onChange={(event) => setLineDetail({ value: event.value, label: event.label })}
-                                        /></Col> */}
                                               </Col>
-
-                                              {/* <Col style={{ textAlign: "right" }}>
-                                              <>
-                                                {item.explanation ===
-                                                  "KIT_HAZIRLAMA" ? (
-                                                  item.kitHazirlamaState == 1 ? (
-                                                    <Avatar
-                                                      color="light-success"
-                                                      icon={
-                                                        <PlayCircle size={14} />
-                                                      }
-                                                    />
-                                                  ) : item.kitHazirlamaState ==
-                                                    2 ? (
-                                                    <Avatar
-                                                      color="light-danger"
-                                                      icon={<Pause size={14} />}
-                                                    />
-                                                  ) : item.kitHazirlamaState ==
-                                                    3 ? (
-                                                    <Avatar
-                                                      color="light-warning"
-                                                      icon={
-                                                        <PlayCircle size={14} />
-                                                      }
-                                                    />
-                                                  ) : item.kitHazirlamaState ==
-                                                    4 ? (
-                                                    <Avatar
-                                                      color="light-info"
-                                                      icon={
-                                                        <StopCircle size={14} />
-                                                      }
-                                                    />
-                                                  ) : (
-                                                    <Avatar
-                                                      color="light-success"
-                                                      icon={
-                                                        <PlayCircle size={14} />
-                                                      }
-                                                    />
-                                                  )
-                                                ) : item.explanation ===
-                                                  "DOKUMAN_KONTROLU" ? (
-                                                  item.kitDogrulamaState == 1 ? (
-                                                    <Avatar
-                                                      color="light-success"
-                                                      icon={
-                                                        <PlayCircle size={14} />
-                                                      }
-                                                    />
-                                                  ) : item.kitDogrulamaState ==
-                                                    2 ? (
-                                                    <Avatar
-                                                      color="light-danger"
-                                                      icon={<Pause size={14} />}
-                                                    />
-                                                  ) : item.kitDogrulamaState ==
-                                                    3 ? (
-                                                    <Avatar
-                                                      color="light-warning"
-                                                      icon={
-                                                        <PlayCircle size={14} />
-                                                      }
-                                                    />
-                                                  ) : item.kitDogrulamaState ==
-                                                    4 ? (
-                                                    <Avatar
-                                                      color="light-info"
-                                                      icon={
-                                                        <StopCircle size={14} />
-                                                      }
-                                                    />
-                                                  ) : (
-                                                    <Avatar
-                                                      color="light-success"
-                                                      icon={
-                                                        <PlayCircle size={14} />
-                                                      }
-                                                    />
-                                                  )
-                                                ) : (
-                                                  <Avatar
-                                                    color="light-success"
-                                                    icon={<PlayCircle size={14} />}
-                                                  />
-                                                )}
-                                              </>
-                                            </Col> */}
 
                                               <Col
                                                 style={{ textAlign: "right" }}
@@ -524,88 +422,58 @@ const Test = (props) => {
                                               />
                                             </Col>
 
-                                            {/* {item.userList.map((user, key) => (
-                                          <div key={key}>
-                                            {" "}
-                                            <UserMinus
-                                              onClick={() =>
-                                                showUserModal("delete", {
-                                                  id: user.userRouteInfoId,
-                                                  explanation:
-                                                    item.explanation,
-                                                })
-                                              }
-                                              style={{
-                                                cursor: "pointer",
-                                                marginLeft: 10,
-                                              }}
-                                              size={16}
-                                            ></UserMinus>
-                                            {user.name} {user.surName}{" "}
-                                          </div>
-                                        ))} */}
-                                            {/* <UserPlus
-                                                onClick={() =>
-                                                  showUserModal("insert", item)
-                                                }
-                                                style={{
-                                                  cursor: "pointer",
-                                                  marginLeft: 10,
-                                                }}
-                                                size={16}
-                                              ></UserPlus>
-                                            </div> */}
                                             <Col style={{ color: "white" }}>
-                                              <div className="d-flex">
-                                                {item.userList.map(
-                                                  (user, keys) => (
-                                                    <div key={keys}>
-                                                      {" "}
-                                                      <UserMinus
-                                                        onClick={() =>
-                                                          showUserModal(
-                                                            "delete",
-                                                            {
-                                                              id: user.id,
-                                                              explanation:
-                                                                item.explanation,
+                                                  <div className="d-flex">
+                                                    {item?.userList?.map(
+                                                      (user, keys) => (
+                                                        <div key={keys}>
+                                                          {" "}
+                                                          <UserMinus
+                                                            onClick={() =>
+                                                              showUserModal(
+                                                                "delete",
+                                                                {
+                                                                  id: user.id,
+                                                                  explanation:
+                                                                    item.explanation,
+                                                                }
+                                                              )
                                                             }
-                                                          )
-                                                        }
-                                                        style={{
-                                                          cursor: "pointer",
-                                                          marginLeft: 10,
-                                                        }}
-                                                        size={16}
-                                                      ></UserMinus>{" "}
-                                                      
-                                                      <Badge
-                                                        color={colorList[keys]}
-                                                        style={{
-                                                          cursor: "inherit",
-                                                        }}
-                                                      >
-                                                        {user.name}{" "}
-                                                        {user.surName}{" "}
-                                                      </Badge>
-                                                    </div>
-                                                  )
-                                                )}
-                                                <UserPlus
-                                                  onClick={() =>
-                                                    showUserModal(
-                                                      "insert",
-                                                      item
-                                                    )
-                                                  }
-                                                  style={{
-                                                    cursor: "pointer",
-                                                    marginLeft: 10,
-                                                  }}
-                                                  size={16}
-                                                ></UserPlus>
-                                              </div>
-                                            </Col>
+                                                            style={{
+                                                              cursor: "pointer",
+                                                              marginLeft: 10,
+                                                            }}
+                                                            size={16}
+                                                          ></UserMinus>{" "}
+                                                          <Badge
+                                                            color={
+                                                              colorList[keys]
+                                                            }
+                                                            style={{
+                                                              cursor: "inherit",
+                                                            }}
+                                                          >
+                                                            {user.name}{" "}
+                                                            {user.surName}{" "}
+                                                          </Badge>
+                                                        </div>
+                                                      )
+                                                    )}
+                                                    <UserPlus
+                                                      onClick={() =>
+                                                        showUserModal(
+                                                          "insert",
+                                                          item
+                                                        )
+                                                      }
+                                                      style={{
+                                                        cursor: "pointer",
+                                                        marginLeft: 10,
+                                                      }}
+                                                      size={16}
+                                                    ></UserPlus>
+                                                  </div>
+                                                </Col>
 
                                             <Col style={{ textAlign: "right" }}>
                                               <Col>
