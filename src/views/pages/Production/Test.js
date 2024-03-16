@@ -307,9 +307,7 @@ const Test = (props) => {
                           <Card>
                             <Row style={{ margin: 10, color: "white" }}>
                               <Col style={{ textAlign: "left" }}>AŞAMA</Col>
-                              <Col style={{ textAlign: "center" }}>
-                                KULLANICI
-                              </Col>
+                              <Col style={{ textAlign: "center" }}>KULLANICI</Col>
                               <Col style={{ textAlign: "right" }}>DURUM</Col>
                               <Col style={{ textAlign: "center" }}>SİL</Col>
                             </Row>
@@ -435,9 +433,9 @@ const Test = (props) => {
                                                           showUserModal(
                                                             "delete",
                                                             {
-                                                              id: user.id,
+                                                              id: user.workProcessRouteId,
                                                               explanation:
-                                                                item.explanation,
+                                                              item.explanation,
                                                             }
                                                           )
                                                         }

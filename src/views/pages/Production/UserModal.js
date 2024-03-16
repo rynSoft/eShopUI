@@ -41,9 +41,9 @@ import { dateFormat, serverDateFormat } from "../../../utility/Constants";
 import ProductionLogs from "./ProductionLogs";
 import Select from "react-select";
 import toastData from "../../../@core/components/toastData";
-import { workingActive,workingPassive} from "../../../redux/refreshData";
+import { workingActive, workingPassive } from "../../../redux/refreshData";
 import { UseSelector, useDispatch } from "react-redux";
-const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
+const UserModal = ({ modalType, closeModal, userModalData, productionId }) => {
   const newWorking = useDispatch();
 
   const [modalActive, setModalActive] = useState(true);
@@ -74,28 +74,28 @@ const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
     <X className="cursor-pointer" onClick={modalClose} size={15} />
   );
 
-  const apiController=()=>{
-    if(modalType=="insert"){
+  const apiController = () => {
+    if (modalType == "insert") {
       addUser();
     }
-    else{
+    else {
       deleteUser();
     }
   }
   const addUser = () => {
     axios.post(
       process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteUser/Add",
-      addParameters                         
+      addParameters
     ).then((res) => {
-      if(res.data.success){
-        toastData(userId.label +" İş Atandı", true);
+      if (res.data.success) {
+        toastData(userId.label + " İş Atandı", true);
         newWorking(workingActive());
-       // addTask();
+        // addTask();
         closeModal();
       }
-      else{
-        toastData(userId.label +" İş Atanamadı", false);
-      }   
+      else {
+        toastData(userId.label + " İş Atanamadı", false);
+      }
     });
   };
 
@@ -104,28 +104,28 @@ const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
       process.env.REACT_APP_API_ENDPOINT + "api/RouteInfoUser/Add",
       addTaskParameters
     ).then((res) => {
-      if(res.data.success){
+      if (res.data.success) {
         closeModal();
       }
-      else{
-        toastData(userId.label +" İş Atanamadı", false);
-      }   
+      else {
+        toastData(userId.label + " İş Atanamadı", false);
+      }
     });
   };
 
-  const deleteUser=()=>{
+  const deleteUser = () => {
     axios
-      .delete(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteUserService/Delete?Id="+userModalData.id)
+      .delete(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteUser/Delete?Id=" + userModalData.id)
       .then((res) => {
         if (res.data.success) {
-          toastData(userId.label +" İş Silindi", true);
+          toastData(userId.label + " İş Silindi", true);
           newWorking(workingActive());
           closeModal();
         } else {
-          toastData(userId.label +" İş Silinemedi", false);
+          toastData(userId.label + " İş Silinemedi", false);
         }
       })
-      .catch((err) =>  toastData(userId.label +" İş Silinemedi", false));
+      .catch((err) => toastData(userId.label + " İş Silinemedi", false));
   }
 
   useEffect(() => {
@@ -133,7 +133,7 @@ const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
       .get(process.env.REACT_APP_API_ENDPOINT + "api/Account/GetAllAsync")
       .then((res) => {
         if (res.data.data.length > 0) {
-          let dumyUserList=res.data.data
+          let dumyUserList = res.data.data
           setUserList(dumyUserList);
           setUserId({
             value: res.data.data[0].id,
@@ -141,16 +141,16 @@ const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
           });
 
           axios
-          .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteUserService/GetById?id="+userModalData.id)
-          .then((ressponse) => {
-            if(ressponse.data.userId!=null){
-             let user= dumyUserList.find(xt=>xt.id==ressponse.data.userId);
-              setUserId({
-                value: user.id,
-                label: user.name + " " + user.surName,
-              });
-            }
-          });
+            .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteUser/GetById?id=" + userModalData.id)
+            .then((ressponse) => {
+              if (ressponse.data.userId != null) {
+                let user = dumyUserList.find(xt => xt.id == ressponse.data.userId);
+                setUserId({
+                  value: user.id,
+                  label: user.name + " " + user.surName,
+                });
+              }
+            });
         }
       });
   }, [userModalData]);
@@ -169,7 +169,7 @@ const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
             Kullanıcı
           </Label>
           <Select
-          isDisabled={modalType=="delete"}
+            isDisabled={modalType == "delete"}
             isClearable={false}
             className="react-select"
             classNamePrefix="select"
@@ -186,16 +186,16 @@ const UserModal = ({ modalType,closeModal, userModalData,productionId }) => {
             }
             styles={{ width: "100%" }}
           />
-          {modalType=="delete" ? "Kullanıcısı Silinecek !" :null}
+          {modalType == "delete" ? "Kullanıcısı Silinecek !" : null}
         </div>
         <div className="text-center">
-            <Button className="me-1" color="primary" onClick={()=>apiController()} >
-              {modalType=="insert"?"Ekle":"Sil"}
-            </Button>
-            <Button color="secondary" onClick={modalClose} outline>
-              İptal
-            </Button>
-          </div>
+          <Button className="me-1" color="primary" onClick={() => apiController()} >
+            {modalType == "insert" ? "Ekle" : "Sil"}
+          </Button>
+          <Button color="secondary" onClick={modalClose} outline>
+            İptal
+          </Button>
+        </div>
       </ModalBody>
     </Modal>
   );
