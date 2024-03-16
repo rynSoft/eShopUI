@@ -306,10 +306,10 @@ const Test = (props) => {
                         <div>
                           <Card>
                             <Row style={{ margin: 10, color: "white" }}>
-                              <Col style={{ textAlign: "left" }}>AŞAMA</Col>
-                              <Col style={{ textAlign: "center" }}>KULLANICI</Col>
-                              <Col style={{ textAlign: "right" }}>DURUM</Col>
-                              <Col style={{ textAlign: "center" }}>SİL</Col>
+                              <Col sm="4" style={{ textAlign: "left" }}>AŞAMA</Col>
+                              <Col sm="5" style={{ textAlign: "center" }}>KULLANICI</Col>
+                              <Col sm="2" style={{ textAlign: "right" }}>DURUM</Col>
+                              <Col sm="1" style={{ textAlign: "center" }}>SİL</Col>
                             </Row>
                           </Card>
                         </div>
@@ -396,7 +396,7 @@ const Test = (props) => {
                                           </>
                                         ) : (
                                           <Row>
-                                            <Col>
+                                            <Col sm="4">
                                               {" "}
                                               {/* Input */}
                                               <Input
@@ -422,11 +422,11 @@ const Test = (props) => {
                                               />
                                             </Col>
 
-                                            <Col style={{ color: "white" }}>
-                                              <div className="d-flex">
+                                            <Col sm="5" style={{ color: "white" }}>
+                                              <div >
                                                 {item?.userList?.map(
                                                   (user, keys) => (
-                                                    <div key={keys}>
+                                                    <span style={{ display: "inline-block" }} key={keys}>
                                                       {" "}
                                                       <UserMinus
                                                         onClick={() =>
@@ -441,7 +441,7 @@ const Test = (props) => {
                                                         }
                                                         style={{
                                                           cursor: "pointer",
-                                                          marginLeft: 10,
+                                                          marginLeft: 10
                                                         }}
                                                         size={16}
                                                       ></UserMinus>{" "}
@@ -454,7 +454,7 @@ const Test = (props) => {
                                                         {user.name}{" "}
                                                         {user.surName}{" "}
                                                       </Badge>
-                                                    </div>
+                                                    </span>
                                                   )
                                                 )}
                                                 <UserPlus
@@ -472,8 +472,8 @@ const Test = (props) => {
                                                 ></UserPlus>
                                               </div>
                                             </Col>
-
-                                            <Col style={{ textAlign: "right" }}>
+                                  
+                                            <Col sm="2" style={{ textAlign: "right" }}>
                                               <Col>
                                                 {" "}
                                                 {/* Aktif Pasif */}{" "}
@@ -505,7 +505,7 @@ const Test = (props) => {
                                                 </Badge>
                                               </Col>
                                             </Col>
-                                            <Col key={index}>
+                                            <Col sm="1" key={index}>
                                               {" "}
                                               {/* Silme Butonu */}
                                               <Trash
