@@ -38,6 +38,7 @@ import Test from "./Test";
 import RouteInformationNew from "./RouteInformationNew";
 import toastData from "../../../@core/components/toastData";
 import Verification from "../KitVerification/Verification";
+import { useTranslation } from "react-i18next";
 const ProductionDetail = (props) => {
   const [id, setId] = useState(props.match.params.id);
   const [bomData, setBomData] = useState([]);
@@ -52,7 +53,7 @@ const ProductionDetail = (props) => {
   const [panelCardCount, setpanelCardCount] = useState(0);
   const [navItemData, setNavItemData] = useState([]);
   const [workProcessTemplate, setWorkProcessTemplate] = useState([])
-
+  const { t } = useTranslation();
   const toggle = (tab) => {
     setActive(tab);
   };
@@ -62,7 +63,7 @@ const ProductionDetail = (props) => {
     loadInfoData();
     loadNavItem();
   }, []);
-  let x={"params":{"id":id}};
+  let x = { "params": { "id": id } };
 
 
   const loadNavItem = () => {
@@ -184,7 +185,7 @@ const ProductionDetail = (props) => {
                         toggle("1");
                       }}
                     >
-                      Üretim Bilgisi
+                      {t("uretimBilgisi")}
                     </NavLink>
                   </NavItem>
 
@@ -195,7 +196,7 @@ const ProductionDetail = (props) => {
                         toggle("4");
                       }}
                     >
-                      Rota Bilgisi
+                      {t('Rota Bilgisi')}
                     </NavLink>
                   </NavItem>
 
@@ -206,13 +207,13 @@ const ProductionDetail = (props) => {
                         toggle("3");
                       }}
                     >
-                      Bom Kit Bilgisi
+                      {t('Bom Kit Bilgisi')}
                     </NavLink>
                   </NavItem>
                   {navItemData.map(nav => <NavItem>
                     <NavLink active={active === nav.id}
                       key={nav.id}
-                      onClick={() => {toggle(nav.id) }}
+                      onClick={() => { toggle(nav.id) }}
                     >
                       {nav.name}
                     </NavLink>
@@ -230,7 +231,7 @@ const ProductionDetail = (props) => {
                           <dl>
                             <Row >
                               <Col sm="6" className="text-end text-uppercase">
-                                <dt>Üretim Emri</dt>
+                                <dt>{t('Üretim Emri').toLocaleUpperCase()}</dt>
                               </Col>
                               <Col sm="6">
                                 <dd>{productionData?.orderNo}</dd>
@@ -240,7 +241,7 @@ const ProductionDetail = (props) => {
                           <dl>
                             <Row>
                               <Col sm="6" className="text-end text-uppercase">
-                                <dt>Üretim Adı</dt>
+                                <dt>{t('Üretim Adı').toLocaleUpperCase()}</dt>
                               </Col>
                               <Col sm="6">
                                 <dd>{productionData?.uretimAdi}</dd>
@@ -250,7 +251,7 @@ const ProductionDetail = (props) => {
                           <dl>
                             <Row>
                               <Col sm="6" className="text-end text-uppercase">
-                                <dt>Açıklama</dt>
+                                <dt>{t('Açıklama').toLocaleUpperCase()}</dt>
                               </Col>
                               <Col sm="6">
                                 <dd>{productionData?.aciklama}</dd>
@@ -260,7 +261,7 @@ const ProductionDetail = (props) => {
                           <dl>
                             <Row>
                               <Col sm="6" className="text-end text-uppercase">
-                                <dt>Üretim Adedi</dt>
+                                <dt>{t('Üretim Adedi').toLocaleUpperCase()}</dt>
                               </Col>
                               <Col sm="6">
                                 <dd>{productionData?.quantity}</dd>
@@ -270,7 +271,7 @@ const ProductionDetail = (props) => {
                           <dl>
                             <Row>
                               <Col sm="6" className="text-end text-uppercase">
-                                <dt>Açılış Tarihi</dt>
+                                <dt>{t('Açılış Tarihi').toLocaleUpperCase()}</dt>
                               </Col>
                               <Col sm="6">
                                 <dd>
@@ -286,7 +287,7 @@ const ProductionDetail = (props) => {
                           <dl>
                             <Row>
                               <Col sm="6" className="text-end text-uppercase">
-                                <dt>Ürün Geçiş SÜRESİ</dt>
+                                <dt>{t('Ürün Geçiş Süresi').toLocaleUpperCase()}</dt>
                               </Col>
                               <Col sm="2">
                                 <Input
@@ -306,7 +307,7 @@ const ProductionDetail = (props) => {
                           <dl>
                             <Row>
                               <Col sm="6" className="text-end text-uppercase">
-                                <dt>Panel Kart Adeti</dt>
+                                <dt>{t('Panel Kart Adeti').toLocaleUpperCase()}</dt>
                               </Col>
                               <Col sm="2">
                                 <Input
@@ -330,7 +331,7 @@ const ProductionDetail = (props) => {
                                   size="sm"
                                   onClick={() => estimatedTimeController()}
                                 >
-                                  <Save size={12} /> Kaydet
+                                  <Save size={12} /> {t('kaydet')}
                                 </Button>
                               </Col>
                             </Row>
@@ -363,8 +364,8 @@ const ProductionDetail = (props) => {
                     <Test productionId={id} />
                   </TabPane>
                   {navItemData.map(nav => (
-                      <TabPane tabId={nav.id} key={nav.id}>
-                      {<DynamicComponent key={nav.id} component={nav.whichPage} id={id} match={x}/> }
+                    <TabPane tabId={nav.id} key={nav.id}>
+                      {<DynamicComponent key={nav.id} component={nav.whichPage} id={id} match={x} />}
                     </TabPane>
                   ))}
 

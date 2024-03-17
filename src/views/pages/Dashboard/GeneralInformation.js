@@ -21,12 +21,12 @@ import {
   UncontrolledDropdown,
 
 } from 'reactstrap'
-
+import { useTranslation } from 'react-i18next'
 
 // ** Styles
 import '@styles/react/libs/charts/apex-charts.scss'
 const GeneralInformation = props => {
-
+  const { t } = useTranslation();
   const  value = props.data.length==0?0 :
   props.data.vardiyaHedefi==null ?   Math.round((props.data.uretilenKart / 1 )
   )
@@ -81,7 +81,7 @@ const GeneralInformation = props => {
     stroke: {
       dashArray: 8
     },
-    labels: ['Toplam Vardiya Üretim']
+    labels: [t("toplamVardiyaUretim")]
   },
     series = [value]
 
