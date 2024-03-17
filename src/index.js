@@ -35,6 +35,9 @@ import './assets/scss/style.scss'
 // ** Service Worker
 import * as serviceWorker from './serviceWorker'
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
+
+// **Localization Service
+import './i18n';
 // ** Lazy load app
 const LazyApp = lazy(() => import('./App'))
 const themes = {
@@ -43,13 +46,13 @@ const themes = {
 };
 ReactDOM.render(
   <Provider store={store}>
-       <ThemeSwitcherProvider themeMap={themes} defaultTheme="dark">
-    <Suspense fallback={<Spinner />}>
-      <ThemeContext>
-        <LazyApp />
-        <ToastContainer newestOnTop />
-      </ThemeContext>
-    </Suspense>
+    <ThemeSwitcherProvider themeMap={themes} defaultTheme="dark">
+        <Suspense fallback={<Spinner />}>
+          <ThemeContext>
+            <LazyApp />
+            <ToastContainer newestOnTop />
+          </ThemeContext>
+        </Suspense>
     </ThemeSwitcherProvider>
   </Provider>,
   document.getElementById('root')

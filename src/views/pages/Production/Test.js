@@ -34,7 +34,7 @@ import axios from "axios";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import UserModal from "./UserModal";
 import toastData from "../../../@core/components/toastData";
-
+import { Translation, useTranslation } from "react-i18next";
 const grid = 8;
 
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -74,13 +74,13 @@ const Test = (props) => {
     "light-error",
     "info",
   ]);
-
+  const { t } = useTranslation();
   const loadData = () => {
     axios
       .get(
         process.env.REACT_APP_API_ENDPOINT +
-          "api/WorkProcessTemplate/GetAllListProductionId?productionId=" +
-          props.productionId
+        "api/WorkProcessTemplate/GetAllListProductionId?productionId=" +
+        props.productionId
       )
       .then((response) => {
         setData(response.data.data);
@@ -95,7 +95,7 @@ const Test = (props) => {
     axios
       .post(
         process.env.REACT_APP_API_ENDPOINT +
-          "api/WorkProcessRoute/AddorUpdateAll",
+        "api/WorkProcessRoute/AddorUpdateAll",
         postData
       )
       .then((res) => {
@@ -221,7 +221,7 @@ const Test = (props) => {
           <DragDropContext onDragEnd={onDragEnd}>
             <div style={{ display: "flex", height: "76vh" }}>
               <Button outline color="primary">
-                <h3 style={{ textAlign: "left" }}> Şablon</h3>
+                <h3 style={{ textAlign: "left" }}> {t("sablon")}</h3>
                 <PerfectScrollbar
                   options={{ wheelPropagation: false, suppressScrollX: true }}
                   className="ScrollHeightDynamic"
@@ -306,10 +306,10 @@ const Test = (props) => {
                         <div>
                           <Card>
                             <Row style={{ margin: 10, color: "white" }}>
-                              <Col sm="4" style={{ textAlign: "left" }}>AŞAMA</Col>
-                              <Col sm="5" style={{ textAlign: "center" }}>KULLANICI</Col>
-                              <Col sm="2" style={{ textAlign: "right" }}>DURUM</Col>
-                              <Col sm="1" style={{ textAlign: "center" }}>SİL</Col>
+                              <Col sm="4" style={{ textAlign: "left" }}>{(t('asama').toUpperCase())}</Col>
+                              <Col sm="5" style={{ textAlign: "center" }}>{t('kullanici').toUpperCase()}</Col>
+                              <Col sm="2" style={{ textAlign: "right" }}>{t('durum').toUpperCase()}</Col>
+                              <Col sm="1" style={{ textAlign: "center" }}>{t('sil').toUpperCase()}</Col>
                             </Row>
                           </Card>
                         </div>
@@ -407,7 +407,7 @@ const Test = (props) => {
                                                     (item) =>
                                                       item.id ===
                                                       provided.draggableProps[
-                                                        "data-rfd-draggable-id"
+                                                      "data-rfd-draggable-id"
                                                       ]
                                                   ).name || ""
                                                 }
@@ -415,7 +415,7 @@ const Test = (props) => {
                                                   handleProcessName(
                                                     e.target.value,
                                                     provided.draggableProps[
-                                                      "data-rfd-draggable-id"
+                                                    "data-rfd-draggable-id"
                                                     ]
                                                   )
                                                 }
@@ -435,7 +435,7 @@ const Test = (props) => {
                                                             {
                                                               id: user.workProcessRouteId,
                                                               explanation:
-                                                              item.explanation,
+                                                                item.explanation,
                                                             }
                                                           )
                                                         }
@@ -472,7 +472,7 @@ const Test = (props) => {
                                                 ></UserPlus>
                                               </div>
                                             </Col>
-                                  
+
                                             <Col sm="2" style={{ textAlign: "right" }}>
                                               <Col>
                                                 {" "}
@@ -544,7 +544,7 @@ const Test = (props) => {
             className="btn btn-success"
             onClick={() => checkData()}
           >
-            Kaydet
+            {t("kaydet")}
           </Button>
         </Row>
       </Col>

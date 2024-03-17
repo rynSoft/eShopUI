@@ -6,7 +6,7 @@ import UserDropdown from "./UserDropdown";
 import NotificationDropdown from "./NotificationDropdown";
 // ** Third Party Components
 import { Sun, Moon } from "react-feather";
-
+import IntlDropdown from "../../../components/navbar/IntlDropdown";
 // ** Reactstrap Imports
 import { NavItem, NavLink } from "reactstrap";
 import { useThemeSwitcher } from "react-css-theme-switcher";
@@ -54,6 +54,8 @@ const NavbarUser = (props) => {
         </NavItem>
       </div>
       <ul className="nav navbar-nav align-items-center ms-auto">
+            <IntlDropdown />
+        
         <NotificationDropdown />
         <UserDropdown />
       </ul>

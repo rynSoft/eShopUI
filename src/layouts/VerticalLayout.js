@@ -21,9 +21,10 @@ import {
   Sunrise,
   Codesandbox, Inbox, Clipboard, Square, Settings, Cpu, GitCommit, Coffee, Clock, Airplay, Flag, Crop, Check, Monitor, Tag, Loader, Shuffle, LifeBuoy, Pocket, Compass, BarChart, Camera
 } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 
 const VerticalLayout = props => {
-
+  const { t } = useTranslation();
   const [menuData, setMenuData] = useState([])
   useEffect(()=>{
     let userData = JSON.parse(localStorage.getItem('userData'));
@@ -36,7 +37,7 @@ const VerticalLayout = props => {
         permission == "Dashboard" ? menuList.push({
       
           id: 'home',
-          title: 'Dashboard',
+          title: t('dashboard'),
           icon: <Home size={20} />,
           navLink: '/dashboard'
         }) : null;   //Dashboard
@@ -47,7 +48,7 @@ const VerticalLayout = props => {
         permission == "Oee Gösterim" ? menuList.push({
       
           id: 'oee',
-          title: 'Oee Gösterim',
+          title: t('oeeGosterim'),
           icon: <BarChart size={20} />,
           navLink: '/oee'
         }) : null;   //Oee
@@ -58,7 +59,7 @@ const VerticalLayout = props => {
      permission == "Üretim Planlama"  || permission=="Üretim Planlama Görüntüle" ? menuList.push({
 
           id: 'productionPlan'+index,
-          title: 'Üretim Planlama',
+          title: t('uretimPlanlama'),
           icon: <Codesandbox size={20} />,
           navLink: '/production'
         }) : null;   //UretimPlanlama
@@ -70,7 +71,7 @@ const VerticalLayout = props => {
     
       permission == "Kit Hazırlama" ? menuList.push({
         id: 'kitProvisionList',
-        title: 'Kit Hazırlama',
+        title: t('kitHazirlama'),
         icon: <Inbox size={20} />,
         navLink: '/kitProvisionList'
       }) : null;   //Kit Hazırlama
@@ -81,7 +82,7 @@ const VerticalLayout = props => {
     
         permission == "Kit Doğrulama" ? menuList.push({
           id: 'kitVerificationList',
-          title: 'Kit Doğrulama',
+          title: t('kitDogrulama'),
           icon: <Clipboard sie={20} />,
           navLink: '/kitVerificationList'
         }) : null;   //Kit Dogrulama
@@ -91,7 +92,7 @@ const VerticalLayout = props => {
       permissionList.map(permission => {
         permission == "Setup Verification" ? menuList.push({
           id: 'setupVerificationList',
-          title: 'Setup Doğrulama',
+          title: t('setupDogrulama'),
           icon: <Lock size={20} />,
           navLink: '/setupVerificationList'
         }) : null;   //Setup Doğrulama
@@ -102,7 +103,7 @@ const VerticalLayout = props => {
       permissionList.map(permission => {
         permission == "Üretim Bandı" ? uretimList.push({
           id: 'productionProcess',
-              title: 'Üretim Bandı',
+              title: t('uretimBandi'),
               icon: <Loader size={12} />,
               navLink: '/productionProcessList'
         }) : null;   //Üretim Bandı
@@ -112,7 +113,7 @@ const VerticalLayout = props => {
         permission == "Etiketleme" ? uretimList.push({
         
             id: 'labeling',
-            title: 'Etiketleme',
+            title: t('etiketleme'),
             icon: <Tag size={12} />,
             navLink: '/labeling'
           
@@ -122,7 +123,7 @@ const VerticalLayout = props => {
       permissionList.map(permission => {
         permission == "Display Montajı" ? uretimList.push({
           id: 'displayAssembly',
-          title: 'Display Montajı',
+          title: t('displayMontaji'),
           icon: <Monitor size={12} />,
           navLink: '/displayAssembly'
         }) : null;   //Display Montajı
@@ -131,7 +132,7 @@ const VerticalLayout = props => {
       permissionList.map(permission => {
         permission == "Programlama" ? uretimList.push({
           id: 'programming',
-          title: 'Programlama',
+          title: t('programlama'),
           icon: <LifeBuoy size={12} />,
           navLink: '/programming'
         }) : null;   //Programlama
@@ -140,7 +141,7 @@ const VerticalLayout = props => {
       permissionList.map(permission => {
         permission == "Panelden Ayırma" ? uretimList.push({
           id: 'detachFromPanel',
-          title: 'Panelden Ayırma',
+          title: t('paneldenAyirma'),
           icon: <Shuffle size={12} />,
           navLink: '/detachFromPanel'
         }) : null;   //Panelden Ayırma
@@ -149,7 +150,7 @@ const VerticalLayout = props => {
       permissionList.map(permission => {
         permission == "Test" ? uretimList.push({
           id: 'productionTest',
-          title: 'Test',
+          title: t('test'),
           icon: <Pocket size={12} />,
           navLink: '/productionTest'
         }) : null;   //Test
@@ -158,7 +159,7 @@ const VerticalLayout = props => {
       
         uretimList.length>0 ? menuList.push({
           id: 'productionPr',
-          title: 'Üretim',
+          title: t('uretim'),
           icon: <Activity size={20} />,
           children: uretimList
         }) : null;   //Ayarlar Tanımlar
@@ -170,7 +171,7 @@ const VerticalLayout = props => {
       permissionList.map(permission => {
         permission == "Kalite Süreçler" ? qualityMenuList.push({
           id: 'surec',
-          title: 'Süreçler',
+          title: t('surecler'),
           icon: <Airplay size={12} />,
           navLink: '/qualityList'
         }) : null;   //Test
@@ -179,7 +180,7 @@ const VerticalLayout = props => {
       permissionList.map(permission => {
         permission == "Kalite Onaylar" ? qualityMenuList.push({
           id: 'Onaylar',
-          title: 'Onaylar',
+          title: t('onaylar'),
           icon: <Clock size={12} />,
           navLink: '/qualityConfirmation'
         }) : null;   //Test
@@ -188,7 +189,7 @@ const VerticalLayout = props => {
       permissionList.map(permission => {
         permission == "Kalite Operasyonlar" ? qualityMenuList.push({
           id: 'Operasyon',
-          title: 'Operasyonlar',
+          title: t('Operasyonlar'),
           icon: <Flag size={12} />,
           navLink: '/qualityOperation'
         }) : null;   //Kalite Operasyon
@@ -197,7 +198,7 @@ const VerticalLayout = props => {
       permissionList.map(permission => {
         permission == "Tamamlanan Kalite Operasyonları" ? qualityMenuList.push({
           id: 'YetkiOperasyonları',
-          title: 'Tamamlanan Operasyonlar',
+          title: t('tamamlananOperasyonlar'),
           icon: <Check size={12} />,
           navLink: '/qualityCompleted'
         }) : null;   // Tamamlanan Kalite Operasyonları
@@ -205,7 +206,7 @@ const VerticalLayout = props => {
    
       qualityMenuList.length>0 ? menuList.push({
           id: 'Quality',
-          title: 'Kalite',
+          title: t('kalite'),
           icon: <Layers size={20} />,
           children: qualityMenuList
         }) : null;   //Kalite 
@@ -217,7 +218,7 @@ const VerticalLayout = props => {
         permissionList.map(permission => {
           permission == "Kullanıcı Görüntüle" ? ayarlarMenuList.push({
             id: 'users',
-            title: 'Kullanıcılar',
+            title: t('kullanicilar'),
             icon: <User size={12} />,
             navLink: '/users'
           }) : null;   // Tamamlanan Kalite Operasyonları
@@ -225,7 +226,7 @@ const VerticalLayout = props => {
         permissionList.map(permission => {
           permission == "Rol Görüntüle" ? ayarlarMenuList.push({
             id: 'rolOperation',
-            title: 'Roller',
+            title: t('roller'),
             icon: <Lock size={12} />,
             navLink: '/rolOperations'
           }) : null;   // Tamamlanan Kalite Operasyonları
@@ -233,7 +234,7 @@ const VerticalLayout = props => {
         permissionList.map(permission => {
           permission == "Mola Tanımları" ? ayarlarMenuList.push({
             id: 'breakOperation',
-            title: 'Mola',
+            title: t('mola'),
             icon: <Coffee size={12} />,
             navLink: '/breakOperations'
           }) : null;   // Mola Tanımları
@@ -241,7 +242,7 @@ const VerticalLayout = props => {
         permissionList.map(permission => {
           permission == "Depo Tanımları" ? ayarlarMenuList.push({
             id: 'wareHouse',
-            title: 'Depo Tanımları',
+            title: t('depoTanimlari'),
             icon: <Inbox size={12} />,
             navLink: '/wareHouses'
           }) : null;   // Depo Tanımları
@@ -249,7 +250,7 @@ const VerticalLayout = props => {
         permissionList.map(permission => {
           permission == "Hat Tanımları" ? ayarlarMenuList.push({
             id: 'LineDefinition',
-            title: 'Hat Tanımları',
+            title: t('hatTanimlari'),
             icon: <GitCommit size={12} />,
             navLink: '/line'
           }) : null;   // Tamamlanan Kalite Operasyonları
@@ -257,15 +258,15 @@ const VerticalLayout = props => {
         permissionList.map(permission => {
           permission == "Makine Tanımları" ? ayarlarMenuList.push({
             id: 'MachineDefinition',
-            title: 'Makine Tanımları',
+            title: t('makineTanimlari'),
             icon: <Cpu size={12} />,
             navLink: '/machine'
           }) : null;   // Tamamlanan Kalite Operasyonları
         });
         permissionList.map(permission => {
-          permission == "Vardiya Tanımları" ? ayarlarMenuList.push({
+          permission == "vardiyaTanimlari" ? ayarlarMenuList.push({
             id: 'shiftDefinition',
-            title: 'Vardiya Tanımları',
+            title: t('vardiyaTanimlari'),
             icon: <Compass size={12} />,
             navLink: '/shift'
           }) : null;   // Tamamlanan Kalite Operasyonları
@@ -273,7 +274,7 @@ const VerticalLayout = props => {
         permissionList.map(permission => {
           permission == "Vardiya Tanımları" ? ayarlarMenuList.push({
             id: 'cameraDefinition',
-            title: 'Kamera Tanımları',
+            title: t('kameraTanimlari'),
             icon: <Camera size={12} />,
             navLink: '/camera'
           }) : null;   // Tamamlanan Kalite Operasyonları
@@ -282,7 +283,7 @@ const VerticalLayout = props => {
         permissionList.map(permission => {
           permission == "Vardiya - Hat Hedef Miktar Tanımları" ? ayarlarMenuList.push({
             id: 'shiftDefinitionProcess',
-            title: 'Vardiya - Hat Hedef Miktar Tanımları',
+            title: t('vardiyaHatHedefMiktarTanimlari'),
             icon: <Compass size={12} />,
             navLink: '/shiftDefinitionProcess'
           }) : null;   // Tamamlanan Kalite Operasyonları
@@ -290,7 +291,7 @@ const VerticalLayout = props => {
 
         ayarlarMenuList.length>0 ? menuList.push({
           id: 'breakOperations',
-          title: 'Tanımlar',
+          title: t('tanimlar'),
           icon: <Settings size={20} />,
           children: ayarlarMenuList
         }) : null;   //Ayarlar Tanımlar
@@ -299,7 +300,7 @@ const VerticalLayout = props => {
 
     }
       setMenuData(menuList);
-  },[])
+  },[t])
 
   return (
     <Layout menuData={menuData} {...props}>
