@@ -7,6 +7,8 @@ import {
   Table,
   Row,
   Col,
+  Badge,
+  Spinner,
   Input,
   Label,
   CardFooter,
@@ -22,18 +24,9 @@ import {
   ButtonGroup,
 } from "reactstrap";
 import DataTable from "react-data-table-component";
-import { selectThemeColors } from "@utils";
-import Select from "react-select";
 import CustomPagination from "../../../@core/components/gridTable/CustomPagination";
 import {
-  User,
-  Briefcase,
-  Mail,
-  Calendar,
-  DollarSign,
-  X,
-  Check,
-  XOctagon,
+
   ChevronDown,
   PlusSquare,
   FileText,
@@ -42,40 +35,31 @@ import {
 } from "react-feather";
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
-import moment from "moment";
-import { dateFormat, serverDateFormat } from "../../../utility/Constants";
-import ReactPaginate from "react-paginate";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Link, useHistory } from "react-router-dom";
 import toastData from "../../../@core/components/toastData";
 
 const  CameraList = () => {
-  const [data, setData] = useState([]);
+const [data, setData] = useState([]);
 
-  const [lineData, setLineData] = useState([
-    { id: 0, name: "KAmera Bulunamadı" },
-  ]);
-
-  const [lineDetail, setLineDetail] = useState({ value: 0, label: 'Kamera Bulunamadı' })
   const [buttonName, setButtonName] = useState("Ekle");
-  const [ledCounter, setLedCounter] = useState(undefined);
-  const [machineId, setMachineId] = useState();
+  const [cameraId, setCameraId] = useState();
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
-  const [barcodeReaderId, setBarcodeReader] = useState("");
+  const [ipAdress, setipAdress] = useState("");
+  const [port, setPort] = useState("");
+  const [disabledButton, setDisabledButton] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [searchValue, setSearchValue] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [selectionModal, setSelectionModal] = useState(false);
   const addParameters = {
-    id: machineId != undefined ? machineId : undefined,
-    lineId: lineDetail.value,
-    lineAd: lineDetail.label,
+    id: cameraId != undefined ? cameraId : undefined,
     code: code,
     name: name,
-    barcodeReaderId: barcodeReaderId,
-    ledNumber: ledCounter
+    ipAdress: ipAdress,
+    port: port,
   };
 
 
@@ -115,10 +99,32 @@ const  CameraList = () => {
         .catch((err) => toastData("Kamera Güncellenemedi !", false));
     }
   };
+
+  const cameraUpdate = (newState, rowId, names,numbers) => {
+    setDisabledButton(true);
+    axios
+      .post(
+        process.env.REACT_APP_API_ENDPOINT +
+        "api/Camera/Update", { id: rowId, active: newState, name : names,number : numbers   }
+
+      )
+      .then((res) => {
+        if (res.data.success) {
+          loadData();
+          toastData("Camera Güncellendi", true);
+        }
+        else {
+          toastData("Camera Güncellenemedi", false);
+        }
+        setDisabledButton(false);
+      });
+
+  };
+
   const deleteData = () => {
 
     axios
-      .delete(process.env.REACT_APP_API_ENDPOINT + "api/Camera/Delete?Id=" + machineId)
+      .delete(process.env.REACT_APP_API_ENDPOINT + "api/Camera/Delete?Id=" + cameraId)
       .then((res) => {
         if (res.data.success) {
           setSelectionModal(false);
@@ -134,16 +140,106 @@ const  CameraList = () => {
     {
       name: "Kamera Adı",
       sortable: true,
- 
-      selector: (row) => lineData.filter(xr => xr.id === row.lineId)[0]?.name,
+      selector: (row) => row.name,
+      //selector: (row) => lineData.filter(xr => xr.id === row.lineId)[0]?.name,
     },
     {
       name: "IP",
       sortable: true,
       selector: (row) => row.code,
     },
+    {
+      name: "ip Adress",
+      sortable: true,
+      selector: (row) => row.ipAdress,
+    },
+    {
+      name: "Port Numarası",
+      sortable: true,
+      selector: (row) => row.port,
+    },
+    {
+      name: "Aktif/Pasif",
+      maxWidth: "50px",
+      selector: (row) => row.active,
+      cell: (row) => {
+        return (
+          disabledButton ? <Badge color={row.active ? "light-info" : "light-info"} style={{ cursor: "pointer" }}><Spinner size="sm" /></Badge>
+            : <Badge color={row.active ? "light-success" : "light-danger"} style={{ cursor: "pointer" }} onClick={() => cameraUpdate(!row.active, row.id,row.name,row.code,row.ipAdress,row.port)}>{row.active ? "Aktif" : "Pasif"}</Badge>
 
+        );
+      },
+    },
+    {
+      name: <Fragment>İSLEM <Button.Ripple style={{ marginLeft: 10 }}
+        outline
+        id="pdfPrint"
+        className="btn-icon rounded-circle pull-right"
+        color="danger"
 
+        onClick={() => {
+          ExportPdf(data, "HatTanimListesi", "HAT TANIM LİSTESİ");
+        }}
+      >
+        <Printer size={17} />
+      </Button.Ripple>  <Button.Ripple
+        outline
+        id="excelPrint"
+        className="btn-icon rounded-circle pull-right"
+        color="success"
+        style={{ marginLeft: 5 }}
+        onClick={() => {
+          ExportExcel(searchValue.length ? filteredData : data, "HatTanimListesi", "HAT TANIM LİSTESİ");
+        }}
+      >
+          <Printer size={17} />
+        </Button.Ripple></Fragment>,
+      allowOverflow: true,
+      maxWidth: "200px",
+      cell: (row) => {
+        return (
+          <div className="column-action d-flex align-items-center">
+            <FileText
+              size={17}
+              id={`pw-tooltipUpdate-${row.id}`}
+              className="cursor-pointer"
+              onClick={() => {
+                  setCameraId(row.id),
+                  setButtonName("Güncelle"),
+                  setSelectionModal(true),
+                  setName(row.name);
+              }}
+            />
+
+            <UncontrolledTooltip
+              placement="top"
+              target={`pw-tooltipUpdate-${row.id}`}
+            >
+              Güncelle
+            </UncontrolledTooltip>
+
+            <Trash
+              size={17}
+              id={`pw-tooltips-${row.id}`}
+              className="mx-1 cursor-pointer"
+              onClick={() => {
+                 setCameraId(row.id),
+                  setButtonName("Sil"),
+                  setSelectionModal(true),
+                  setName(row.name);
+              }}
+            />
+
+            <UncontrolledTooltip
+              placement="top"
+              target={`pw-tooltips-${row.id}`}
+            >
+              Sil
+            </UncontrolledTooltip>
+          </div>
+        );
+      },
+    }
   ];
 
 
@@ -156,25 +252,17 @@ const  CameraList = () => {
     if (value.length) {
       updatedData = data.filter((item) => {
         const startsWith =
-          item.ledNumber
-            ?.toString()
-            .toLowerCase?.()
-            .startsWith(value.toLowerCase()) ||
-          item.name?.toLowerCase?.().startsWith(value.toLowerCase()) ||
-          item.code?.toLowerCase?.().startsWith(value.toLowerCase()) ||
-          item.barcodeReaderId?.toLowerCase?.().startsWith(value.toLowerCase()) ||
-          lineData.filter(xr => xr.id === item.lineId)[0]?.name.toLowerCase?.().startsWith(value.toLowerCase())
+        item.name?.toLowerCase?.().startsWith(value.toLowerCase()) ||
+        item.code?.toLowerCase?.().startsWith(value.toLowerCase()) ||
+        item.ipAdress?.toLowerCase?.().startsWith(value.toLowerCase()) ||
+        item.port?.toLowerCase?.().startsWith(value.toLowerCase()) 
 
 
         const includes =
-          item.ledNumber
-            ?.toString()
-            .toLowerCase?.()
-            .startsWith(value.toLowerCase()) ||
           item.name?.toLowerCase?.().startsWith(value.toLowerCase()) ||
           item.code?.toLowerCase?.().startsWith(value.toLowerCase()) ||
-          item.barcodeReaderId?.toLowerCase?.().startsWith(value.toLowerCase()) ||
-          lineData.filter(xr => xr.id === item.lineId)[0]?.name.toLowerCase?.().startsWith(value.toLowerCase())
+          item.ipAdress?.toLowerCase?.().startsWith(value.toLowerCase()) ||
+          item.port?.toLowerCase?.().startsWith(value.toLowerCase()) 
 
         if (startsWith) {
           return startsWith;
@@ -189,16 +277,6 @@ const  CameraList = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
-
-  useEffect(() => {
-
-    axios.get(process.env.REACT_APP_API_ENDPOINT + 'api/Line/GetAll').then(response => {
-      if (response.data.data.length > 0) {
-        setLineData(response.data.data)
-        setLineDetail({ value: response.data.data[0].id, label: response.data.data[0].name })
-      }
-    })
   }, []);
 
   const loadData = () => {
@@ -260,11 +338,11 @@ const  CameraList = () => {
               onClick={() => {
                 setSelectionModal(!selectionModal),
                   setButtonName("Ekle"),
-                  setMachineId(undefined),
+                  setCameraId(undefined),
                   setName(""),
-                  setBarcodeReader(""),
-                  setCode("");
-                setLedCounter(undefined)
+                  setCode(""),
+                  setipAdress(""),
+                  setPort("")
               }}
             >
               <PlusSquare size={20} />
@@ -293,6 +371,17 @@ const  CameraList = () => {
           ) : (
             <Fragment>
 
+              <div className="mb-1">
+                <Label className="form-label" for="code">
+                  Kod
+                </Label>
+                <Input
+                  id="code"
+                  placeholder="Kod"
+                  onChange={(event) => setCode(event.target.value)}
+                  value={code}
+                />
+              </div>
        
               <div className="mb-1">
                 <Label className="form-label" for="ad">
@@ -306,22 +395,29 @@ const  CameraList = () => {
                 />
               </div>
 
-
-
-              <div className="mb-1 ">
-                <Label className="form-label" for="led">
-                  IP Adresi
+              <div className="mb-1">
+                <Label className="form-label" for="ipAdress">
+                  ip Adres
                 </Label>
-                <InputGroup>
-                  <Input
-                    id="Led"
-                    type="number"
-                    placeholder="Ip Adresi"
-                    onChange={(event) => setLedCounter(event.target.value)}
-                    value={ledCounter}
-                  />
-                </InputGroup>
+                <Input
+                  id="ad"
+                  placeholder="Ip Adres"
+                  onChange={(event) => setipAdress(event.target.value)}
+                  value={ipAdress}
+                />
               </div>
+              <div className="mb-1">
+                <Label className="form-label" for="ipAdress">
+                  Port
+                </Label>
+                <Input
+                  id="port"
+                  placeholder="Port Numarası"
+                  onChange={(event) => setPort(event.target.value)}
+                  value={port}
+                />
+              </div>
+              
             </Fragment>
           )}
 
