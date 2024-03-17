@@ -48,17 +48,15 @@ import ReactPaginate from "react-paginate";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Link, useHistory } from "react-router-dom";
 import toastData from "../../../@core/components/toastData";
-import ExportPdf from "../../../@core/components/gridTable/ExportPdf/exportPdf";
-import ExportExcel from "../../../@core/components/gridTable/ExportExcel";
 
 const  CameraList = () => {
   const [data, setData] = useState([]);
 
   const [lineData, setLineData] = useState([
-    { id: 0, name: "Hat Yok" },
+    { id: 0, name: "KAmera Bulunamadı" },
   ]);
 
-  const [lineDetail, setLineDetail] = useState({ value: 0, label: 'Hat Yok' })
+  const [lineDetail, setLineDetail] = useState({ value: 0, label: 'Kamera Bulunamadı' })
   const [buttonName, setButtonName] = useState("Ekle");
   const [ledCounter, setLedCounter] = useState(undefined);
   const [machineId, setMachineId] = useState();
@@ -86,7 +84,7 @@ const  CameraList = () => {
     if (buttonName == "Ekle") {
       axios
         .post(
-          process.env.REACT_APP_API_ENDPOINT + "api/Machine/Add",
+          process.env.REACT_APP_API_ENDPOINT + "api/Camera/Add",
           addParameters
         )
         .then((res) => {
@@ -102,7 +100,7 @@ const  CameraList = () => {
     } else {
       axios
         .post(
-          process.env.REACT_APP_API_ENDPOINT + "api/Machine/Update",
+          process.env.REACT_APP_API_ENDPOINT + "api/Camera/Update",
           addParameters
         )
         .then((res) => {
@@ -120,7 +118,7 @@ const  CameraList = () => {
   const deleteData = () => {
 
     axios
-      .delete(process.env.REACT_APP_API_ENDPOINT + "api/Machine/Delete?Id=" + machineId)
+      .delete(process.env.REACT_APP_API_ENDPOINT + "api/Camera/Delete?Id=" + machineId)
       .then((res) => {
         if (res.data.success) {
           setSelectionModal(false);
@@ -205,7 +203,7 @@ const  CameraList = () => {
 
   const loadData = () => {
     axios
-      .get(process.env.REACT_APP_API_ENDPOINT + "api/Machine/GetAll")
+      .get(process.env.REACT_APP_API_ENDPOINT + "api/Camera/GetAll")
       .then((response) => {
         setData(response.data.data);
       });
