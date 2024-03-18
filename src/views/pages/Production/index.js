@@ -39,6 +39,267 @@ import RouteInformationNew from "./RouteInformationNew";
 import toastData from "../../../@core/components/toastData";
 import Verification from "../KitVerification/Verification";
 import { useTranslation } from "react-i18next";
+import BrowserState from "../../../@core/components/BrowserStates/BrowserStates";
+import ActiveProject from "../../../@core/components/ActiveProject";
+const statesArr = [
+  {
+    avatar: require('@src/assets/images/icons/google-chrome.png').default,
+    title: 'Google Chrome',
+    value: '54.4%',
+    chart: {
+      type: 'radialBar',
+      series: [54.4],
+      height: 30,
+      width: 30,
+      options: {
+        grid: {
+          show: false,
+          padding: {
+            left: -15,
+            right: -15,
+            top: -12,
+            bottom: -15
+          }
+        },
+        plotOptions: {
+          radialBar: {
+            hollow: {
+              size: '22%'
+            },
+            dataLabels: {
+              showOn: 'always',
+              name: {
+                show: false
+              },
+              value: {
+                show: false
+              }
+            }
+          }
+        },
+        stroke: {
+          lineCap: 'round'
+        }
+      }
+    }
+  },
+  {
+    avatar: require('@src/assets/images/icons/mozila-firefox.png').default,
+    title: 'Mozila Firefox',
+    value: '6.1%',
+    chart: {
+      type: 'radialBar',
+      series: [6.1],
+      height: 30,
+      width: 30,
+      options: {
+        grid: {
+          show: false,
+          padding: {
+            left: -15,
+            right: -15,
+            top: -12,
+            bottom: -15
+          }
+        },
+        plotOptions: {
+          radialBar: {
+            hollow: {
+              size: '22%'
+            },
+            dataLabels: {
+              showOn: 'always',
+              name: {
+                show: false
+              },
+              value: {
+                show: false
+              }
+            }
+          }
+        },
+        stroke: {
+          lineCap: 'round'
+        }
+      }
+    }
+  },
+  {
+    avatar: require('@src/assets/images/icons/apple-safari.png').default,
+    title: 'Apple Safari',
+    value: '14.6%',
+    chart: {
+      type: 'radialBar',
+      series: [14.6],
+      height: 30,
+      width: 30,
+      options: {
+        grid: {
+          show: false,
+          padding: {
+            left: -15,
+            right: -15,
+            top: -12,
+            bottom: -15
+          }
+        },
+        plotOptions: {
+          radialBar: {
+            hollow: {
+              size: '22%'
+            },
+            dataLabels: {
+              showOn: 'always',
+              name: {
+                show: false
+              },
+              value: {
+                show: false
+              }
+            }
+          }
+        },
+        stroke: {
+          lineCap: 'round'
+        }
+      }
+    }
+  },
+  {
+    avatar: require('@src/assets/images/icons/internet-explorer.png').default,
+    title: 'Internet Explorer',
+    value: '4.2%',
+    chart: {
+      type: 'radialBar',
+      series: [4.2],
+      height: 30,
+      width: 30,
+      options: {
+        grid: {
+          show: false,
+          padding: {
+            left: -15,
+            right: -15,
+            top: -12,
+            bottom: -15
+          }
+        },
+        plotOptions: {
+          radialBar: {
+            hollow: {
+              size: '22%'
+            },
+            dataLabels: {
+              showOn: 'always',
+              name: {
+                show: false
+              },
+              value: {
+                show: false
+              }
+            }
+          }
+        },
+        stroke: {
+          lineCap: 'round'
+        }
+      }
+    }
+  },
+  {
+    avatar: require('@src/assets/images/icons/opera.png').default,
+    title: 'Opera Mini',
+    value: '8.4%',
+    chart: {
+      type: 'radialBar',
+      series: [8.4],
+      height: 30,
+      width: 30,
+      options: {
+        grid: {
+          show: false,
+          padding: {
+            left: -15,
+            right: -15,
+            top: -12,
+            bottom: -15
+          }
+        },
+        plotOptions: {
+          radialBar: {
+            hollow: {
+              size: '22%'
+            },
+            dataLabels: {
+              showOn: 'always',
+              name: {
+                show: false
+              },
+              value: {
+                show: false
+              }
+            }
+          }
+        },
+        stroke: {
+          lineCap: 'round'
+        }
+      }
+    }
+  }
+]
+const projectsArr = [
+  {
+    progress: 60,
+    progressColor: 'info',
+    subtitle: 'React Project',
+    title: 'BGC eCommerce App',
+    img: require('@src/assets/images/icons/brands/react-label.png').default
+  },
+  {
+    progress: 15,
+    progressColor: 'danger',
+    subtitle: 'UI/UX Project',
+    title: 'Falcon Logo Design',
+    img: require('@src/assets/images/icons/brands/xd-label.png').default
+  },
+  {
+    progress: 90,
+    progressColor: 'success',
+    subtitle: 'Vuejs Project',
+    title: 'Dashboard Design',
+    img: require('@src/assets/images/icons/brands/vue-label.png').default
+  },
+  {
+    progress: 49,
+    progressColor: 'warning',
+    subtitle: 'iPhone Project',
+    title: 'Foodista mobile app',
+    img: require('@src/assets/images/icons/brands/sketch-label.png').default
+  },
+
+  {
+    progress: 73,
+    progressColor: 'info',
+    subtitle: 'React Project',
+    title: 'Dojo React Project',
+    img: require('@src/assets/images/icons/brands/react-label.png').default
+  },
+  {
+    progress: 81,
+    title: 'HTML Project',
+    progressColor: 'success',
+    subtitle: 'Crypto Website',
+    img: require('@src/assets/images/icons/brands/html-label.png').default
+  },
+  {
+    progress: 78,
+    progressColor: 'success',
+    subtitle: 'Vuejs Project',
+    title: 'Vue Admin template',
+    img: require('@src/assets/images/icons/brands/vue-label.png').default
+  }
+]
 const ProductionDetail = (props) => {
   const [id, setId] = useState(props.match.params.id);
   const [bomData, setBomData] = useState([]);
@@ -341,16 +602,11 @@ const ProductionDetail = (props) => {
                         </Card>
                       </Col>
 
-                      <Col sm={9} style={{ paddingTop: 5 }}>
-                        <Activities
-                          id={id}
-                          productionData={productionData}
-                          infoBlock={infoBlock}
-                          setpanelCardCount={(value) => setpanelCardCount(value)}
-                          setEstimatedTime={(value) => setEstimatedTime(value)}
-                          panelCardCount={panelCardCount}
-                          estimatedTime={estimatedTime}
-                        />
+                      <Col sm={5} style={{ paddingTop: 5 }}>
+                        <BrowserState statesArr={statesArr} />
+                      </Col>
+                      <Col sm={4} style={{ paddingTop: 5 }}>
+                        <ActiveProject projectsArr={projectsArr} />
                       </Col>
                     </Row>
                   </TabPane>

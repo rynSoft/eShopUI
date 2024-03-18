@@ -8,7 +8,6 @@ i18n
     .use(Backend)
     .use(LanguageDetector)
     .init({
-        debug: true,
         fallbackLng: "tr",
     });
 
