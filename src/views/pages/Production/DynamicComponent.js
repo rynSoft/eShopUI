@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+
 const DynamicComponent = (props) => {
   return (
     <Suspense fallback={<></>}>

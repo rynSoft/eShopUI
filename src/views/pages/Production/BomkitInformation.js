@@ -13,6 +13,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 import "./ProductionDetail.css";
 import UILoader from "../../../@core/components/ui-loader";
 import { useTranslation } from "react-i18next";
+
 const BomkitInformation = (props) => {
   const { bomData, bomInfoBlock } = props;
   const [currentPage, setCurrentPage] = useState(0);

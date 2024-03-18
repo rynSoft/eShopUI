@@ -203,7 +203,10 @@ const Routes = [
     path: '/programming',
     component: lazy(() => import('../../views/pages/ProductionStages/Programming/ProgrammingList'))
   },
-
+  {
+    path: '/product',
+    component: lazy(() => import('../../views/pages/Product/Product'))
+  },
 ]
 
 export { DefaultRoute, TemplateTitle, Routes }

@@ -1,18 +1,17 @@
 import BarcodeReader from "react-barcode-reader";
 import React, { useState, useEffect, Fragment } from "react";
 import { Table, Row, Col, ButtonGroup, Button, Nav } from "reactstrap";
+import DataTable from "react-data-table-component";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
-import { Check, CheckCircle, Printer, XOctagon } from "react-feather";
-import { useSelector, useDispatch } from "react-redux";
-import { workingActive, workingPassive } from "../../../redux/refreshData";
 import toastData from "../../../@core/components/toastData/index.js";
-
 
 function Product(props) {
   const [data, setData] = React.useState([]);
   const [finishData, setFinishData] = React.useState(false);
   const [tableState, setTableState] = React.useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [readerState, setReaderState] = React.useState(false);
   const [id, setId] = useState(props.match.params.id);
 
   const col = [
@@ -41,47 +40,51 @@ function Product(props) {
     initialData();
   }, []);
 
-  // const rowBarcodController = (e, isKitValue) => {
-  //   const newState = data.map((obj) => {
-  //     if (obj.id === e.id && obj.isKitPreperated === 0) {
-  //       return {
-  //         id: obj.id,
-  //         material: obj.material,
-  //         explanation: obj.explanation,
-  //         partyNumber: obj.partyNumber,
-  //         quantity: obj.quantity,
-  //         description: obj.description,
-  //         unit: obj.unit,
-  //         soureProductPlace: obj.soureProductPlace,
-  //         isKitPreperated: isKitValue,
-  //         isKitProvided: obj.isKitProvided,
-  //       };
-  //     }
-  //     return obj;
-  //   });
-
-  //   e.isKitPreperated = isKitValue;
-  //   toastData(e.material + " - " + e.partyNumber + " Başarıyla Okutuldu", true);
-  //   updateKitInfo(e);
-
-
-  // const buttonRowUpdate = (e) => {
-  //   if (readerState) {
-  //     setRowData(e);
-  //   }
-  //   else {
-  //     toastData("Barkod Okutmadan İş Akışını Başlatınız!", false);
-  //   }
-  // };
-
   const initialData = async () => {
-    await axios.get(process.env.REACT_APP_API_ENDPOINT +"api/Product/GetAllProductionId?id=" + id)
+    await axios
+      .get(
+        process.env.REACT_APP_API_ENDPOINT +
+          "api/Product/GetAllProductionId?id=" +
+          id
+      )
       .then((response) => {
-            setData(response.data);
+        setData(response.data.data);
       });
   };
+  const tableStateChange = () => {
+    setTableState(true);
+  };
 
-  
+  const readerStateFunction = (stateValue) => {
+    setReaderState(stateValue);
+  };
+
+  const addProduct = async (args) => {
+    debugger;
+    const addParameters = { qrcode: args, productionId: id };
+    await axios
+      .post(process.env.REACT_APP_API_ENDPOINT + "api/Product/Add",addParameters)
+      .then((res) => {
+        if (res.data.success) {
+          toastData("Ürün Kaydedildi", true);
+          // refreshFunction();
+        } else {
+          toastData("Ürün Kaydedilemedi !", false);
+        }
+      })
+      .catch((err) => toastData("Ürün Kaydedilemedi !", false));
+  };
+
+  const updateState = (e) => {
+    console.log(e);
+    if (readerState) {
+      if (!data.find((obj) => obj === e)) 
+         addProduct(e);
+      else 
+        toastData("Ürün Kodu Daha önce okutulmuş!", false);
+    }
+  };
+
   return (
     <>
       <Row>
@@ -91,7 +94,7 @@ function Product(props) {
             tableController={tableStateChange}
             cols={{ xl: "12", sm: "12", xs: "12" }}
             PproductionProcess={3}
-            screenName="Kit Doğrulama"
+            screenName="Ürün Giriş"
             readerStateFunction={readerStateFunction}
           />
         </Col>
@@ -103,19 +106,19 @@ function Product(props) {
         />
       </Row>
 
-      <Row>   
-      <div className={'react-dataTable'} >
-            <DataTable
-                selectableRowsNoSelectAll
-                columns={col}
-                data={data}
-                pagination
-                paginationPerPage={15}
-                paginationDefaultPage={currentPage + 1}
-            />
+      <Row>
+        <div className={"react-dataTable"}>
+          <DataTable
+            selectableRowsNoSelectAll
+            noDataText="Ürün Bulunamadı"
+            columns={col}
+            data={data}
+            pagination
+            paginationPerPage={30}
+            paginationDefaultPage={currentPage + 1}
+          />
         </div>
       </Row>
-
     </>
   );
 }
