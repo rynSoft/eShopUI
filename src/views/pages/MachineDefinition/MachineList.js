@@ -66,32 +66,23 @@ const MachineList = () => {
   const [buttonName, setButtonName] = useState("Ekle");
   const [ledCounter, setLedCounter] = useState(undefined);
   const [machineId, setMachineId] = useState();
+  const [inputCameraId, setInputCameraId] = useState({ value: 0, label: 'Kamera Yok' });
+  const [outputCameraId, setOutputCameraId] = useState({ value: 0, label: 'Kamera Yok' });
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [barcodeReaderId, setBarcodeReader] = useState("");
-
+  const [cameras, setCameras] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [searchValue, setSearchValue] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [selectionModal, setSelectionModal] = useState(false);
-  const addParameters = {
-    id: machineId != undefined ? machineId : undefined,
-    lineId: lineDetail.value,
-    lineAd: lineDetail.label,
-    code: code,
-    name: name,
-    barcodeReaderId: barcodeReaderId,
-    ledNumber: ledCounter
-  };
 
-
-  const saveData = () => {
-
+  const saveData = (params) => {
     if (buttonName == "Ekle") {
       axios
         .post(
           process.env.REACT_APP_API_ENDPOINT + "api/Machine/Add",
-          addParameters
+          params
         )
         .then((res) => {
           if (res.data.success) {
@@ -107,7 +98,7 @@ const MachineList = () => {
       axios
         .post(
           process.env.REACT_APP_API_ENDPOINT + "api/Machine/Update",
-          addParameters
+          params
         )
         .then((res) => {
           if (res.data.success) {
@@ -206,6 +197,8 @@ const MachineList = () => {
                   setLineDetail({ value: row.lineId, label: lineData.filter(xr => xr.id === row.lineId)[0]?.name })
                 setMachineTypeEstate(row.machineType)
                 setLedCounter(row.ledNumber)
+                setInputCameraId({ value: row.inputCameraId, label: cameras.filter(xr => xr.id === row.inputCameraId)[0]?.name })
+                setOutputCameraId({ value: row.outputCameraId, label: cameras.filter(xr => xr.id === row.outputCameraId)[0]?.name })
               }}
             />
 
@@ -240,9 +233,6 @@ const MachineList = () => {
       },
     },
   ];
-
-
-
   const handleFilter = (e) => {
     const value = e.target.value;
     let updatedData = [];
@@ -281,21 +271,25 @@ const MachineList = () => {
       setSearchValue(value);
     }
   };
-
   useEffect(() => {
     loadData();
-  }, []);
-
-  useEffect(() => {
-
     axios.get(process.env.REACT_APP_API_ENDPOINT + 'api/Line/GetAll').then(response => {
       if (response.data.data.length > 0) {
         setLineData(response.data.data)
         setLineDetail({ value: response.data.data[0].id, label: response.data.data[0].name })
       }
     })
-  }, []);
+    axios.get(process.env.REACT_APP_API_ENDPOINT + 'api/Camera/GetAll').then(
+      response => {
+        if (response.data.data.length > 0){
+          setCameras(response.data.data)
+          setInputCameraId({ value: response.data.data[0].id, label: response.data.data[0].name })
+          setOutputCameraId({ value: response.data.data[0].id, label: response.data.data[0].name })
+        }
+      }
 
+    )
+  }, []);
   const loadData = () => {
     axios
       .get(process.env.REACT_APP_API_ENDPOINT + "api/Machine/GetAll")
@@ -440,27 +434,55 @@ const MachineList = () => {
                   value={barcodeReaderId}
                 />
               </div>
-
-
               <div className="mb-1 ">
                 <Label className="form-label" for="led">
-                  Led Sayısı
+                  Giriş Kamerası
                 </Label>
-                <InputGroup>
-                  <Input
-                    id="Led"
-                    type="number"
-                    placeholder="Led Sayısı"
-                    onChange={(event) => setLedCounter(event.target.value)}
-                    value={ledCounter}
-                  />
-                </InputGroup>
+                <Select
+                  isClearable={false}
+                  className="react-select"
+                  classNamePrefix="select"
+                  placeholder="Makina seç"
+                  options={cameras.map((camera) => (
+                    { value: camera.id, label: camera.name }
+                  ))}
+                  onChange={(event) => setInputCameraId({ value: event.value, label: event.label })}
+                  value={inputCameraId}
+                />
+              </div>
+              <div className="mb-1 ">
+                <Label className="form-label" for="led">
+                  Çıkış Kamerası
+                </Label>
+                <Select
+                  isClearable={false}
+                  className="react-select"
+                  classNamePrefix="select"
+                  placeholder="Makina seç"
+                  options={cameras.map((camera) => (
+                    { value: camera.id, label: camera.name }
+                  ))}
+                  onChange={(event) => setOutputCameraId({ value: event.value, label: event.label })}
+                  value={outputCameraId}
+                />
               </div>
             </Fragment>
           )}
 
           <div className="text-center">
-            <Button className="me-1" color="primary" onClick={buttonName === "Sil" ? deleteData : saveData}>
+            <Button className="me-1" color="primary" onClick={() => {
+              buttonName === "Sil" ? deleteData() : saveData({
+                id: machineId != undefined ? machineId : undefined,
+                lineId: lineDetail.value,
+                lineAd: lineDetail.label,
+                code: code,
+                name: name,
+                barcodeReaderId: barcodeReaderId,
+                ledNumber: ledCounter,
+                inputCameraId: inputCameraId?.value,
+                outputCameraId: outputCameraId?.value,
+              })
+            }}>
               {buttonName}
             </Button>
             <Button
