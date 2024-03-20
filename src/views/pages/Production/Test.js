@@ -19,10 +19,6 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 // ** Custom Components
 import AvatarGroup from "@components/avatar-group";
 import {
-  ArrowRightCircle,
-  Copy,
-  Delete,
-  PlayCircle,
   Trash,
   UserMinus,
   UserPlus,
@@ -35,6 +31,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 import UserModal from "./UserModal";
 import toastData from "../../../@core/components/toastData";
 import { Translation, useTranslation } from "react-i18next";
+import { DynamicIcon, Icon } from "../../../@core/components/DynamicIcon/DynamicIcon";
 const grid = 8;
 
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -204,7 +201,6 @@ const Test = (props) => {
     setUserModalData(row);
     loadData();
   };
-
   return (
     <Fragment>
       {userModalState && (
@@ -220,6 +216,7 @@ const Test = (props) => {
         <Row>
           <DragDropContext onDragEnd={onDragEnd}>
             <div style={{ display: "flex", height: "76vh" }}>
+
               <Button outline color="primary">
                 <h3 style={{ textAlign: "left" }}> {t("sablon")}</h3>
                 <PerfectScrollbar
@@ -227,64 +224,76 @@ const Test = (props) => {
                   className="ScrollHeightDynamic"
                 >
                   <CardBody>
-                    <Droppable droppableId="list1" isDropDisabled={true}>
-                      {(provided, snapshot) => (
-                        <div
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          style={getListStyle(snapshot.isDraggingOver)}
-                        >
-                          {data.list1.map((item, index) => (
-                            <Draggable
-                              key={item.id}
-                              draggableId={item.id}
-                              index={index}
-                            >
-                              {(provided, snapshot) => (
-                                <div
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  ref={provided.innerRef}
-                                  style={getItemStyle(
-                                    snapshot.isDragging,
-                                    provided.draggableProps.style
-                                  )}
-                                >
-                                  <Card style={{ height: 100 }}>
-                                    <Badge
-                                      color={
-                                        item.color === null
-                                          ? "light-success"
-                                          : item.color
-                                      }
-                                    >
-                                      ----------------------------------
-                                    </Badge>
-                                    <CardBody style={{ marginTop: 10 }}>
-                                      <span> {item.content}</span>
-                                    </CardBody>
-                                    <Badge
-                                      color={
-                                        item.color === null
-                                          ? "light-success"
-                                          : item.color
-                                      }
-                                    >
-                                      ----------------------------------
-                                    </Badge>
-                                  </Card>
-                                </div>
-                              )}
-                            </Draggable>
-                          ))}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
+                    <Row>
+                      <Droppable droppableId="list1" isDropDisabled={true}>
+                        {(provided, snapshot) => (
+                          <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            style={getListStyle(snapshot.isDraggingOver)}
+                          >
+                            {data.list1.map((item, index) => (
+
+                              <Draggable
+                                key={item.id}
+                                draggableId={item.id}
+                                index={index}
+                              >
+                                {(provided, snapshot) => (
+                                  <div
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    ref={provided.innerRef}
+                                    style={getItemStyle(
+                                      snapshot.isDragging,
+                                      provided.draggableProps.style
+                                    )}
+                                  >
+                                    <Card >
+                                      <Badge
+                                        color={
+                                          item.color === null
+                                            ? "light-success"
+                                            : item.color
+                                        }
+                                      >
+                                        ----------------------------------
+                                      </Badge>
+                                      <CardBody style={{ marginTop: 10 }}>
+                                        <Row style={{ height: "100%" }}>
+                                          <Col sm={10}>
+                                            <span style={{ display: "inline-block" }}> {item.content}</span>
+                                          </Col>
+                                          <Col sm={1} style={{ position: "absolute", right: 20,top:25 }}>
+                                            {item.icon ?
+                                              <DynamicIcon name={item.icon} />
+                                              : <></>
+                                            }
+                                          </Col>
+                                        </Row>
+                                      </CardBody>
+                                      <Badge
+                                        color={
+                                          item.color === null
+                                            ? "light-success"
+                                            : item.color
+                                        }
+                                      >
+                                        ----------------------------------
+                                      </Badge>
+                                    </Card>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </Row>
                   </CardBody>
                 </PerfectScrollbar>
               </Button>
-
               <Button
                 outline
                 color="primary"
