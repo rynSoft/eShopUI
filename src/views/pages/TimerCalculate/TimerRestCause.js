@@ -20,7 +20,7 @@ const TimerCauseModal = (props) => {
     modalFunction,
     provisionId,
     userId,
-    PproductionProcess,
+    workProcessRouteId,
     shiftTargetParametersId,
   } = props;
   const modalClose = () => {
@@ -53,7 +53,7 @@ const TimerCauseModal = (props) => {
     restCauseId: restCauseValue.value,
     productionTimeStatus: 2,
     message: description,
-    productionProcess: PproductionProcess,
+    workProcessRouteId:workProcessRouteId,
     userId: userId,
     shiftTargetParametersId: shiftTargetParametersId,
   };

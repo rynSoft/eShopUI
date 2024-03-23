@@ -7,12 +7,14 @@ import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
 import toastData from "../../../@core/components/toastData/index.js";
 
 function Product(props) {
+
   const [data, setData] = React.useState([]);
   const [finishData, setFinishData] = React.useState(false);
   const [tableState, setTableState] = React.useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [readerState, setReaderState] = React.useState(false);
   const [id, setId] = useState(props.match.params.id);
+  const [routeId, setRouteId] = useState(props.match.params.routeId);
 
   const col = [
     {
@@ -44,11 +46,12 @@ function Product(props) {
     await axios
       .get(
         process.env.REACT_APP_API_ENDPOINT +
-          "api/Product/GetAllProductionId?id=" +
+          "api/Product/GetAllProductId?id=" +
           id
       )
       .then((response) => {
         setData(response.data.data);
+        console.log(data);
       });
   };
   
@@ -61,7 +64,6 @@ function Product(props) {
   };
 
   const addProduct = async (args) => {
-    debugger;
     const addParameters = { qrcode: args, productionId: id };
     await axios
       .post(process.env.REACT_APP_API_ENDPOINT + "api/Product/Add",addParameters)
@@ -94,7 +96,7 @@ function Product(props) {
             finishController={finishData}
             tableController={tableStateChange}
             cols={{ xl: "12", sm: "12", xs: "12" }}
-            PproductionProcess={3}
+            workProcessRouteId = {routeId}
             screenName="Ürün Giriş"
             readerStateFunction={readerStateFunction}
           />

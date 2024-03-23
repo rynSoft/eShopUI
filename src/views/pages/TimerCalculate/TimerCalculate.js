@@ -39,14 +39,13 @@ import toastData from "../../../@core/components/toastData";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { workingActive, workingPassive } from "../../../redux/refreshData";
-let pauseButton=false;
-
+let pauseButton = false;
 
 const TimerCalculate = ({
   finishController,
   tableController,
   cols,
-  PproductionProcess,
+  workProcessRouteId,
   screenName,
   readerStateFunction,
 }) => {
@@ -58,58 +57,62 @@ const TimerCalculate = ({
   const [elapsedDay, setElapsedDay] = useState(0);
   const [downTime, setDownTime] = useState(0);
   const [shiftTargetParametersId, setShiftTargetParametersId] = useState(null);
-  
+
   const provisionId = useParams();
 
- 
   const userData = JSON.parse(localStorage.getItem("userData"));
   const [restCauseModal, setRestCauseModal] = useState(false);
   const [stopModal, setStopModal] = useState(false);
+
   const handleTabClosing = () => {
-    if(pauseButton){      const addParameters = {
-      productionId:parseInt(provisionId.id),
-      restCauseId: 1,
-      productionTimeStatus:2,
-      message: "Otomatik Durdur",
-      productionProcess:PproductionProcess,
-      userId:userData.id,
-      shiftTargetParametersId:shiftTargetParametersId
-    };
+    if (pauseButton) {
+      const addParameters = {
+        productionId: parseInt(provisionId.id),
+        restCauseId: 1,
+        productionTimeStatus: 2,
+        message: "Otomatik Durdur",
+        productionProcess: PproductionProcess,
+        userId: userData.id,
+        workProcessRouteId:workProcessRouteId,  
+        shiftTargetParametersId: shiftTargetParametersId,
+      };
 
-    axios
-      .post(
-        process.env.REACT_APP_API_ENDPOINT +
-          "api/WorkProcessRouteTimeHistories/Pause",
-        addParameters
-      )
-      .then((res) => {
-
-      });
+      axios
+        .post(
+          process.env.REACT_APP_API_ENDPOINT +
+            "api/WorkProcessRouteTimeHistories/Pause",
+          addParameters
+        )
+        .then((res) => {});
+    }
   };
-}
-
-
 
   useEffect(() => {
-    window.addEventListener('beforeunload', handleTabClosing)
+    window.addEventListener("beforeunload", handleTabClosing);
     return () => {
-        window.removeEventListener('beforeunload', handleTabClosing) 
-    }
-})
+      window.removeEventListener("beforeunload", handleTabClosing);
+    };
+  });
 
-useEffect(()=>{
-  if(PproductionProcess==5){
-    axios.get(process.env.REACT_APP_API_ENDPOINT + "api/ShiftTargetParameters/GetToday?userId=" + userData.id).then(res => {
-      if (res.data.data) {
-        setShiftTargetParametersId(res.data.data.id);
-      }
-    })
-  }//5 üretim ise   o anki kullanıcının parametre vardiyalarını kontrol eder
-},[PproductionProcess])
+  useEffect(() => {
+    if (PproductionProcess == 5) {
+      axios
+        .get(
+          process.env.REACT_APP_API_ENDPOINT +
+            "api/ShiftTargetParameters/GetToday?userId=" +
+            userData.id
+        )
+        .then((res) => {
+          if (res.data.data) {
+            setShiftTargetParametersId(res.data.data.id);
+          }
+        });
+    } //5 üretim ise   o anki kullanıcının parametre vardiyalarını kontrol eder
+  }, [PproductionProcess]);
   const modalClose = (successController) => {
     if (successController) {
       setIsStartTimer(false);
-      pauseButton=false;
+      pauseButton = false;
       setIsPauseBtnDisabled(true);
       setIsResumeBtnDisabled(false);
       readerStateFunction(false);
@@ -122,16 +125,15 @@ useEffect(()=>{
     setRestCauseModal(true);
   };
   const resumeProcess = () => {
-
-    if(PproductionProcess==5 && shiftTargetParametersId==null){
+    if (PproductionProcess == 5 && shiftTargetParametersId == null) {
       toastData("Vardiya Parametrelerini Giriniz !", false);
       return;
     }
     const parameters = {
       productionId: provisionId.id,
-      productionProcess: PproductionProcess,
       productionTimeStatus: 3,
-      shiftTargetParametersId:shiftTargetParametersId
+      shiftTargetParametersId: shiftTargetParametersId,
+      workProcessRouteId:workProcessRouteId,  
     };
     axios
       .post(
@@ -144,7 +146,7 @@ useEffect(()=>{
           toastData("Mola Sonlandırıldı", true, "#5ab865");
           readerStateFunction(true);
           tableController();
-          pauseButton=true;
+          pauseButton = true;
           setIsPauseBtnDisabled(false);
           setIsResumeBtnDisabled(true);
           startTimer();
@@ -154,45 +156,41 @@ useEffect(()=>{
       });
   };
 
-
-
-  
   const stopProcess = () => {
     const parameters = {
       productionId: provisionId.id,
       productionProcess: PproductionProcess,
       productionTimeStatus: 4,
       message: screenName + " Süreci Tamamlandı",
-      shiftTargetParametersId:shiftTargetParametersId
+      workProcessRouteId:workProcessRouteId,  
+      shiftTargetParametersId: shiftTargetParametersId,
     };
     axios
       .post(
-        process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteTimeHistories/Stop",
+        process.env.REACT_APP_API_ENDPOINT +
+          "api/WorkProcessRouteTimeHistories/Stop",
         parameters
       )
       .then((res) => {
-    
         if (res.data.success) {
-          
           newWorkingData(workingActive());
           toastData("İşlem Sonlandırıldı", true, "#5ab865");
           setIsStopBtnDisabled(true);
           readerStateFunction(false);
           setIsStopTimer(true);
-          pauseButton=false;
+          pauseButton = false;
           setIsStartTimer(false);
         } else {
           toastData("Kullanıcı Atamaları Eksik!", false, "#5ab865");
         }
-        setStopModal(false)
+        setStopModal(false);
       });
   };
 
   const startProcess = () => {
-
-    if(PproductionProcess==5 && shiftTargetParametersId==null){
-        toastData("Vardiya Parametrelerini Giriniz !", false);
-        return;
+    if (PproductionProcess == 5 && shiftTargetParametersId == null) {
+      toastData("Vardiya Parametrelerini Giriniz !", false);
+      return;
     }
     const parameters = {
       productionId: provisionId.id,
@@ -200,11 +198,13 @@ useEffect(()=>{
       userId: userData.id,
       productionProcess: PproductionProcess,
       message: screenName + " Süreci Başlandı",
-      shiftTargetParametersId:shiftTargetParametersId
+      workProcessRouteId:workProcessRouteId,  
+      shiftTargetParametersId: shiftTargetParametersId,
     };
     axios
       .post(
-        process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteTimeHistories/Start",
+        process.env.REACT_APP_API_ENDPOINT +
+          "api/WorkProcessRouteTimeHistories/Start",
         parameters
       )
       .then((res) => {
@@ -214,7 +214,7 @@ useEffect(()=>{
           readerStateFunction(true);
           setIsStartTimer(true);
           setIsStopTimer(false);
-          pauseButton=true;
+          pauseButton = true;
           setIsPauseBtnDisabled(false);
           setStartnBtnDisabled(true);
         } else {
@@ -225,7 +225,6 @@ useEffect(()=>{
 
   const [renderedStreamDuration, setRenderedStreamDuration] =
       useState("00:00:00"),
-      
     streamDuration = useRef(0),
     previousTime = useRef(0),
     requestAnimationFrameId = useRef(null),
@@ -300,8 +299,8 @@ useEffect(()=>{
               setIsStopBtnDisabled(true);
             }
           }
-          pauseButton=false;
-          
+          pauseButton = false;
+
           var elapsetTime = response.data.elapsedTime.split(":");
           var elapsetHour = parseInt(elapsetTime[0]) * 3600;
           var elapsetMinute = parseInt(elapsetTime[1]) * 60;
@@ -310,8 +309,6 @@ useEffect(()=>{
           setRenderedStreamDuration(response.data.elapsedTime);
           setElapsedDay(response.data.elapsedDay);
           setDownTime(response.data.downTime);
-          
-
         }
       });
   }, [finishController]);
@@ -326,9 +323,8 @@ useEffect(()=>{
     //     }
     //   });
     return () => {
-      handleTabClosing()
-    }
-
+      handleTabClosing();
+    };
   }, []);
 
   useEffect(() => {
@@ -350,7 +346,7 @@ useEffect(()=>{
         setRenderedStreamDuration(response.data.elapsedTime);
       });
   }, []);
-  
+
   const dataStart = [
     {
       title: "Başla",
@@ -393,12 +389,9 @@ useEffect(()=>{
           })}
         >
           <div className="d-flex align-items-center">
-
-          
             <Avatar color={item.color} icon={item.icon} className="me-2" />
             <div className="my-auto">
               <h5 className="fw-bolder mb-0 buttonTimer">{item.title}</h5>
-           
             </div>
           </div>
         </Col>
@@ -422,7 +415,6 @@ useEffect(()=>{
             <Avatar color={item.color} icon={item.icon} className="me-2" />
             <div className="my-auto">
               <h5 className="fw-bolder mb-0 buttonTimer">{item.title}</h5>
-            
             </div>
           </div>
         </Col>
@@ -446,7 +438,6 @@ useEffect(()=>{
             <Avatar color={item.color} icon={item.icon} className="me-2" />
             <div className="my-auto">
               <h5 className="fw-bolder mb-0 buttonTimer">{item.title}</h5>
- 
             </div>
           </div>
         </Col>
@@ -470,7 +461,6 @@ useEffect(()=>{
             <Avatar color={item.color} icon={item.icon} className="me-2" />
             <div className="my-auto">
               <h5 className="fw-bolder mb-0 buttonTimer">{item.title}</h5>
-        
             </div>
           </div>
         </Col>
@@ -480,39 +470,44 @@ useEffect(()=>{
 
   return (
     <Fragment>
-           <Modal
-                className={`modal-dialog-centered modal-sm`}
-                isOpen={stopModal}
-                toggle={() => setStopModal(!stopModal)}
+      <Modal
+        className={`modal-dialog-centered modal-sm`}
+        isOpen={stopModal}
+        toggle={() => setStopModal(!stopModal)}
+      >
+        <ModalHeader className="mb-1" toggle={() => setStopModal(!stopModal)}>
+          ! Dikkat
+        </ModalHeader>
+
+        <ModalBody>
+          <div style={{ textAlign: "center" }}>
+            {screenName} Süreci Sonlandırılacak.
+          </div>
+          <div style={{ textAlign: "center" }}>
+            Süreç Bitirildiğinde Tekrar Çalışma Yapamazsınız.
+          </div>
+          <div style={{ textAlign: "center" }}>
+            {" "}
+            <span>Bitirmek İstediğinize Emin misiniz ?</span>
+          </div>
+
+          <div className="text-center">
+            <Button className="me-1" color="primary" onClick={stopProcess}>
+              Evet
+            </Button>
+            <Button
+              color="secondary"
+              onClick={() => setStopModal(false)}
+              outline
             >
-                <ModalHeader
-                    className="mb-1"
-                    toggle={() => setStopModal(!stopModal)}
-                >! Dikkat</ModalHeader>
-
-
-                <ModalBody><div style={{textAlign:"center"}}>
-                {screenName} Süreci Sonlandırılacak.
-                </div>
-                <div style={{textAlign:"center"}}>
-                Süreç Bitirildiğinde Tekrar Çalışma Yapamazsınız.
-                </div >
-<div style={{textAlign:"center"}}> <span>Bitirmek İstediğinize Emin misiniz ?</span></div>
-      
-                    <div className="text-center">
-                        <Button className="me-1" color="primary" onClick={stopProcess}>
-                            Evet
-                        </Button>
-                        <Button color="secondary" onClick={() => setStopModal(false)} outline>
-                            İptal
-                        </Button>
-                    </div>
-                </ModalBody>
-            </Modal>
+              İptal
+            </Button>
+          </div>
+        </ModalBody>
+      </Modal>
       <div className="timer-controller-wrapper">
         {restCauseModal ? (
           <TimerCauseModal
-          
             provisionId={provisionId.id}
             modalFunction={modalClose}
             PproductionProcess={PproductionProcess}
@@ -529,8 +524,7 @@ useEffect(()=>{
               style={{ width: "100%", height: 73 }}
               disabled
             >
-                <h4 className="jobNameTimer">{screenName}</h4>
- 
+              <h4 className="jobNameTimer">{screenName}</h4>
             </Button>
           </Col>
           <Col sm="2">
@@ -572,7 +566,7 @@ useEffect(()=>{
               outline
               color="primary"
               style={{ width: "100%", height: 73, color: "#00005c" }}
-              onClick={()=>setStopModal(true)}
+              onClick={() => setStopModal(true)}
               disabled={isStopBtnDisabled}
             >
               <Row>{renderDataStop()} </Row>
@@ -581,43 +575,39 @@ useEffect(()=>{
 
           {elapsedDay > 0 ? (
             <>
-          <Col sm="1">
-          <Button
-              color="primary"
-              style={{ width: "100%", height: 73, color: "#00005c" }}
-             
-              // disabled={true}
-            >
-                 <h2 className="totalTimer">{elapsedDay} Gün </h2>
-                 
-            </Button>
-          </Col>
-          <Col sm="1">
-          <Button
-              color="primary"
-              style={{ width: "100%", height: 73, color: "#00005c" }}
-             
-              // disabled={true}
-            >
-                 <h2 className="totalTimer">{renderedStreamDuration}</h2>
-                 
-            </Button>
-          </Col>
-          </>
-          ) : 
-          <Col sm="2">
-          <Button
-              color="primary"
-              style={{ width: "100%", height: 73, color: "#00005c" }}
-             
-              // disabled={true}
-            >
-                 <h2 className="totalTimer">{renderedStreamDuration}</h2>
-                 
-            </Button>
-          </Col>
-}
+              <Col sm="1">
+                <Button
+                  color="primary"
+                  style={{ width: "100%", height: 73, color: "#00005c" }}
 
+                  // disabled={true}
+                >
+                  <h2 className="totalTimer">{elapsedDay} Gün </h2>
+                </Button>
+              </Col>
+              <Col sm="1">
+                <Button
+                  color="primary"
+                  style={{ width: "100%", height: 73, color: "#00005c" }}
+
+                  // disabled={true}
+                >
+                  <h2 className="totalTimer">{renderedStreamDuration}</h2>
+                </Button>
+              </Col>
+            </>
+          ) : (
+            <Col sm="2">
+              <Button
+                color="primary"
+                style={{ width: "100%", height: 73, color: "#00005c" }}
+
+                // disabled={true}
+              >
+                <h2 className="totalTimer">{renderedStreamDuration}</h2>
+              </Button>
+            </Col>
+          )}
         </Row>
       </div>
     </Fragment>
