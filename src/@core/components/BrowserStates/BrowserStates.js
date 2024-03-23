@@ -15,12 +15,12 @@ import {
   UncontrolledDropdown
 } from 'reactstrap'
 
-const BrowserState = ({statesArr}) => {
+const BrowserState = ({ statesArr }) => {
   const renderStates = () => {
     return statesArr.map(state => {
       return (
         <div key={state.title} className='browser-states'>
-          <div className='d-flex'>
+          <div className='d-flex' >
             <img className='rounded me-1' src={state.avatar} height='30' alt={state.title} />
             <h6 className='align-self-center mb-0'>{state.title}</h6>
           </div>
@@ -40,7 +40,7 @@ const BrowserState = ({statesArr}) => {
   }
 
   return (
-    <Card className='card-browser-states'>
+    <Card className='card-browser-states' style={{ height: "69vh" }}>
       <CardHeader>
         <div>
           <CardTitle tag='h4'>Browser States</CardTitle>

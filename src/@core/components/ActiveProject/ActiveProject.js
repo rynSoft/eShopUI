@@ -57,7 +57,7 @@ const ActiveProject = ({projectsArr}) => {
     }
 
     return (
-        <Card className='card-browser-states'>
+        <Card className='card-browser-states' style={{ height: "69vh" }}>
             <CardHeader>
                 <div>
                     <CardTitle tag='h4'>Browser States</CardTitle>
