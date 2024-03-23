@@ -45,7 +45,7 @@ const statesArr = [
   {
     avatar: require('@src/assets/images/icons/google-chrome.png').default,
     title: 'Google Chrome',
-    value: '54.4%',
+    value: '0%',
     chart: {
       type: 'radialBar',
       series: [54.4],
@@ -326,7 +326,7 @@ const ProductionDetail = (props) => {
   }, []);
   let x = { "params": { "id": id } };
 
-
+  useEffect(()=>{console.log(navItemData)},[navItemData])
   const loadNavItem = () => {
     axios
       .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessTemplate/GetNavListProductionId?productionId=" + id)
@@ -483,8 +483,8 @@ const ProductionDetail = (props) => {
                 <TabContent className="py-50" activeTab={active}>
                   <TabPane tabId="1">
                     <Row style={{ paddingTop: 10 }}>
-                      <Col sm={3}>
-                        <Card>
+                      <Col sm={4} style={{ paddingTop: 5 }}>
+                        <Card  style={{ height: "69vh" }}>
                           <br></br>
                           <br></br>
                           <br></br>
@@ -567,7 +567,7 @@ const ProductionDetail = (props) => {
                           </dl>
                           <dl>
                             <Row>
-                              <Col sm="6" className="text-end text-uppercase">
+                              {/* <Col sm="6" className="text-end text-uppercase">
                                 <dt>{t('Panel Kart Adeti').toLocaleUpperCase()}</dt>
                               </Col>
                               <Col sm="2">
@@ -583,7 +583,7 @@ const ProductionDetail = (props) => {
                                 />
                               </Col>
                               <br></br>
-                              <br></br>
+                              <br></br> */}
                               <Col
                                 sm="12"
                                 style={{ textAlign: "center", marginTop: 20 }}
@@ -601,8 +601,7 @@ const ProductionDetail = (props) => {
                           <br></br>
                         </Card>
                       </Col>
-
-                      <Col sm={5} style={{ paddingTop: 5 }}>
+                      <Col sm={4} style={{ paddingTop: 5 }}>
                         <BrowserState statesArr={statesArr} />
                       </Col>
                       <Col sm={4} style={{ paddingTop: 5 }}>
@@ -621,7 +620,7 @@ const ProductionDetail = (props) => {
                   </TabPane>
                   {navItemData.map(nav => (
                     <TabPane tabId={nav.id} key={nav.id}>
-                      {<DynamicComponent key={nav.id} component={nav.whichPage} id={id} match={x} />}
+                      {<DynamicComponent key={nav.id} component={nav.whichPage} id={id} match={{"params":{"id":id,"routeId":nav.id}}} />}
                     </TabPane>
                   ))}
 
