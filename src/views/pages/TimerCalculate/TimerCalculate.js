@@ -79,7 +79,7 @@ const TimerCalculate = ({
     axios
       .post(
         process.env.REACT_APP_API_ENDPOINT +
-          "api/ProductionTimeProcecss/Pause",
+          "api/WorkProcessRouteTimeHistories/Pause",
         addParameters
       )
       .then((res) => {
@@ -99,7 +99,6 @@ const TimerCalculate = ({
 
 useEffect(()=>{
   if(PproductionProcess==5){
-    
     axios.get(process.env.REACT_APP_API_ENDPOINT + "api/ShiftTargetParameters/GetToday?userId=" + userData.id).then(res => {
       if (res.data.data) {
         setShiftTargetParametersId(res.data.data.id);
@@ -137,7 +136,7 @@ useEffect(()=>{
     axios
       .post(
         process.env.REACT_APP_API_ENDPOINT +
-          "api/ProductionTimeProcecss/Resume",
+          "api/WorkProcessRouteTimeHistories/Resume",
         parameters
       )
       .then((res) => {
@@ -168,7 +167,7 @@ useEffect(()=>{
     };
     axios
       .post(
-        process.env.REACT_APP_API_ENDPOINT + "api/ProductionTimeProcecss/Stop",
+        process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteTimeHistories/Stop",
         parameters
       )
       .then((res) => {
@@ -205,7 +204,7 @@ useEffect(()=>{
     };
     axios
       .post(
-        process.env.REACT_APP_API_ENDPOINT + "api/ProductionTimeProcecss/Start",
+        process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteTimeHistories/Start",
         parameters
       )
       .then((res) => {
@@ -579,15 +578,6 @@ useEffect(()=>{
               <Row>{renderDataStop()} </Row>
             </Button>
           </Col>
-
-
-
-
-
-
-
-
-
 
           {elapsedDay > 0 ? (
             <>

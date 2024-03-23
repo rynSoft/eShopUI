@@ -51,6 +51,7 @@ function Product(props) {
         setData(response.data.data);
       });
   };
+  
   const tableStateChange = () => {
     setTableState(true);
   };
