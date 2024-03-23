@@ -71,7 +71,6 @@ const TimerCalculate = ({
         restCauseId: 1,
         productionTimeStatus: 2,
         message: "Otomatik Durdur",
-        productionProcess: PproductionProcess,
         userId: userData.id,
         workProcessRouteId:workProcessRouteId,  
         shiftTargetParametersId: shiftTargetParametersId,
@@ -94,21 +93,21 @@ const TimerCalculate = ({
     };
   });
 
-  useEffect(() => {
-    if (PproductionProcess == 5) {
-      axios
-        .get(
-          process.env.REACT_APP_API_ENDPOINT +
-            "api/ShiftTargetParameters/GetToday?userId=" +
-            userData.id
-        )
-        .then((res) => {
-          if (res.data.data) {
-            setShiftTargetParametersId(res.data.data.id);
-          }
-        });
-    } //5 üretim ise   o anki kullanıcının parametre vardiyalarını kontrol eder
-  }, [PproductionProcess]);
+  // useEffect(() => {
+  //   if (PproductionProcess == 5) {
+  //     axios
+  //       .get(
+  //         process.env.REACT_APP_API_ENDPOINT +
+  //           "api/ShiftTargetParameters/GetToday?userId=" +
+  //           userData.id
+  //       )
+  //       .then((res) => {
+  //         if (res.data.data) {
+  //           setShiftTargetParametersId(res.data.data.id);
+  //         }
+  //       });
+  //   } //5 üretim ise   o anki kullanıcının parametre vardiyalarını kontrol eder
+  // }, [PproductionProcess]);
   const modalClose = (successController) => {
     if (successController) {
       setIsStartTimer(false);
@@ -125,10 +124,10 @@ const TimerCalculate = ({
     setRestCauseModal(true);
   };
   const resumeProcess = () => {
-    if (PproductionProcess == 5 && shiftTargetParametersId == null) {
-      toastData("Vardiya Parametrelerini Giriniz !", false);
-      return;
-    }
+    // if (PproductionProcess == 5 && shiftTargetParametersId == null) {
+    //   toastData("Vardiya Parametrelerini Giriniz !", false);
+    //   return;
+    // }
     const parameters = {
       productionId: provisionId.id,
       productionTimeStatus: 3,
@@ -159,7 +158,6 @@ const TimerCalculate = ({
   const stopProcess = () => {
     const parameters = {
       productionId: provisionId.id,
-      productionProcess: PproductionProcess,
       productionTimeStatus: 4,
       message: screenName + " Süreci Tamamlandı",
       workProcessRouteId:workProcessRouteId,  
@@ -188,15 +186,14 @@ const TimerCalculate = ({
   };
 
   const startProcess = () => {
-    if (PproductionProcess == 5 && shiftTargetParametersId == null) {
-      toastData("Vardiya Parametrelerini Giriniz !", false);
-      return;
-    }
+    // if (PproductionProcess == 5 && shiftTargetParametersId == null) {
+    //   toastData("Vardiya Parametrelerini Giriniz !", false);
+    //   return;
+    // }
     const parameters = {
       productionId: provisionId.id,
       productionTimeStatus: 1,
       userId: userData.id,
-      productionProcess: PproductionProcess,
       message: screenName + " Süreci Başlandı",
       workProcessRouteId:workProcessRouteId,  
       shiftTargetParametersId: shiftTargetParametersId,
@@ -269,8 +266,8 @@ const TimerCalculate = ({
         process.env.REACT_APP_API_ENDPOINT +
           "api/Production/GetOperationState?id=" +
           provisionId.id +
-          "&ps=" +
-          PproductionProcess
+          "&routeId=" +
+          workProcessRouteId
       )
       .then((response) => {
         if (finishController && !response.data.stopState) {
@@ -333,8 +330,8 @@ const TimerCalculate = ({
         process.env.REACT_APP_API_ENDPOINT +
           "api/Production/GetOperationState?id=" +
           provisionId.id +
-          "&ps=" +
-          PproductionProcess
+          "&routeId=" +
+          workProcessRouteId
       )
       .then((response) => {
         var elapsetTime = response.data.elapsedTime.split(":");
@@ -509,8 +506,8 @@ const TimerCalculate = ({
         {restCauseModal ? (
           <TimerCauseModal
             provisionId={provisionId.id}
+            workProcessRouteId={workProcessRouteId}
             modalFunction={modalClose}
-            PproductionProcess={PproductionProcess}
             shiftTargetParametersId={shiftTargetParametersId}
             userId={userData.id}
           />
