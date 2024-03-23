@@ -51,7 +51,7 @@ const TimerCauseModal = (props) => {
   const addParameters = {
     productionId: provisionId,
     restCauseId: restCauseValue.value,
-    productionTimeStatus: 2,
+    workProcessRouteTimeStatus: 2,
     message: description,
     workProcessRouteId:workProcessRouteId,
     userId: userId,
