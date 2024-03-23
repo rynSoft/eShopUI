@@ -12,6 +12,7 @@ import {
   CardHeader,
   Col,
   Input,
+  Label,
   Row,
   Toast,
 } from "reactstrap";
@@ -32,6 +33,7 @@ import UserModal from "./UserModal";
 import toastData from "../../../@core/components/toastData";
 import { Translation, useTranslation } from "react-i18next";
 import { DynamicIcon, Icon } from "../../../@core/components/DynamicIcon/DynamicIcon";
+import { useSkin } from '@hooks/useSkin'
 const grid = 8;
 
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -71,6 +73,7 @@ const Test = (props) => {
     "light-error",
     "info",
   ]);
+  const { skin} = useSkin()
   const { t } = useTranslation();
   const loadData = () => {
     axios
@@ -262,7 +265,7 @@ const Test = (props) => {
                                       <CardBody style={{ marginTop: 10 }}>
                                         <Row style={{ height: "100%" }}>
                                           <Col sm={10}>
-                                            <span style={{ display: "inline-block" }}> {item.content}</span>
+                                            <span style={{ display: "inline-block" }}><Label style={{fontWeight:"bold"}}> {item.content}</Label></span>
                                           </Col>
                                           <Col sm={1} style={{ position: "absolute", right: 20,top:25 }}>
                                             {item.icon ?
@@ -315,10 +318,10 @@ const Test = (props) => {
                         <div>
                           <Card>
                             <Row style={{ margin: 10, color: "white" }}>
-                              <Col sm="4" style={{ textAlign: "left" }}>{(t('asama').toUpperCase())}</Col>
-                              <Col sm="5" style={{ textAlign: "center" }}>{t('kullanici').toUpperCase()}</Col>
-                              <Col sm="2" style={{ textAlign: "right" }}>{t('durum').toUpperCase()}</Col>
-                              <Col sm="1" style={{ textAlign: "center" }}>{t('sil').toUpperCase()}</Col>
+                              <Col sm="4" style={{ textAlign: "left" }}><Label style={{fontWeight:"bolder"}}>{(t('asama').toUpperCase())}</Label></Col>
+                              <Col sm="5" style={{ textAlign: "center" }}><Label style={{fontWeight:"bolder"}}>{t('kullanici').toUpperCase()}</Label></Col>
+                              <Col sm="2" style={{ textAlign: "right" }}><Label style={{fontWeight:"bolder"}}>{t('durum').toUpperCase()}</Label></Col>
+                              <Col sm="1" style={{ textAlign: "center" }}><Label style={{fontWeight:"bolder"}}>{t('sil').toUpperCase()}</Label></Col>
                             </Row>
                           </Card>
                         </div>
@@ -438,6 +441,7 @@ const Test = (props) => {
                                                     <span style={{ display: "inline-block" }} key={keys}>
                                                       {" "}
                                                       <UserMinus
+                                                      color={skin=="light"?"black":"white"}
                                                         onClick={() =>
                                                           showUserModal(
                                                             "delete",
@@ -467,6 +471,7 @@ const Test = (props) => {
                                                   )
                                                 )}
                                                 <UserPlus
+                                                color={skin=="light"?"black":"white"}
                                                   onClick={() =>
                                                     showUserModal(
                                                       "insert",

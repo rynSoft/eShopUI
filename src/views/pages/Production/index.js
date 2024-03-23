@@ -314,6 +314,7 @@ const ProductionDetail = (props) => {
   const [panelCardCount, setpanelCardCount] = useState(0);
   const [navItemData, setNavItemData] = useState([]);
   const [workProcessTemplate, setWorkProcessTemplate] = useState([])
+  const [tab,setTab]=useState(null);
   const { t } = useTranslation();
   const toggle = (tab) => {
     setActive(tab);
@@ -324,9 +325,6 @@ const ProductionDetail = (props) => {
     loadInfoData();
     loadNavItem();
   }, []);
-  let x = { "params": { "id": id } };
-
-  useEffect(()=>{console.log(navItemData)},[navItemData])
   const loadNavItem = () => {
     axios
       .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessTemplate/GetNavListProductionId?productionId=" + id)
@@ -474,7 +472,7 @@ const ProductionDetail = (props) => {
                   {navItemData.map(nav => <NavItem>
                     <NavLink active={active === nav.id}
                       key={nav.id}
-                      onClick={() => { toggle(nav.id) }}
+                      onClick={() => { toggle(nav.id); setTab(nav)}}
                     >
                       {nav.name}
                     </NavLink>
@@ -618,11 +616,10 @@ const ProductionDetail = (props) => {
                   <TabPane tabId="4">
                     <Test productionId={id} />
                   </TabPane>
-                  {navItemData.map(nav => (
-                    <TabPane tabId={nav.id} key={nav.id}>
-                      {<DynamicComponent key={nav.id} component={nav.whichPage} id={id} match={{"params":{"id":id,"routeId":nav.id}}} />}
-                    </TabPane>
-                  ))}
+                   {tab===null?<>Sayfa Yok</>: <TabPane tabId={tab?.id} key={tab?.id}>
+                     {<DynamicComponent key={tab?.id} component={tab?.whichPage} id={id} match={{"params":{"id":id,"routeId":tab?.id}}} />}
+                    </TabPane>}
+               
 
                   {/* <TabPane tabId="6">
                     <RouteInformationNew
