@@ -312,7 +312,7 @@ axios.get(process.env.REACT_APP_API_ENDPOINT+"api/Production/GetAllQrCodeDetail?
             </Modal>
 
             <Card>
-                <Row className='justify-content-end mx-0'>
+                <Row className='justify-content-end mx-0' >
                     <Col className='d-flex align-items-center justify-content-end mt-1' md='6' sm='12'>
                         <Label className='me-1' for='search-input-1'> {'Ara'} </Label>
                         <Input
@@ -325,8 +325,8 @@ axios.get(process.env.REACT_APP_API_ENDPOINT+"api/Production/GetAllQrCodeDetail?
                         />
                     </Col>
                 </Row>
-
-                <div className='react-dataTable' style={{ zoom: "85%" }} >
+                
+                <div className='react-dataTable' style={{ height: '75vh', width: '100%', overflow: 'auto' }}  >
                     <ClassicDataTable key={key} data={data} columns={columns} noDataText="Üretim Bulunamadı"  searchValue={searchValue} />
                 </div>
 

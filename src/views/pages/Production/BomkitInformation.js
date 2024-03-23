@@ -34,7 +34,7 @@ const BomkitInformation = (props) => {
       maxWidth: "400px",
       cell: (row) => {
         return (
-          <div>{row.explanation}</div>
+          <div >{row.explanation}</div>
         );
       },
     },
@@ -44,6 +44,7 @@ const BomkitInformation = (props) => {
   return (
     <div className={'react-dataTable'} >
       <DataTable
+      // style={{ maxHeight: '72vh', height: !bomData || bomData.length === 0 ? undefined : (bomData.length + 1) * 27  }}
         selectableRowsNoSelectAll
         columns={columnsBokKit}
         data={bomData}

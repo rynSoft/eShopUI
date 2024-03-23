@@ -308,23 +308,30 @@ const ProductionDetail = (props) => {
   const [bomInfoBlock, setBomInfoBlock] = useState(false);
   const [active, setActive] = useState("1");
   const [setupVerificationImport, setSetupVerificationImport] = useState(true);
-  const [routeInfoBlock, setRouteInfoBlock] = useState(false);
   const [productionData, setProductionData] = useState(null);
   const [estimatedTime, setEstimatedTime] = useState(0);
   const [panelCardCount, setpanelCardCount] = useState(0);
   const [navItemData, setNavItemData] = useState([]);
   const [workProcessTemplate, setWorkProcessTemplate] = useState([])
-  const [tab,setTab]=useState(null);
+  const [tab, setTab] = useState(null);
   const { t } = useTranslation();
   const toggle = (tab) => {
     setActive(tab);
   };
   useEffect(() => {
+    if (JSON.parse(localStorage.getItem("lastTab")) && localStorage.getItem("lastTab")?.id !== null){
+      setTab(JSON.parse(localStorage.getItem("lastTab")));
+      toggle(JSON.parse(localStorage.getItem("lastTab"))?.id);
+    }
+
     loadBomInfoData();
-    loadRouteInfoData();
     loadInfoData();
     loadNavItem();
   }, []);
+  const handleTab = (tab) => { 
+    window.localStorage.setItem('lastTab', JSON.stringify(tab)) 
+    setTab(tab)
+  }
   const loadNavItem = () => {
     axios
       .get(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessTemplate/GetNavListProductionId?productionId=" + id)
@@ -355,22 +362,6 @@ const ProductionDetail = (props) => {
       })
       .finally(() => {
         setInfoBlock(false);
-      });
-  };
-  const loadRouteInfoData = () => {
-    setRouteInfoBlock(true);
-    axios
-      .get(
-        process.env.REACT_APP_API_ENDPOINT +
-        "api/RouteInfo/GetAllAsyncProductId?id=" +
-        id
-      )
-      .then((response) => {
-        setRouteData(response.data);
-        setRouteInfoBlock(false);
-      })
-      .finally(() => {
-        setRouteInfoBlock(false);
       });
   };
   const loadBomInfoData = () => {
@@ -442,6 +433,7 @@ const ProductionDetail = (props) => {
                       active={active === "1"}
                       onClick={() => {
                         toggle("1");
+                        handleTab({ "id": "1" })
                       }}
                     >
                       {t("uretimBilgisi")}
@@ -453,6 +445,7 @@ const ProductionDetail = (props) => {
                       active={active === "4"}
                       onClick={() => {
                         toggle("4");
+                        handleTab({ "id": "4" })
                       }}
                     >
                       {t('Rota Bilgisi')}
@@ -464,6 +457,7 @@ const ProductionDetail = (props) => {
                       active={active === "3"}
                       onClick={() => {
                         toggle("3");
+                        handleTab({ "id": "3" })
                       }}
                     >
                       {t('Bom Kit Bilgisi')}
@@ -472,7 +466,7 @@ const ProductionDetail = (props) => {
                   {navItemData.map(nav => <NavItem>
                     <NavLink active={active === nav.id}
                       key={nav.id}
-                      onClick={() => { toggle(nav.id); setTab(nav)}}
+                      onClick={() => { toggle(nav.id); setTab(nav); handleTab(nav) }}
                     >
                       {nav.name}
                     </NavLink>
@@ -482,7 +476,7 @@ const ProductionDetail = (props) => {
                   <TabPane tabId="1">
                     <Row style={{ paddingTop: 10 }}>
                       <Col sm={4} style={{ paddingTop: 5 }}>
-                        <Card  style={{ height: "69vh" }}>
+                        <Card style={{ height: "69vh" }}>
                           <br></br>
                           <br></br>
                           <br></br>
@@ -616,10 +610,10 @@ const ProductionDetail = (props) => {
                   <TabPane tabId="4">
                     <Test productionId={id} />
                   </TabPane>
-                   {tab===null?<>Sayfa Yok</>: <TabPane tabId={tab?.id} key={tab?.id}>
-                     {<DynamicComponent key={tab?.id} component={tab?.whichPage} id={id} match={{"params":{"id":id,"routeId":tab?.id}}} />}
-                    </TabPane>}
-               
+                  {tab === null ? <></> : <TabPane tabId={tab?.id} key={tab?.id}>
+                    {<DynamicComponent key={tab?.id} component={tab?.whichPage} id={id} match={{ "params": { "id": id, "routeId": tab?.id } }} />}
+                  </TabPane>}
+
 
                   {/* <TabPane tabId="6">
                     <RouteInformationNew

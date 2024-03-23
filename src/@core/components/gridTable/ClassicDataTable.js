@@ -34,44 +34,44 @@ const ClassicDataTable = (props) => {
       updatedData = data.filter((item) => {
         const startsWith =
 
-        item?.orderNo?.toLowerCase?.().startsWith(value.toLowerCase()) ||
-        item?.aciklama?.toString().toLowerCase?.().startsWith(value.toLowerCase()) ||
+          item?.orderNo?.toLowerCase?.().startsWith(value.toLowerCase()) ||
+          item?.aciklama?.toString().toLowerCase?.().startsWith(value.toLowerCase()) ||
 
-        item?.uretimAdi?.toString().toLowerCase?.().startsWith(value.toLowerCase()) 
+          item?.uretimAdi?.toString().toLowerCase?.().startsWith(value.toLowerCase())
 
-      const includes =
-        item?.orderNo?.toLowerCase?.().startsWith(value.toLowerCase()) ||
-        item?.aciklama?.toString().toLowerCase?.().startsWith(value.toLowerCase()) ||
-        item?.uretimAdi?.toString().toLowerCase?.().startsWith(value.toLowerCase()) 
+        const includes =
+          item?.orderNo?.toLowerCase?.().startsWith(value.toLowerCase()) ||
+          item?.aciklama?.toString().toLowerCase?.().startsWith(value.toLowerCase()) ||
+          item?.uretimAdi?.toString().toLowerCase?.().startsWith(value.toLowerCase())
 
 
-      if (startsWith) {
-        return startsWith;
-      } else if (!startsWith && includes) {
-        return includes;
-      } else return null;
-    });
+        if (startsWith) {
+          return startsWith;
+        } else if (!startsWith && includes) {
+          return includes;
+        } else return null;
+      });
       setFilteredData(updatedData);
     }
   }, [searchValue]);
   const [currentPage, setCurrentPage] = useState(0);
 
   return (
-    <DataTable
-      noHeader
-      pagination
-      selectableRowsNoSelectAll
-      columns={columns}
-      customStyles={customStyles}
-      className='react-dataTable'
-      paginationPerPage={rowCount}
-      sortIcon={<ChevronDown size={10} />}
-      paginationDefaultPage={currentPage + 1}
-      paginationComponent={() => CustomPagination(searchValue.length>0 ? filteredData : data, currentPage, (value) => setCurrentPage(value))}
+      <DataTable
+        noHeader
+        pagination
+        selectableRowsNoSelectAll
+        columns={columns}
+        customStyles={customStyles}
+        className='react-dataTable'
+        paginationPerPage={rowCount}
+        sortIcon={<ChevronDown size={10} />}
+        paginationDefaultPage={currentPage + 1}
+        paginationComponent={() => CustomPagination(searchValue.length > 0 ? filteredData : data, currentPage, (value) => setCurrentPage(value))}
 
-      data={searchValue.length>0? filteredData : data}
-      noDataComponent={noDataText}
-    />
+        data={searchValue.length > 0 ? filteredData : data}
+        noDataComponent={noDataText}
+      />
   )
 
 
