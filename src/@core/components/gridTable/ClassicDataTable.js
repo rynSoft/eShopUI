@@ -8,7 +8,7 @@ import ExportExcel from "./ExportExcel";
 
 
 const ClassicDataTable = (props) => {
-  const [rowCount, setRowCount] = useState(window.screen.height < 801 ? 8 : 11);
+  const [rowCount, setRowCount] = useState(window.screen.height < 801 ? 8 : 20);
   const [filteredData, setFilteredData] = useState([]);
   const customStyles = {
     head: {
@@ -59,16 +59,18 @@ const ClassicDataTable = (props) => {
   return (
       <DataTable
         noHeader
-        pagination
+     
         selectableRowsNoSelectAll
         columns={columns}
         customStyles={customStyles}
         className='react-dataTable'
         paginationPerPage={rowCount}
         sortIcon={<ChevronDown size={10} />}
+        pagination
         paginationDefaultPage={currentPage + 1}
-        paginationComponent={() => CustomPagination(searchValue.length > 0 ? filteredData : data, currentPage, (value) => setCurrentPage(value))}
-
+      //  paginationComponent={() => CustomPagination(searchValue.length > 0 ? filteredData : data, currentPage, (value) => setCurrentPage(value))}
+    
+        
         data={searchValue.length > 0 ? filteredData : data}
         noDataComponent={noDataText}
       />

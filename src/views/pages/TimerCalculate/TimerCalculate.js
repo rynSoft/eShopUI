@@ -64,6 +64,78 @@ const TimerCalculate = ({
   const [restCauseModal, setRestCauseModal] = useState(false);
   const [stopModal, setStopModal] = useState(false);
 
+  useEffect( async ()  => {
+    await axios
+      .get(
+        process.env.REACT_APP_API_ENDPOINT +
+          "api/Production/GetOperationState?id=" +
+          provisionId.id +
+          "&routeId=" +
+          workProcessRouteId
+      )
+      .then((response) => {
+        if (finishController && !response.data.stopState) {
+          setStartnBtnDisabled(true);
+          setIsPauseBtnDisabled(true);
+          setIsResumeBtnDisabled(true);
+          setIsStopBtnDisabled(false);
+          setIsStopTimer(true);
+          setIsStartTimer(false);
+        } else {
+          if (response.data.stopState) {
+            tableController();
+            setStartnBtnDisabled(true);
+            setIsResumeBtnDisabled(true);
+            setIsPauseBtnDisabled(true);
+            setIsStopBtnDisabled(true);
+          } else {
+            if (response.data.beginState) {
+              setStartnBtnDisabled(true);
+              tableController();
+              setIsResumeBtnDisabled(false);
+            } else {
+              setStartnBtnDisabled(false);
+              setIsResumeBtnDisabled(true);
+              setIsPauseBtnDisabled(true);
+              setIsStopBtnDisabled(true);
+            }
+          }
+          pauseButton = false;
+
+          var elapsetTime = response.data.elapsedTime.split(":");
+          var elapsetHour = parseInt(elapsetTime[0]) * 3600;
+          var elapsetMinute = parseInt(elapsetTime[1]) * 60;
+          streamDuration.current =
+            elapsetHour + elapsetMinute + parseInt(elapsetTime[2]);
+          setRenderedStreamDuration(response.data.elapsedTime);
+          setElapsedDay(response.data.elapsedDay);
+          setDownTime(response.data.downTime);
+        }
+      });
+  }, []);
+
+
+  
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       process.env.REACT_APP_API_ENDPOINT +
+  //         "api/Production/GetOperationState?id=" +
+  //         provisionId.id +
+  //         "&routeId=" +
+  //         workProcessRouteId
+  //     )
+  //     .then((response) => {
+  //       var elapsetTime = response.data.elapsedTime.split(":");
+  //       var elapsetHour = parseInt(elapsetTime[0]) * 3600;
+  //       var elapsetMinute = parseInt(elapsetTime[1]) * 60;
+  //       streamDuration.current =
+  //         elapsetHour + elapsetMinute + parseInt(elapsetTime[2]);
+  //       setDownTime(response.data.downTime);
+  //       setRenderedStreamDuration(response.data.elapsedTime);
+  //     });
+  // }, []);
+
   const handleTabClosing = () => {
     if (pauseButton) {
       const addParameters = {
@@ -260,55 +332,7 @@ const TimerCalculate = ({
     }
   }, [isStartTimer, isStopTimer, startTimer]);
 
-  useEffect(() => {
-    axios
-      .get(
-        process.env.REACT_APP_API_ENDPOINT +
-          "api/Production/GetOperationState?id=" +
-          provisionId.id +
-          "&routeId=" +
-          workProcessRouteId
-      )
-      .then((response) => {
-        if (finishController && !response.data.stopState) {
-          setStartnBtnDisabled(true);
-          setIsPauseBtnDisabled(true);
-          setIsResumeBtnDisabled(true);
-          setIsStopBtnDisabled(false);
-          setIsStopTimer(true);
-          setIsStartTimer(false);
-        } else {
-          if (response.data.stopState) {
-            tableController();
-            setStartnBtnDisabled(true);
-            setIsResumeBtnDisabled(true);
-            setIsPauseBtnDisabled(true);
-            setIsStopBtnDisabled(true);
-          } else {
-            if (response.data.beginState) {
-              setStartnBtnDisabled(true);
-              tableController();
-              setIsResumeBtnDisabled(false);
-            } else {
-              setStartnBtnDisabled(false);
-              setIsResumeBtnDisabled(true);
-              setIsPauseBtnDisabled(true);
-              setIsStopBtnDisabled(true);
-            }
-          }
-          pauseButton = false;
-
-          var elapsetTime = response.data.elapsedTime.split(":");
-          var elapsetHour = parseInt(elapsetTime[0]) * 3600;
-          var elapsetMinute = parseInt(elapsetTime[1]) * 60;
-          streamDuration.current =
-            elapsetHour + elapsetMinute + parseInt(elapsetTime[2]);
-          setRenderedStreamDuration(response.data.elapsedTime);
-          setElapsedDay(response.data.elapsedDay);
-          setDownTime(response.data.downTime);
-        }
-      });
-  }, [finishController]);
+ 
 
   const [restCauseData, setRestCauseData] = useState([]);
   useEffect(() => {
@@ -324,25 +348,6 @@ const TimerCalculate = ({
     };
   }, []);
 
-  useEffect(() => {
-    axios
-      .get(
-        process.env.REACT_APP_API_ENDPOINT +
-          "api/Production/GetOperationState?id=" +
-          provisionId.id +
-          "&routeId=" +
-          workProcessRouteId
-      )
-      .then((response) => {
-        var elapsetTime = response.data.elapsedTime.split(":");
-        var elapsetHour = parseInt(elapsetTime[0]) * 3600;
-        var elapsetMinute = parseInt(elapsetTime[1]) * 60;
-        streamDuration.current =
-          elapsetHour + elapsetMinute + parseInt(elapsetTime[2]);
-        setDownTime(response.data.downTime);
-        setRenderedStreamDuration(response.data.elapsedTime);
-      });
-  }, []);
 
   const dataStart = [
     {

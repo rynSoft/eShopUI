@@ -27,18 +27,18 @@ const UserDropdown = () => {
   const [userData, setUserData] = useState(null)
   //** ComponentDidMount
   const TokenSessionControl = () => {
-    axios
-      .get(
-        process.env.REACT_APP_API_ENDPOINT +
-        "api/Account/TokenSessionControl"
-      )
-      .then(response=>{
-        if(!response.data.userData){
-          dispatch(handleLogout())
-          history.push("/login")
+    // axios
+    //   .get(
+    //     process.env.REACT_APP_API_ENDPOINT +
+    //     "api/Account/TokenSessionControl"
+    //   )
+    //   .then(response=>{
+    //     if(!response.data.userData){
+    //       dispatch(handleLogout())
+    //       history.push("/login")
    
-        } //false  veya true dönüyor    true ise  sesionTokeniDogru
-      });
+    //     } //false  veya true dönüyor    true ise  sesionTokeniDogru
+    //   });
   
   };
   const myVar= ()=>setInterval(TokenSessionControl, 120000);

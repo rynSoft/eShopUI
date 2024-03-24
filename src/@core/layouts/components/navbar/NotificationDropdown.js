@@ -51,43 +51,44 @@ const NotificationDropdown = () => {
     
     getAllQualityTask()
   }, [newQualityController]);
+
   useEffect(() => {
     getAllQualityTask();
     getAllTask()
   }, [userData]);
   const getAllTask = () => {
-    if (userData?.id) {
+    // if (userData?.id) {
 
-      axios
-        .get(
-          process.env.REACT_APP_API_ENDPOINT +
-          "api/Account/GetAllTaskAsync?Id=" +
-          userData?.id
-        )
-        .then((response) => {
-          newWorkingData(workingListUpdate(response.data.data))
-          setTaskList(response.data.data);
+    //   axios
+    //     .get(
+    //       process.env.REACT_APP_API_ENDPOINT +
+    //       "api/Account/GetAllTaskAsync?Id=" +
+    //       userData?.id
+    //     )
+    //     .then((response) => {
+    //       newWorkingData(workingListUpdate(response.data.data))
+    //       setTaskList(response.data.data);
 
-        });
-    }
+    //     });
+    // }
   }
 
   const getAllQualityTask = () => {
-    if (userData?.id) {
+    // if (userData?.id) {
 
-      axios
-        .get(
-          process.env.REACT_APP_API_ENDPOINT +
-          "api/Account/GetAllTaskQualityAsync?Id=" +
-          userData?.id
-        )
-        .then((response) => {
+    //   axios
+    //     .get(
+    //       process.env.REACT_APP_API_ENDPOINT +
+    //       "api/Account/GetAllTaskQualityAsync?Id=" +
+    //       userData?.id
+    //     )
+    //     .then((response) => {
      
-            newQualityData(qualityListUpdate(response.data.data))
-            setQualityList(response.data.data);
+    //         newQualityData(qualityListUpdate(response.data.data))
+    //         setQualityList(response.data.data);
        
-        });
-    }
+    //     });
+    // }
   }
 
 
