@@ -90,6 +90,7 @@ const Test = (props) => {
   useEffect(() => {
     loadData();
   }, []);
+  useEffect(()=>{console.log(data)},[data])
 
   const handleSave = (postData) => {
     axios
@@ -113,7 +114,6 @@ const Test = (props) => {
   };
   const onDragEnd = (result) => {
     const { source, destination } = result;
-    debugger;
     // If the item is dropped outside a valid droppable
     if (!destination) {
       return;
@@ -318,7 +318,8 @@ const Test = (props) => {
                         <div>
                           <Card>
                             <Row style={{ margin: 10, color: "white" }}>
-                              <Col sm="4" style={{ textAlign: "left" }}><Label style={{fontWeight:"bolder"}}>{(t('asama').toUpperCase())}</Label></Col>
+                              <Col sm="3" style={{ textAlign: "left" }}><Label style={{fontWeight:"bolder"}}>{(t('asama').toUpperCase())}</Label></Col>
+                              <Col sm="1" style={{ textAlign: "left",width:"3%" }}></Col>
                               <Col sm="5" style={{ textAlign: "center" }}><Label style={{fontWeight:"bolder"}}>{t('kullanici').toUpperCase()}</Label></Col>
                               <Col sm="2" style={{ textAlign: "right" }}><Label style={{fontWeight:"bolder"}}>{t('durum').toUpperCase()}</Label></Col>
                               <Col sm="1" style={{ textAlign: "center" }}><Label style={{fontWeight:"bolder"}}>{t('sil').toUpperCase()}</Label></Col>
@@ -408,7 +409,7 @@ const Test = (props) => {
                                           </>
                                         ) : (
                                           <Row>
-                                            <Col sm="4">
+                                            <Col sm="3">
                                               {" "}
                                               {/* Input */}
                                               <Input
@@ -432,6 +433,9 @@ const Test = (props) => {
                                                   )
                                                 }
                                               />
+                                            </Col>
+                                            <Col sm="1" style={{width:"3%"}}>
+                                             <DynamicIcon name={item.icon}/>
                                             </Col>
 
                                             <Col sm="5" style={{ color: "white" }}>

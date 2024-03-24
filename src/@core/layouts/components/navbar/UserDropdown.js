@@ -41,7 +41,7 @@ const UserDropdown = () => {
       });
   
   };
-  const myVar= ()=>setInterval(TokenSessionControl, 120000);
+  const myVar= ()=>setInterval(TokenSessionControl, 300000);
   useEffect(() => {
     TokenSessionControl();
     myVar()

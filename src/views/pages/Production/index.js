@@ -1,46 +1,29 @@
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
-  Row,
-  Col,
-  Breadcrumb,
-  BreadcrumbItem,
-  UncontrolledTooltip,
-  Button,
-  Input,
-  Badge,
-  Spinner,
-  TabContent,
-  TabPane,
-  NavItem,
-  Nav,
-  NavLink,
-} from "reactstrap";
-import DynamicComponent from './DynamicComponent';
-import DataTable from "react-data-table-component";
 import "@styles/base/core/menu/menu-types/vertical-menu.scss";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { UseSelector, useDispatch } from "react-redux";
 import "@styles/base/core/menu/menu-types/vertical-overlay-menu.scss";
-import { Fragment, useEffect, useState } from "react";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { Link, useHistory } from "react-router-dom";
-import "@styles/react/libs/tables/react-dataTable-component.scss";
-import "./ProductionDetail.css";
-import BomkitInformation from "./BomkitInformation";
 import axios from "axios";
-import RouteInformation from "./RouteInformation";
-import Activities from "./Activities";
+import { Fragment, useEffect, useState } from "react";
 import { Save } from "react-feather";
-import Test from "./Test";
-import RouteInformationNew from "./RouteInformationNew";
-import toastData from "../../../@core/components/toastData";
-import Verification from "../KitVerification/Verification";
 import { useTranslation } from "react-i18next";
-import BrowserState from "../../../@core/components/BrowserStates/BrowserStates";
+import {
+  Button,
+  Card,
+  Col,
+  Input,
+  Nav,
+  NavItem,
+  NavLink,
+  Row,
+  TabContent,
+  TabPane
+} from "reactstrap";
 import ActiveProject from "../../../@core/components/ActiveProject";
+import BrowserState from "../../../@core/components/BrowserStates/BrowserStates";
+import toastData from "../../../@core/components/toastData";
+import BomkitInformation from "./BomkitInformation";
+import DynamicComponent from './DynamicComponent';
+import "./ProductionDetail.css";
+import Test from "./Test";
 const statesArr = [
   {
     avatar: require('@src/assets/images/icons/google-chrome.png').default,
@@ -315,22 +298,29 @@ const ProductionDetail = (props) => {
   const [workProcessTemplate, setWorkProcessTemplate] = useState([])
   const [tab, setTab] = useState(null);
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
   const toggle = (tab) => {
     setActive(tab);
   };
   useEffect(() => {
-    if (JSON.parse(localStorage.getItem("lastTab")) && localStorage.getItem("lastTab")?.id !== null){
+    loadInfoData();
+    loadNavItem();
+    loadBomInfoData();
+  }, []);
+  useEffect(() => {
+    if (
+      loading &&
+      JSON.parse(localStorage.getItem("lastTab")) &&
+      JSON.parse(localStorage.getItem("lastTab"))?.productionId == id) {
       setTab(JSON.parse(localStorage.getItem("lastTab")));
       toggle(JSON.parse(localStorage.getItem("lastTab"))?.id);
     }
-
-    loadBomInfoData();
-    loadInfoData();
-    loadNavItem();
-  }, []);
-  const handleTab = (tab) => { 
-    window.localStorage.setItem('lastTab', JSON.stringify(tab)) 
-    setTab(tab)
+  }, [loading])
+  const handleTab = (_tab) => {
+    _tab.productionId = id;
+    window.localStorage.setItem('lastTab', JSON.stringify(_tab))
+    setTab(_tab)
+    // setTab(...tab,tab.productionId=id)
   }
   const loadNavItem = () => {
     axios
@@ -383,6 +373,7 @@ const ProductionDetail = (props) => {
       })
       .finally(() => {
         setBomInfoBlock(false);
+        setLoading(true)
       });
   };
   return (
@@ -466,8 +457,7 @@ const ProductionDetail = (props) => {
                   {navItemData.map(nav => <NavItem>
                     <NavLink active={active === nav.id}
                       key={nav.id}
-                      onClick={() => { toggle(nav.id); setTab(nav); handleTab(nav) }}
-                    >
+                      onClick={() => { toggle(nav.id); setTab(nav); handleTab(nav) }}>
                       {nav.name}
                     </NavLink>
                   </NavItem>)}
@@ -593,6 +583,7 @@ const ProductionDetail = (props) => {
                           <br></br>
                         </Card>
                       </Col>
+
                       <Col sm={4} style={{ paddingTop: 5 }}>
                         <BrowserState statesArr={statesArr} />
                       </Col>
@@ -602,6 +593,7 @@ const ProductionDetail = (props) => {
                     </Row>
                   </TabPane>
                   <TabPane tabId="3">
+
                     <BomkitInformation
                       bomData={bomData}
                       bomInfoBlock={bomInfoBlock}
@@ -610,9 +602,11 @@ const ProductionDetail = (props) => {
                   <TabPane tabId="4">
                     <Test productionId={id} />
                   </TabPane>
-                  {tab === null ? <></> : <TabPane tabId={tab?.id} key={tab?.id}>
-                    {<DynamicComponent key={tab?.id} component={tab?.whichPage} id={id} match={{ "params": { "id": id, "routeId": tab?.id } }} />}
-                  </TabPane>}
+                  {tab === null ? <></> :
+                    <TabPane tabId={tab.id} key={tab?.id}>
+                      {<DynamicComponent key={tab?.id} component={tab?.whichPage} id={id} match={{ "params": { "id": id, "routeId": tab?.id } }} />}
+                    </TabPane>
+                  }
 
 
                   {/* <TabPane tabId="6">
