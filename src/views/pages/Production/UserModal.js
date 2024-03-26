@@ -68,8 +68,6 @@ const UserModal = ({ modalType, closeModal, userModalData, productionId }) => {
     userId: userId.value
   };
 
-
-
   const CloseBtn = (
     <X className="cursor-pointer" onClick={modalClose} size={15} />
   );
@@ -82,16 +80,17 @@ const UserModal = ({ modalType, closeModal, userModalData, productionId }) => {
       deleteUser();
     }
   }
-  const addUser = () => {
-    axios.post(
+  const addUser = async () => {
+    await  axios.post(
       process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRouteUser/Add",
       addParameters
     ).then((res) => {
       if (res.data.success) {
+        closeModal();
         toastData(userId.label + " İş Atandı", true);
         newWorking(workingActive());
         // addTask();
-        closeModal();
+       
       }
       else {
         toastData(userId.label + " İş Atanamadı", false);
@@ -189,7 +188,7 @@ const UserModal = ({ modalType, closeModal, userModalData, productionId }) => {
           {modalType == "delete" ? "Kullanıcısı Silinecek !" : null}
         </div>
         <div className="text-center">
-          <Button className="me-1" color="primary" onClick={() => apiController()} >
+          <Button className="me-1" color="primary" enabled="false" onClick={() => apiController()} >
             {modalType == "insert" ? "Ekle" : "Sil"}
           </Button>
           <Button color="secondary" onClick={modalClose} outline>

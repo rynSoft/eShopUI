@@ -549,23 +549,6 @@ const ProductionDetail = (props) => {
                           </dl>
                           <dl>
                             <Row>
-                              {/* <Col sm="6" className="text-end text-uppercase">
-                                <dt>{t('Panel Kart Adeti').toLocaleUpperCase()}</dt>
-                              </Col>
-                              <Col sm="2">
-                                <Input
-                                  id="panelCard"
-                                  bsSize="sm"
-                                  type="number"
-                                  onChange={(event) =>
-                                    setpanelCardCount(event.target.value)
-                                  }
-                                  style={{ width: 50 }}
-                                  value={panelCardCount}
-                                />
-                              </Col>
-                              <br></br>
-                              <br></br> */}
                               <Col
                                 sm="12"
                                 style={{ textAlign: "center", marginTop: 20 }}

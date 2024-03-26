@@ -19,9 +19,9 @@ function Product(props) {
   const [searchValue, setSearchValue] = useState('');
   const [id, setId] = useState(props.match.params.id);
   const [routeId, setRouteId] = useState(props.match.params.routeId);
-  const [userName, setuserName] = useState(
-    JSON.parse(localStorage.getItem("userData")).userNameSurname
-  );
+  const [userName, setuserName] = useState(JSON.parse(localStorage.getItem("userData")).userNameSurname);
+  const [tabInfo, setTabInfo] = useState(JSON.parse(localStorage.getItem("lastTab")));
+  const [nextRouteId, setNextRouteId] = useState(0);
 
   const col = [
     {
@@ -61,7 +61,15 @@ function Product(props) {
       )
       .then((response) => {
         setData(response.data.data);
-        console.log(response.data.data);
+      });
+
+      await axios
+      .get(
+        process.env.REACT_APP_API_ENDPOINT +
+          "api/WorkProcessRoute/GetOrderNextId?productionId=" +id +"&workProcessRouteId="+ routeId +"&order="+ tabInfo.order
+      )
+      .then((response) => {
+        setNextRouteId(response.data.data);
       });
   };
 
@@ -74,7 +82,7 @@ function Product(props) {
   };
 
   const addProduct = async (args) => {
-    let addParameters = { qrcode: args, productionId: id };
+    let addParameters = { qrcode: args, productionId: id, order : tabInfo.order + 1 , nextWPRId : nextRouteId };
 
     await axios
       .post(
@@ -100,7 +108,9 @@ function Product(props) {
     if (readerState) {
       if (!data.find((obj) => obj === e)) addProduct(e);
       else toastData("Ürün Kodu Daha önce okutulmuş!", false);
-    }
+    } else
+       toastData("Ürün giriş yapılmadan önce süreci başlatmalısınız (Devam Et)!", false); 
+
   };
 
   return (
@@ -112,7 +122,7 @@ function Product(props) {
             tableController={tableStateChange}
             cols={{ xl: "12", sm: "12", xs: "12" }}
             workProcessRouteId={routeId}
-            screenName="Ürün Giriş"
+            screenName={tabInfo.name}
             readerStateFunction={readerStateFunction}
           />
         </Col>
