@@ -22,6 +22,7 @@ function Product(props) {
   const [userName, setuserName] = useState(JSON.parse(localStorage.getItem("userData")).userNameSurname);
   const [tabInfo, setTabInfo] = useState(JSON.parse(localStorage.getItem("lastTab")));
   const [nextRouteId, setNextRouteId] = useState(0);
+ 
 
   const col = [
     {
@@ -66,10 +67,10 @@ function Product(props) {
       await axios
       .get(
         process.env.REACT_APP_API_ENDPOINT +
-          "api/WorkProcessRoute/GetOrderNextId?productionId=" +id +"&workProcessRouteId="+ routeId +"&order="+ tabInfo.order
+          "api/WorkProcessRoute/GetOrderNextId?productionId="+id+"&workProcessRouteId="+ routeId +"&order="+ tabInfo.order 
       )
       .then((response) => {
-        setNextRouteId(response.data.data);
+        setNextRouteId(response.data.data.id);
       });
   };
 

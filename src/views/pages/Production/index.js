@@ -22,13 +22,14 @@ import BrowserState from "../../../@core/components/BrowserStates/BrowserStates"
 import toastData from "../../../@core/components/toastData";
 import BomkitInformation from "./BomkitInformation";
 import DynamicComponent from './DynamicComponent';
+
 import "./ProductionDetail.css";
 import Test from "./Test";
 const statesArr = [
   {
     avatar: require('@src/assets/images/icons/google-chrome.png').default,
-    title: 'Google Chrome',
-    value: '0%',
+    title: 'Ürün Giriş',
+    value: '50%',
     chart: {
       type: 'radialBar',
       series: [54.4],
@@ -68,11 +69,11 @@ const statesArr = [
   },
   {
     avatar: require('@src/assets/images/icons/mozila-firefox.png').default,
-    title: 'Mozila Firefox',
-    value: '6.1%',
+    title: 'PCB Karta Yazılım Yükleme',
+    value: '46.1%',
     chart: {
       type: 'radialBar',
-      series: [6.1],
+      series: [46.1],
       height: 30,
       width: 30,
       options: {
@@ -88,6 +89,8 @@ const statesArr = [
         plotOptions: {
           radialBar: {
             hollow: {
+   
+              color : 'success',
               size: '22%'
             },
             dataLabels: {
@@ -109,11 +112,11 @@ const statesArr = [
   },
   {
     avatar: require('@src/assets/images/icons/apple-safari.png').default,
-    title: 'Apple Safari',
-    value: '14.6%',
+    title: 'Switch Lehimleme ve Takma (Alt Kapak)',
+    value: '44.6%',
     chart: {
       type: 'radialBar',
-      series: [14.6],
+      series: [44.6],
       height: 30,
       width: 30,
       options: {
@@ -150,7 +153,7 @@ const statesArr = [
   },
   {
     avatar: require('@src/assets/images/icons/internet-explorer.png').default,
-    title: 'Internet Explorer',
+    title: 'Pano Aparatı Takma',
     value: '4.2%',
     chart: {
       type: 'radialBar',
@@ -191,7 +194,7 @@ const statesArr = [
   },
   {
     avatar: require('@src/assets/images/icons/opera.png').default,
-    title: 'Opera Mini',
+    title: 'Akım Trafosu ve Kesici',
     value: '8.4%',
     chart: {
       type: 'radialBar',
@@ -214,6 +217,9 @@ const statesArr = [
               size: '22%'
             },
             dataLabels: {
+              style: {
+                colors: ['#F44336', '#E91E63', '#9C27B0']
+              },
               showOn: 'always',
               name: {
                 show: false
@@ -235,53 +241,76 @@ const projectsArr = [
   {
     progress: 60,
     progressColor: 'info',
-    subtitle: 'React Project',
-    title: 'BGC eCommerce App',
+    subtitle: 'Giril',
+    title: 'Ürün Giriş',
     img: require('@src/assets/images/icons/brands/react-label.png').default
   },
   {
-    progress: 15,
+    progress: 40,
     progressColor: 'danger',
-    subtitle: 'UI/UX Project',
-    title: 'Falcon Logo Design',
+    subtitle: 'Yazılım',
+    title: 'PCB Karta Yazılım Yükleme',
     img: require('@src/assets/images/icons/brands/xd-label.png').default
   },
   {
-    progress: 90,
-    progressColor: 'success',
-    subtitle: 'Vuejs Project',
-    title: 'Dashboard Design',
+    progress: 25,
+    progressColor: '#F44336',
+    subtitle: 'Lehimleme',
+    title: 'Switch Lehimleme ve Takma (Alt Kapak)',
     img: require('@src/assets/images/icons/brands/vue-label.png').default
   },
   {
-    progress: 49,
-    progressColor: 'warning',
-    subtitle: 'iPhone Project',
-    title: 'Foodista mobile app',
+    progress: 35,
+    progressColor: '#E91E63',
+    subtitle: 'Takma',
+    title: 'Pano Aparatı Takma',
     img: require('@src/assets/images/icons/brands/sketch-label.png').default
   },
 
   {
-    progress: 73,
+    progress: 44,
     progressColor: 'info',
-    subtitle: 'React Project',
-    title: 'Dojo React Project',
+    subtitle: 'Kesici',
+    title: 'Akım Trafosu ve Kesici',
     img: require('@src/assets/images/icons/brands/react-label.png').default
   },
   {
-    progress: 81,
-    title: 'HTML Project',
-    progressColor: 'success',
-    subtitle: 'Crypto Website',
-    img: require('@src/assets/images/icons/brands/html-label.png').default
+    progress: 36,
+    progressColor: 'warning',
+    subtitle: 'RS485 Lehimleme',
+    title: 'Alt PCB Karta RS485 Lehimleme',
+    img: require('@src/assets/images/icons/brands/vue-label.png').default
   },
   {
-    progress: 78,
+    progress: 54,
+    progressColor: 'danger',
+    title: ' Lehimleme',
+    subtitle: 'Power PCB Kart Header Lehimleme',
+    img: require('@src/assets/images/icons/brands/html-label.png').default
+  },
+  
+  {
+    progress: 44,
+    progressColor: 'red',
+    subtitle: 'Lehimleme',
+    title: 'Power PCB ile MCU PCB Lehimleme',
+    img: require('@src/assets/images/icons/brands/react-label.png').default
+  },
+  {
+    progress: 36,
     progressColor: 'success',
-    subtitle: 'Vuejs Project',
-    title: 'Vue Admin template',
+    subtitle: 'Lazerleme',
+    title: 'Üst Kapak Lazer',
     img: require('@src/assets/images/icons/brands/vue-label.png').default
+  },
+  {
+    progress: 41,
+    progressColor: 'info',
+    title: 'Yapıştırma',
+    subtitle: 'Buton Hazırlık Yapıştırma',
+    img: require('@src/assets/images/icons/brands/html-label.png').default
   }
+
 ]
 const ProductionDetail = (props) => {
   const [id, setId] = useState(props.match.params.id);
@@ -566,13 +595,14 @@ const ProductionDetail = (props) => {
                           <br></br>
                         </Card>
                       </Col>
-
-                      <Col sm={4} style={{ paddingTop: 5 }}>
-                        <BrowserState statesArr={statesArr} />
-                      </Col>
                       <Col sm={4} style={{ paddingTop: 5 }}>
                         <ActiveProject projectsArr={projectsArr} />
                       </Col>
+                      <Col sm={4} style={{ paddingTop: 5 }}>
+                        
+                        <BrowserState statesArr={statesArr} />
+                      </Col>
+                     
                     </Row>
                   </TabPane>
                   <TabPane tabId="3">

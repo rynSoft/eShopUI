@@ -1,25 +1,49 @@
 import BarcodeReader from "react-barcode-reader";
 import React, { useState, useEffect, Fragment } from "react";
-import { Table, Row, Col, ButtonGroup, Button, Nav, UncontrolledTooltip } from "reactstrap";
+import {
+  Table,
+  Row,
+  Col,
+  ButtonGroup,
+  Button,
+  Nav,
+  UncontrolledTooltip,
+} from "reactstrap";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
-import { Check, CheckCircle, CheckSquare, Printer, XOctagon } from "react-feather";
+import {
+  Check,
+  CheckCircle,
+  CheckSquare,
+  Printer,
+  XOctagon,
+} from "react-feather";
 import toastData from "../../../@core/components/toastData/index.js";
+import { date } from "yup";
 
 function ProductHistoriesBasic(props) {
   const [readerState, setReaderState] = React.useState(false);
   const [finishStateButton, setFinishStateButton] = React.useState(false);
   const [data, setData] = React.useState([]);
-  const [dataLeft, setDataLeft] = React.useState([]);
-  const [dataRight, setDataRight] = React.useState([]);
+  const [lastData, setLastData] = React.useState(null);
   const [finishData, setFinishData] = React.useState(false);
   const [tableState, setTableState] = React.useState(false);
   const [id, setId] = useState(props.match.params.id);
-  const [routeId, setRouteId] = useState(props.match.params.routeId);
-  const [previousProcess, setbackRoute] = useState(props.match.params.previousProcess);
-  const [tabInfo, setTabInfo] = useState(JSON.parse(localStorage.getItem("lastTab")));
-  const [IsProductPage, setIsProductPage] = useState(false);
-  
+  const [routeId, setRouteId] = useState(Number(props.match.params.routeId));
+  const [previousProcess, setbackRoute] = useState(
+    props.match.params.previousProcess
+  );
+  const [tabInfo, setTabInfo] = useState(
+    JSON.parse(localStorage.getItem("lastTab"))
+  );
+  const [nextRouteId, setNextRouteId] = useState(0);
+  const [isProductPage, setIsProductPage] = useState(0);
+  const [order, setOrder] = useState();
+  const [codeBeginDate, setcodeBeginDate] = useState();
+  const [userName, setuserName] = useState(
+    JSON.parse(localStorage.getItem("userData")).userNameSurname
+  );
+
   const handleError = (error) => {
     console.log("Error " + error);
   };
@@ -29,25 +53,36 @@ function ProductHistoriesBasic(props) {
   };
 
   useEffect(() => {
-    loadData();
+    getProductState();
   }, []);
 
-  const loadData = () => {
+  const getProductState = () => {
     axios
       .get(
         process.env.REACT_APP_API_ENDPOINT +
-        "api/ProductHistories/GetAllAsyncProductHistories?workProcessRouteId=" + routeId+ "&productionId="+ id )
-        .then((response) => {
-          //setDataLeft(response.data.data.notRead.filter((x) => x.beginDate == null));
-          setDataLeft(response.data.data.notRead);
-          setDataRight(response.data.data.read);
-
-          response.data.data.read.filter((x) => x.elapsedTime == null && x.beginDate != null).length > 0
-            ? setFinishStateButton(true)
-            : setFinishStateButton(false);
+          "api/WorkProcessRoute/GetOrderNextId?productionId=" +
+          id +
+          "&workProcessRouteId=" +
+          routeId +
+          "&order=" +
+          tabInfo.order
+      )
+      .then((response) => {
+        setNextRouteId(response.data.data.id);
+        setIsProductPage(response.data.data.isProductPage);
+        setOrder(response.data.data.order);
+        loadData(response.data.data.isProductPage);
       });
   };
 
+  const loadData = (args) => {
+    axios
+      .get(               
+        process.env.REACT_APP_API_ENDPOINT + "api/ProductHistories/GetAllAsyncProductHistories?workProcessRouteId=" + routeId )
+      .then((response) => {
+        setData(response.data.data);
+      });
+  };
 
   const tableStateChange = () => {
     setTableState(true);
@@ -55,73 +90,97 @@ function ProductHistoriesBasic(props) {
 
   const addData = (datas) => {
     axios
-      .put(
-        process.env.REACT_APP_API_ENDPOINT + "api/ProductHistories/Add", datas
+      .post(
+        process.env.REACT_APP_API_ENDPOINT + "api/ProductHistories/Add",
+        datas
       )
       .then((res) => {
         if (res.data.success) {
-          loadData();
+          setLastData(null);
+          toastData("Kayıt Yapıldı !", true);
         } else {
           toastData("Kayıt Yapılamadı !", false);
         }
-      }).catch(err => toastData("Kayıt Yapılamadı !", false));
+      })
+      .catch((err) => toastData("Kayıt Yapılamadı !", false));
   };
 
-
-  const updateState = (e) => {
+  const updateState = async (e) => {
     if (readerState) {
-      axios
-      .get(
-          process.env.REACT_APP_API_ENDPOINT + "api/ProductHistories/GetByQrCode?code=" +
-            e.replace("ç", ".").replace("ç", ".").replace("ç", ".") +"&workProcessRouteId=" +routeId+ "&productionId=" +id )
-      .then((response) => {
-        if (response.data.data > 0)
-         {
-          let datas =
-          {
-            id: response.data.data,
-            workProcessRouteId: routeId,
-            qrCode: e.replace("ç", ".").replace("ç", ".").replace("ç", "."),
-            beginDate: new Date().toISOString()
-          };
-          addData(datas);
-          toastData(e.replace("ç", ".").replace("ç", ".").replace("ç", ".") + " kodlu panel okutulmuştur...!", true);
-          loadData();
-        } 
-        else {
-          toastData(e.replace("ç", ".").replace("ç", ".").replace("ç", ".") + " kodlu panel bulunamadı...!", false);
-        }
-      });
+      if (lastData != null && (lastData.productQrCode == e))
+      { 
+        lastData.endDate = await new Date();
+        if (lastData.endDate != undefined)
+        {
+        
+        lastData.elapsedTime = (lastData.endDate.getTime() - lastData.beginDate.getTime()) / 1000;
+        lastData.isFininshed = 1;
+        lastData.nextProcessRouteId = nextRouteId;
+        lastData.productionId = id;
+        lastData.order = order;
 
+        addData(lastData);
+        }
+ 
+      } else {
+        let choseMethod =
+          isProductPage == 1
+            ? "api/ProductHistories/GetByQrCodeProduct?code=" +
+              e +
+              "&productionId=" +
+              id
+            : "api/ProductHistories/GetByQrCodeHistories?code=" +
+              e +
+              "&workProcessRouteId=" +
+              routeId;
+        axios
+          .get(process.env.REACT_APP_API_ENDPOINT + choseMethod)
+          .then((response) => {
+            if (response.data.success) {
+              let datas = {
+                productId : response.data.data,
+                workProcessRouteId: routeId,
+                productQrCode: e,
+                beginDate: new Date(),
+                elapsedTime: 0,
+              };
+              setData([...data, datas]);
+              setLastData(datas);
+              toastData(e + " kodlu panel okutulmuştur...!", true);
+            } else {
+              toastData(e + " kodlu panel bulunamadı...!", false);
+            }
+          });
+      }
     } else {
       toastData("Barkod Okutmadan İş Akışını Başlatınız!", false);
     }
   };
 
   return (
-    <Fragment><Row>
-
-      <Col xl="12" md="12" xs="12" style={{ minHeight: 100 }}>
-        <TimerCalculate
-          finishController={finishData}
-          tableController={tableStateChange}
-          cols={{ xl: "12", sm: "12", xs: "12" }}
-          workProcessRouteId={routeId}
-          screenName={tabInfo.name}
-          readerStateFunction={readerStateFunction}
+    <Fragment>
+      <Row>
+        <Col xl="12" md="12" xs="12" style={{ minHeight: 100 }}>
+          <TimerCalculate
+            finishController={finishData}
+            tableController={tableStateChange}
+            cols={{ xl: "12", sm: "12", xs: "12" }}
+            workProcessRouteId={routeId}
+            screenName={tabInfo.name}
+            readerStateFunction={readerStateFunction}
+          />
+        </Col>
+        <BarcodeReader
+          onError={handleError}
+          onScan={(err, result) => {
+            updateState(err.replaceAll("*", "-"));
+          }}
         />
-      </Col>
-      <BarcodeReader
-        onError={handleError}
-        onScan={(err, result) => {
-          updateState(err.replace("*", "-").replace("*", "-"));
-        }}
-      />
-    </Row>
+      </Row>
       <Row>
         <div>
-          <div className='content-header row'>
-            <div className='content-header-right text-md-end col-md-12 col-12 d-md-block d-none'>
+          <div className="content-header row">
+            <div className="content-header-right text-md-end col-md-12 col-12 d-md-block d-none">
               {/* <div className="row">
                 <div className="col-10 text-right"></div>
                 {finishStateButton ? (
@@ -163,34 +222,21 @@ function ProductHistoriesBasic(props) {
           </div>
         </div>
         <Row>
-          <Col xl="2" md="2" xs="32">
+          <Col xl="3" md="3" xs="32">
             {tableState ? (
-              <Table  responsive style={{ marginTop: 10 }} size="sm">
+              <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
                   <tr>
                     <th>QrCode</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {dataLeft.length > 0 ? (
-                    <>
-                      {dataLeft.map((obj) => (
-                        <tr
-                  
-                        style={{ backgroundColor: "#3e92cc", color: "white" }}
-                          key={`${obj.id}`}
-                        >
-                          <td style={{ color: "white" }}>{obj.qrCode}</td>
-                        </tr>
-                      ))}
-                    </>
-                  ) : null}
+                <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
+                  " Chart Component Eklenecek ." " Chart Component Eklenecek ."
                 </tbody>
               </Table>
-            ) : null} 
+            ) : null}
           </Col>
-          <Col xl="10" md="10" xs="10">
-
+          <Col xl="9" md="9" xs="9">
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
@@ -200,27 +246,39 @@ function ProductHistoriesBasic(props) {
                     <th>Bitiş Tarihi</th>
                     <th>Gecen Süre</th>
                     <th>Kullanıcı</th>
-                    <th style={{ textAlign: "right" }}>
-                    </th>
+                    <th style={{ textAlign: "right" }}></th>
                   </tr>
                 </thead>
-                <tbody >
-                  {dataRight.length > 0 ? (
+                <tbody>
+                  {data?.length > 0 ? (
                     <>
-                      {dataRight.map((obj) =>
+                      {data.map((obj) => (
                         <tr
                           style={{ backgroundColor: "#3e92cc", color: "white" }}
                           key={`${obj.id}`}
                         >
-                          <td style={{ color: "white" }}>{obj.qrCode}</td>
-                          <td style={{ color: "white" }}>{obj.programmingBeginDate ? new Date(obj.programmingBeginDate).toLocaleDateString() : null} {obj.programmingBeginDate ? new Date(obj.programmingBeginDate).toLocaleTimeString() : null}</td>
-                          <td style={{ color: "white" }}>{obj.programmingEndDate ? new Date(obj.programmingEndDate).toLocaleDateString() : null} {obj.programmingEndDate ? new Date(obj.programmingEndDate).toLocaleTimeString() : null}</td>
-                          <td style={{ color: "white" }}>{obj.programmingElapsedTime}</td>
-                          <td style={{ color: "white" }}>{obj.fullName}</td>
+                          <td style={{ color: "white" }}>{obj.productQrCode}</td>
+                          <td style={{ color: "white" }}>
+                            {obj.beginDate
+                              ? new Date(obj.beginDate).toLocaleDateString()
+                              : null}{" "}
+                            {obj.beginDate
+                              ? new Date(obj.beginDate).toLocaleTimeString()
+                              : null}
+                          </td>
+                          <td style={{ color: "white" }}>
+                            {obj.endDate
+                              ? new Date(obj.endDate).toLocaleDateString()
+                              : null}{" "}
+                            {obj.endDate
+                              ? new Date(obj.endDate).toLocaleTimeString()
+                              : null}
+                          </td>
+                          <td style={{ color: "white" }}>{obj.elapsedTime}</td>
+                          <td style={{ color: "white" }}>{userName}</td>
                           <td></td>
                         </tr>
-
-                      )}
+                      ))}
                     </>
                   ) : null}
                 </tbody>

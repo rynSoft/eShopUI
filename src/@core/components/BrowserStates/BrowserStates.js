@@ -15,9 +15,12 @@ import {
   UncontrolledDropdown
 } from 'reactstrap'
 
+
+
 const BrowserState = ({ statesArr }) => {
   const renderStates = () => {
     return statesArr.map(state => {
+
       return (
         <div key={state.title} className='browser-states'>
           <div className='d-flex' >
@@ -26,13 +29,13 @@ const BrowserState = ({ statesArr }) => {
           </div>
           <div className='d-flex align-items-center'>
             <div className='fw-bold text-body-heading me-1'>{state.value}</div>
-            <Chart
+             <Chart
               options={state.chart.options}
               series={state.chart.series}
               type={state.chart.type}
               height={state.chart.height}
               width={state.chart.width}
-            />
+            /> 
           </div>
         </div>
       )
@@ -43,8 +46,8 @@ const BrowserState = ({ statesArr }) => {
     <Card className='card-browser-states' style={{ height: "69vh" }}>
       <CardHeader>
         <div>
-          <CardTitle tag='h4'>Browser States</CardTitle>
-          <CardText className='font-small-2'>Counter August 2020</CardText>
+          <CardTitle tag='h4'>Rota Süreç Özet Bilgileri</CardTitle>
+          <CardText className='font-small-2'>28 Mart 2024</CardText>
         </div>
         <UncontrolledDropdown className='chart-dropdown'>
           <DropdownToggle color='' className='bg-transparent btn-sm border-0 p-50'>

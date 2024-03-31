@@ -20,21 +20,39 @@ const BomkitInformation = (props) => {
   const { t } = useTranslation();
   const columnsBokKit = [
     {
-      name: t("Malzeme").toLocaleUpperCase(),
-      selector: (row) => row.material,
+      name: t("Ürün Adı").toLocaleUpperCase(),
+      selector: (row) => row.description,
+      width: "350px",
+    },
+    {
+      name: t("Malzeme Barkod Kodu").toLocaleUpperCase(),
+      selector: (row) => row.material + '' + row.partyNumber,
+      width: "350px",
+    },
+   
+ 
+    {
+      name: "Miktar".toLocaleUpperCase(),
+      selector: (row) => row.quantity,
       width: "250px",
     },
     {
-      name: t("Parti Numarası").toLocaleUpperCase(),
-      selector: (row) => row.partyNumber,
+      name: "Depo Bilgisi".toLocaleUpperCase(),
+      selector: (row) => row.soureProductPlace,
+      width: "220px",
+    },
+    {
+      name: "Birim".toLocaleUpperCase(),
+      selector: (row) => row.unit,
       width: "200px",
     },
     {
       name: t("Açıklama").toLocaleUpperCase(),
+
       maxWidth: "400px",
       cell: (row) => {
         return (
-          <div >{row.explanation}</div>
+          <div>{row.explanation}</div>
         );
       },
     },

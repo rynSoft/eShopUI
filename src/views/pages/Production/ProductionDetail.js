@@ -246,6 +246,22 @@ const ProductionDetail = (props) => {
       selector: (row) => row.partyNumber,
       width: "160px",
     },
+ 
+    {
+      name: "Miktar",
+      selector: (row) => row.quantity,
+      width: "160px",
+    },
+    {
+      name: "Depo Bilgisi",
+      selector: (row) => row.sourceProductPlace,
+      width: "160px",
+    },
+    {
+      name: "Birim",
+      selector: (row) => row.unit,
+      width: "160px",
+    },
     {
       name: "Açıklama",
 
@@ -565,7 +581,7 @@ const ProductionDetail = (props) => {
             <UILoader blocking={bomInfoBlock}>
               <Card className="CardDetail">
                 <CardHeader>
-                  <CardTitle tag="h4">BOM KİT Bilgisi</CardTitle>
+                  <CardTitle tag="h4">Hammadde Bilgisi</CardTitle>
                 </CardHeader>
 
                 <div className="react-dataTable">

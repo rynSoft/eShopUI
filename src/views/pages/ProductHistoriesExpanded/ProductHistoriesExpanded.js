@@ -23,7 +23,7 @@ function ProductHistoriesExpanded(props) {
     const [quantities, setQuantities] = useState([]);
     const [deductionQuantities, setDeductionQuantities] = useState([]);
     const [barcodes, setBarcodes] = useState([])
-
+    const [userName, setuserName] = useState(JSON.parse(localStorage.getItem("userData")).userNameSurname);
 
     const handleError = (error) => {
         console.log("Error " + error);
@@ -45,6 +45,7 @@ function ProductHistoriesExpanded(props) {
     useEffect(() => {
         loadData();
     }, []);
+
     const handleSubmit = () => {
         let tArray = []
         barcodes.map((item, index) => {
@@ -96,9 +97,30 @@ function ProductHistoriesExpanded(props) {
     };
 
 
+    // const updateState = (e) => {
+    //     setBarcodes(e);
+    // };
+
     const updateState = (e) => {
-        setBarcodes(e);
-    };
+        if (e.indexOf("UMM") == -1)
+        {
+            const min = 1;
+            const max = 1000;
+            const random = min + (Math.random() * (max - min));
+        
+            if (readerState) {
+              let datas =
+              {
+                id: random,
+                workProcessRouteId: routeId,
+                qrCode: e.replaceAll("ç", ".").replaceAll("*", "-").replaceAll("+", "-"),
+                beginDate: new Date().toISOString()
+              };
+              setDataRight([...dataRight,datas
+              ]);
+            }
+        }
+    }
 
     return (
         <Fragment><Row>
@@ -113,93 +135,20 @@ function ProductHistoriesExpanded(props) {
                     readerStateFunction={readerStateFunction}
                 />
             </Col>
+            <BarcodeReader onError={handleError} onScan={(err, result) => {
+                 updateState(err.replaceAll("*", "-").replaceAll("*", "-").replaceAll("+", "-"));
+        }}
+      />
         </Row>
             <Row>
-                <div>
-                    <div className='content-header row'>
-                        <div className='content-header-right text-md-end col-md-12 col-12 d-md-block d-none'>
-                            {/* <div className="row">
-                <div className="col-10 text-right"></div>
-                {finishStateButton ? (
-                  <div className="col-1 text-right">
-                    <Button.Ripple
-                      className="btn-icon"
-                      color="primary"
-                      id="newProductionOrders"
-                      onClick={() => vardiyaTamamla()}
-                    >
-                      <CheckCircle size={20} /> Vardiya Bitir
-                    </Button.Ripple>
-                    <UncontrolledTooltip
-                      placement="left"
-                      target="newProductionOrders"
-                    >
-                      Vardiya Bitir
-                    </UncontrolledTooltip>
-                  </div>
-                ) : null}
-                <div className="col-1 text-right">
-                  <Button.Ripple
-                    className="btn-icon"
-                    color="warning"
-                    id="newProductionOrder"
-                    onClick={() => isTamamla()}
-                  >
-                    <CheckSquare size={20} /> İş Emrini Bitir
-                  </Button.Ripple>
-                  <UncontrolledTooltip
-                    placement="left"
-                    target="newProductionOrder"
-                  >
-                    Bitir
-                  </UncontrolledTooltip>
-                </div>
-              </div> */}
-                        </div>
-                    </div>
-                </div>
+              
                 <Row>
-                    <Col xl="3" md="3" xs="32">
 
-                        <Table responsive style={{ marginTop: 10 }} size="sm">
-                            <thead>
-                                <tr>
-                                    <th style={{ overflow: "hidden" }}>
-                                        <Row style={{ alignItems: "center", justifyItems: "" }}>
-                                            <Col sm='10'>
-                                                <span>QrCode</span>
-                                            </Col>
-                                            <Col sm={'2'}>
-                                                <Button.Ripple
-                                                    outline
-                                                    id="excelPrint"
-                                                    className="btn-icon rounded-circle pull-right"
-                                                    color="success"
-                                                    style={{ marginRight: 10, padding: 0 }}
-                                                    onClick={() => {
-                                                        setShow(true);
-                                                    }}
-                                                >
-                                                    <Plus size={17} />
-                                                </Button.Ripple>
-                                            </Col>
-                                        </Row>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {tempBarcode.map(barcode => {
-                                    return (
-                                        <tr>
-                                            <td>{barcode?.barcode} | {barcode?.qty} | {barcode.deductionQty}</td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </Table>
-                    </Col>
-                    <Col xl="10" md="10" xs="10">
-
+                    <Col xl="9" md="9" xs="9">
+                    <Input
+                                                    placeholder="Panel QrCode"
+                                                    // onChange={(e) => handleQuantityChange(i, e.target.value)}
+                                                />
                         {tableState ? (
                             <Table responsive style={{ marginTop: 10 }} size="sm">
                                 <thead>
@@ -222,10 +171,10 @@ function ProductHistoriesExpanded(props) {
                                                     key={`${obj.id}`}
                                                 >
                                                     <td style={{ color: "white" }}>{obj.qrCode}</td>
-                                                    <td style={{ color: "white" }}>{obj.programmingBeginDate ? new Date(obj.programmingBeginDate).toLocaleDateString() : null} {obj.programmingBeginDate ? new Date(obj.programmingBeginDate).toLocaleTimeString() : null}</td>
-                                                    <td style={{ color: "white" }}>{obj.programmingEndDate ? new Date(obj.programmingEndDate).toLocaleDateString() : null} {obj.programmingEndDate ? new Date(obj.programmingEndDate).toLocaleTimeString() : null}</td>
-                                                    <td style={{ color: "white" }}>{obj.programmingElapsedTime}</td>
-                                                    <td style={{ color: "white" }}>{obj.fullName}</td>
+                                                    <td style={{ color: "white" }}>{obj.beginDate ? new Date(obj.beginDate).toLocaleDateString() : null} {obj.beginDate ? new Date(obj.beginDate).toLocaleTimeString() : null}</td>
+                                                    <td style={{ color: "white" }}>{obj.endDate ? new Date(obj.endDate).toLocaleDateString() : null} {obj.endDate ? new Date(obj.endDate).toLocaleTimeString() : null}</td>
+                                                    <td style={{ color: "white" }}>{obj.elapsedTime}</td>
+                                                    <td style={{ color: "white" }}>{userName}</td>
                                                     <td></td>
                                                 </tr>
 
@@ -236,6 +185,48 @@ function ProductHistoriesExpanded(props) {
                             </Table>
                         ) : null}
                     </Col>
+                    <Col xl="3" md="3" xs="32">
+                    <Input
+                                                    placeholder="Hammadde Barkod"
+                                                    // onChange={(e) => handleQuantityChange(i, e.target.value)}
+                                                />
+<Table responsive style={{ marginTop: 10 }} size="sm">
+    <thead>
+        <tr>
+            <th style={{ overflow: "hidden" }}>
+                <Row style={{ alignItems: "center", justifyItems: "" }}>
+                    <Col sm='10'>
+                        <span>QrCode</span>
+                    </Col>
+                    <Col sm={'2'}>
+                        <Button.Ripple
+                            outline
+                            id="excelPrint"
+                            className="btn-icon rounded-circle pull-right"
+                            color="success"
+                            style={{ marginRight: 10, padding: 0 }}
+                            onClick={() => {
+                                setShow(true);
+                            }}
+                        >
+                            <Plus size={17} />
+                        </Button.Ripple>
+                    </Col>
+                </Row>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {tempBarcode.map(barcode => {
+            return (
+                <tr>
+                    <td>{barcode?.barcode} | {barcode?.qty} | {barcode.deductionQty}</td>
+                </tr>
+            )
+        })}
+    </tbody>
+</Table>
+</Col>
                 </Row>
             </Row>
             <Modal
@@ -253,10 +244,10 @@ function ProductHistoriesExpanded(props) {
                         <BarcodeReader
                             onError={handleError}
                             onScan={(result, err) => {
-                                if (barcodes.includes(result.replaceAll("ç", ".")))
+                                if (barcodes.includes(result.replaceAll("*", "-").replaceAll("*", "-").replaceAll("+", "|")))
                                     toastData("Bu barkod zaten okutulmuş", false)
                                 else
-                                    setBarcodes([...barcodes, result.replaceAll("ç", ".")])
+                                    setBarcodes([...barcodes, result.replaceAll("*", "-").replaceAll("*", "-").replaceAll("+", "|")])
                             }}
                         />
                         {barcodes?.map((_barcodes, i) => {
