@@ -107,6 +107,13 @@ function ProductHistoriesBasic(props) {
 
   const updateState = async (e) => {
     if (readerState) {
+
+      if (lastData != null && lastData.productQrCode != e)
+      {
+        toastData(lastData.productQrCode + " Ürün üzerindeki iş bitmeden başka bir ürün okutulamaz...!", false);
+        return;
+      }
+
       if (lastData != null && (lastData.productQrCode == e))
       { 
         lastData.endDate = await new Date();
@@ -125,10 +132,10 @@ function ProductHistoriesBasic(props) {
       } else {
         let choseMethod =
           isProductPage == 1
-            ? "api/ProductHistories/GetByQrCodeProduct?code=" +
-              e +
-              "&productionId=" +
-              id
+            ? "api/Product/GetByQrCodeProduct?productionId=" +
+              id +"&code=" +e +
+              "&workProcessRouteId=" +
+              routeId
             : "api/ProductHistories/GetByQrCodeHistories?code=" +
               e +
               "&workProcessRouteId=" +
