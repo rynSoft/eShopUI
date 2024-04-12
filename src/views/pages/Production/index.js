@@ -20,11 +20,11 @@ import {
 import ActiveProject from "../../../@core/components/ActiveProject";
 import BrowserState from "../../../@core/components/BrowserStates/BrowserStates";
 import toastData from "../../../@core/components/toastData";
-import BomkitInformation from "./BomkitInformation";
 import DynamicComponent from './DynamicComponent';
 
 import "./ProductionDetail.css";
 import Test from "./Test";
+import Material from "./Material";
 const statesArr = [
   {
     avatar: require('@src/assets/images/icons/google-chrome.png').default,
@@ -314,10 +314,10 @@ const projectsArr = [
 ]
 const ProductionDetail = (props) => {
   const [id, setId] = useState(props.match.params.id);
-  const [bomData, setBomData] = useState([]);
+  const [materialData, setMaterialData] = useState([]);
   const [infoBlock, setInfoBlock] = useState(false);
   const [routeData, setRouteData] = useState([]);
-  const [bomInfoBlock, setBomInfoBlock] = useState(false);
+  const [materialBlock, setMaterialBlock] = useState(false);
   const [active, setActive] = useState("1");
   const [setupVerificationImport, setSetupVerificationImport] = useState(true);
   const [productionData, setProductionData] = useState(null);
@@ -334,7 +334,7 @@ const ProductionDetail = (props) => {
   useEffect(() => {
     loadInfoData();
     loadNavItem();
-    loadBomInfoData();
+    loadMaterialData();
   }, []);
   useEffect(() => {
     if (
@@ -383,64 +383,30 @@ const ProductionDetail = (props) => {
         setInfoBlock(false);
       });
   };
-  const loadBomInfoData = () => {
-    setBomInfoBlock(true);
+  const loadMaterialData = () => {
+    setMaterialBlock(true);
     axios
       .get(
         process.env.REACT_APP_API_ENDPOINT +
-        "api/BomKitInfo/GetAllAsyncProductId?id=" +
+        "api/Material/GetAllMaterialId?id=" +
         id
       )
       .then((response) => {
-        setBomData(
-          response.data?.map((i) => {
-            i.status = "OK";
-            return i;
-          })
-        );
-        setBomInfoBlock(false);
+        // setMaterialData(
+        //   response.data?.map((i) => {
+        //     i.status = "OK";
+        //     return i;
+        //   })
+        // );
+        setMaterialBlock(false);
       })
       .finally(() => {
-        setBomInfoBlock(false);
+        setMaterialBlock(false);
         setLoading(true)
       });
   };
   return (
     <Fragment>
-      {/*       
-      <div>
-        <div className="content-header row">
-          <div className="content-header-left col-md-9 col-12 mb-2">
-            <div className="row breadcrumbs-top">
-              <div className="col-12">
-                <h2 className="content-header-title float-start mb-0">
-                  {"Üretim Plan Listesi"}
-                </h2>
-                <div className="breadcrumb-wrapper vs-breadcrumbs d-sm-block d-none col-12">
-                  <Breadcrumb className="ms-1">
-                    <BreadcrumbItem>
-                      <Link to="/"> Dashboard </Link>
-                    </BreadcrumbItem>
-                    <BreadcrumbItem>
-                      <Link to="/Production"> Üretim Planlama </Link>
-                    </BreadcrumbItem>
-                    <BreadcrumbItem>
-                      <span> Üretim </span>
-                    </BreadcrumbItem>
-                  </Breadcrumb>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="content-header-right text-md-end col-md-3 col-12 d-md-block d-none">
-            <div className="breadcrumb-right"></div>
-          </div>
-        </div>
-
-
-      </div> */}
-
       <div>
         <Row>
           <Col sm={20}>
@@ -607,9 +573,8 @@ const ProductionDetail = (props) => {
                   </TabPane>
                   <TabPane tabId="3">
 
-                    <BomkitInformation
-                      bomData={bomData}
-                      bomInfoBlock={bomInfoBlock}
+                    <Material
+                      materialData={materialData}
                     />
                   </TabPane>
                   <TabPane tabId="4">
@@ -620,18 +585,6 @@ const ProductionDetail = (props) => {
                       {<DynamicComponent key={tab?.id} component={tab?.whichPage} id={id} match={{ "params": { "id": id, "routeId": tab?.id } }} />}
                     </TabPane>
                   }
-
-
-                  {/* <TabPane tabId="6">
-                    <RouteInformationNew
-                      id={id}
-                      setupVerificationImport={setupVerificationImport}
-                      routeData={routeData}
-                      routeInfoBlock={routeInfoBlock}
-                      disabledButton={disabledButton}
-                      setDisabledButton={(value) => setDisabledButton(value)}
-                    />
-                  </TabPane> */}
                 </TabContent>
               </Col>
             </Row>

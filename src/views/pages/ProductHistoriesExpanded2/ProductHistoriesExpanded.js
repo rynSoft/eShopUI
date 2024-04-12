@@ -15,9 +15,7 @@ function ProductHistoriesExpanded(props) {
     const [tableState, setTableState] = React.useState(false);
     const [id, setId] = useState(props.match.params.id);
     const [routeId, setRouteId] = useState(props.match.params.routeId);
-    const [previousProcess, setbackRoute] = useState(props.match.params.previousProcess);
     const [tabInfo, setTabInfo] = useState(JSON.parse(localStorage.getItem("lastTab")));
-    const [IsProductPage, setIsProductPage] = useState(false);
     const [show, setShow] = useState(false)
     const [tempBarcode, setTempBarcode] = useState([]);
     const [quantities, setQuantities] = useState([]);
@@ -67,7 +65,7 @@ function ProductHistoriesExpanded(props) {
                 process.env.REACT_APP_API_ENDPOINT +
                 "api/ProductHistories/GetAllAsyncProductHistories?workProcessRouteId=" + routeId + "&productionId=" + id)
             .then((response) => {
-                //setDataLeft(response.data.data.notRead.filter((x) => x.beginDate == null));
+
                 setDataLeft(response.data.data.notRead);
                 setDataRight(response.data.data.read);
 
