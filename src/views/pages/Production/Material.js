@@ -21,12 +21,12 @@ const Material = (props) => {
   const columnsMaterial = [
     {
       name: t("Ürün Adı").toLocaleUpperCase(),
-      selector: (row) => row.description,
+      selector: (row) => row.name,
       width: "350px",
     },
     {
       name: t("Kod").toLocaleUpperCase(),
-      selector: (row) => row.material + '' + row.partyNumber,
+      selector: (row) => row.code ,
       width: "350px",
     },
     {

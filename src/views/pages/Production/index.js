@@ -388,16 +388,11 @@ const ProductionDetail = (props) => {
     axios
       .get(
         process.env.REACT_APP_API_ENDPOINT +
-        "api/Material/GetAllMaterialId?id=" +
+        "api/Material/GetAllMaterialId?productionId=" +
         id
       )
       .then((response) => {
-        // setMaterialData(
-        //   response.data?.map((i) => {
-        //     i.status = "OK";
-        //     return i;
-        //   })
-        // );
+        setMaterialData(response.data.data);
         setMaterialBlock(false);
       })
       .finally(() => {

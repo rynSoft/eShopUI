@@ -83,6 +83,8 @@ function Product(props) {
   };
 
   const addProduct = async (args) => {
+    if (args != null)
+    {
     let addParameters = { qrcode: args, productionId: id, order : tabInfo.order + 1 , nextWPRId : nextRouteId };
 
     await axios
@@ -103,6 +105,7 @@ function Product(props) {
         }
       })
       .catch((err) => toastData("Ürün Kaydedilemedi !", false));
+    }
   };
 
   const updateState = (e) => {
@@ -136,26 +139,27 @@ function Product(props) {
       </Row>
 
       <Row>
-      <div className='react-dataTable' style={{ height: '100%', width: '100%', overflow: 'auto' }}  >
-                    <ClassicDataTable key={key} data={data} columns={col} noDataText="Üretim Bulunamadı" searchValue={searchValue}  />
+      <Col xl="3" md="3" xs="32">
+            {tableState ? (
+              <Table responsive style={{ marginTop: 10 }} size="sm">
+                <thead>
+                  <tr>
+                    <th>QrCode</th>
+                  </tr>
+                </thead>
+                <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
+                  " Chart Component Eklenecek ." " Chart Component Eklenecek ."
+                </tbody>
+              </Table>
+            ) : null}
+          </Col>
+          <Col xl="9" md="9" xs="32">
+          <div className='react-dataTable' style={{ height: '100%', width: '100%', overflow: 'auto' }}  >
+                    <ClassicDataTable key={key} data={data} columns={col} noDataText="Ürün Bulunamadı" searchValue={searchValue}  />
                 </div>
-        {/* <div className='react-dataTable'>
-          <PerfectScrollbar
-            options={{ wheelPropagation: false, suppressScrollX: true }}
-            className="ScrollHeightDynamic"
-          >
-            <ClassicDataTable
-              selectableRowsNoSelectAll
-              noDataText="Ürün Bulunamadı"
-              columns={col}
-              data={data}
-              pagination
-              paginationPerPage={20}
-              paginationDefaultPage={currentPage + 1}
       
-            />
-          </PerfectScrollbar>
-        </div> */}
+          </Col>
+    
       </Row>
     </>
   );
