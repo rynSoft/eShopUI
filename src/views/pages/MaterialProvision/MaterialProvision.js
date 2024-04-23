@@ -3,21 +3,10 @@ import React, { useState, useEffect, Fragment } from "react";
 import {
   Table,
   Row,
-  Col,
-  ButtonGroup,
-  Button,
-  Nav,
-  UncontrolledTooltip,
+  Col
 } from "reactstrap";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
-import {
-  Check,
-  CheckCircle,
-  CheckSquare,
-  Printer,
-  XOctagon,
-} from "react-feather";
 import toastData from "../../../@core/components/toastData/index.js";
 import { date } from "yup";
 
@@ -69,13 +58,12 @@ function MaterialProvision(props) {
       )
       .then((response) => {
         setNextRouteId(response.data.data.id);
-        setIsProductPage(response.data.data.isProductPage);
         setOrder(response.data.data.order);
-        loadData(response.data.data.isProductPage);
+        loadData();
       });
   };
 
-  const loadData = (args) => {
+  const loadData = () => {
     axios
       .get(               
         process.env.REACT_APP_API_ENDPOINT + "api/ProductHistories/GetAllAsyncProductHistories?workProcessRouteId=" + routeId )
