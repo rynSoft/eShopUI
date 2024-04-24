@@ -1,1 +1,1 @@
-export {default} from './ProductHistoriesBasic';
+export {default} from './MaterialProvision';
