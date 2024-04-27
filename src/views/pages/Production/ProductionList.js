@@ -302,7 +302,7 @@ axios.get(process.env.REACT_APP_API_ENDPOINT+"api/Production/GetAllQrCodeDetail?
                 className='modal-dialog-centered'>
                 <ModalHeader toggle={() => setSelectionModal(!selectionModal)}>Yeni Üretim Emri</ModalHeader>
                 <ModalBody>
-                    <Button.Ripple block outline color='secondary' className={'mb-1'}>
+                    <Button.Ripple block outline color='secondary' className={'mb-1'} onClick={()=>history.push("/newProduction")}>
                         Formdan Oluştur
                     </Button.Ripple>
                     <Button.Ripple block outline color='secondary' onClick={() => openExcelImport()}>
