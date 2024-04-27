@@ -55,7 +55,6 @@ const ApexBarChart = ({
     label: "Barkod Bulunamadı",
   });
 
-
   const [modalShow, setModalShow] = useState(false);
   const [qrCodeState, setQrCodeState] = useState("");
   const [newQrCodeState, setNewQrCodeState] = useState("");

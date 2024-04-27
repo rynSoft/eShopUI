@@ -3,12 +3,14 @@ import React, { useState, useEffect, Fragment } from "react";
 import {
   Table,
   Row,
-  Col
+  Col,Button
 } from "reactstrap";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
 import toastData from "../../../@core/components/toastData/index.js";
-import { date } from "yup";
+import DetailModal from "./DetailModal.js";
+import { CheckCircle } from "react-feather";
+
 
 function MaterialProvision(props) {
   const [readerState, setReaderState] = React.useState(false);
@@ -18,17 +20,17 @@ function MaterialProvision(props) {
   const [finishData, setFinishData] = React.useState(false);
   const [tableState, setTableState] = React.useState(false);
   const [id, setId] = useState(props.match.params.id);
+  const [rowData, setRowData] = React.useState();
   const [routeId, setRouteId] = useState(Number(props.match.params.routeId));
-  const [previousProcess, setbackRoute] = useState(
-    props.match.params.previousProcess
-  );
+  const [modalState, modalStateChange] = React.useState(false);
+  const [lastReadData, setlastReadData] = React.useState("");
+  const [useblaState, setUseblaState] = React.useState(1);
   const [tabInfo, setTabInfo] = useState(
     JSON.parse(localStorage.getItem("lastTab"))
   );
   const [nextRouteId, setNextRouteId] = useState(0);
-  const [isProductPage, setIsProductPage] = useState(0);
+  const [isMaterialPage, setMaterialPage] = useState(0);
   const [order, setOrder] = useState();
-  const [codeBeginDate, setcodeBeginDate] = useState();
   const [userName, setuserName] = useState(
     JSON.parse(localStorage.getItem("userData")).userNameSurname
   );
@@ -66,7 +68,7 @@ function MaterialProvision(props) {
   const loadData = () => {
     axios
       .get(               
-        process.env.REACT_APP_API_ENDPOINT + "api/ProductHistories/GetAllAsyncProductHistories?workProcessRouteId=" + routeId )
+        process.env.REACT_APP_API_ENDPOINT + "api/MaterialHistories/GetAllMaterialHistories?productionId=" + id + "&workProcessRouteId=" + routeId )
       .then((response) => {
         setData(response.data.data);
       });
@@ -79,7 +81,7 @@ function MaterialProvision(props) {
   const addData = (datas) => {
     axios
       .post(
-        process.env.REACT_APP_API_ENDPOINT + "api/ProductHistories/Add",
+        process.env.REACT_APP_API_ENDPOINT + "api/MaterialHistories/Add",
         datas
       )
       .then((res) => {
@@ -93,68 +95,152 @@ function MaterialProvision(props) {
       .catch((err) => toastData("Kayıt Yapılamadı !", false));
   };
 
-  const updateState = async (e) => {
-    if (readerState) {
+  //#region rowUpdate 
 
-      if (lastData != null && lastData.productQrCode != e)
-      {
-        toastData(lastData.productQrCode + " Ürün üzerindeki iş bitmeden başka bir ürün okutulamaz...!", false);
-        return;
+  const buttonRowUpdate = (e) => {
+    if (readerState) {
+      setRowData(e);
+      modalStateChange(true);
+    } else {
+      toastData("Barkod Okutmadan İş Akışını Başlatınız!", false);
+    }
+  };
+
+  const barcodController = (e) => {
+    const newState = data.map((obj) => {
+      if (obj.id === e.id && obj.materialUsableState === 0)
+        return {
+          id : obj.id,
+          materialId : e.Id,
+          workProcessRouteId : routeId,
+          explanation : obj.explanation,
+          materialUsableState : useblaState
+        };
+      return obj;
+    });
+
+
+    addData(e);
+
+    toastData(e.material + " - " + e.partyNumber + " Başarıyla Okutuldu", true);
+    setData(newState);
+    const kitProvidedController = newState.find(
+      (obj) => obj.isKitProvided === 0
+    );
+
+    if (kitProvidedController === undefined) {
+      toastData("Tüm Barkodlar Okutuldu", true);
+      setFinishData(true);
+    }
+    modalStateChange(false);
+  };
+
+
+  const updateState = (e) => {
+    if (readerState) {
+      let lastReadDatas;
+
+      let tempDatas = data.filter((obj) => obj.code === e && obj.materialUsableState === 0);
+
+      if (tempDatas.length >= 1) {
+           lastReadDatas = e;
+           toastData(e.split("+")[0] + " Depo Barkodunu Okutunuz!", true);
+           setlastReadData(lastReadDatas);
+      } else if (lastReadData == "" && tempDatas.length === 0) {
+          toastData("Malzeme Bulunamadı", false);
       }
 
-      if (lastData != null && (lastData.productQrCode == e))
-      { 
-        lastData.endDate = await new Date();
-        if (lastData.endDate != undefined)
-        {
-        
-        lastData.elapsedTime = (lastData.endDate.getTime() - lastData.beginDate.getTime()) / 1000;
-        lastData.isFininshed = 1;
-        lastData.nextProcessRouteId = nextRouteId;
-        lastData.productionId = id;
-        lastData.order = order;
+      if (lastReadData != "") {
 
-        addData(lastData);
+        let lastDatas = data.filter(
+          (obj) =>
+            obj.code === lastReadData &&
+            obj.wareHouseCode === e.replace("-", "*") &&
+            obj.materialUsableState === 0
+        );
+
+        if (lastDatas.length >= 1) {
+           barcodController(lastDatas[0], 1);
+            setlastReadData("");
+        } else {
+          let barcodeData = e.split("+");
+          let splitData = barcodeData[1].replace("*", "-");
+          var Controller = splitData.indexOf("DEPO");
+          if (Controller == -1) {
+            splitData = "DEPO-" + splitData;
+          }
+
+          newWareHouse(splitData, e.replace("-", "*"));
         }
- 
-      } else {
-        let choseMethod =
-          isProductPage == 1
-            ? "api/Product/GetByQrCodeProduct?productionId=" +
-              id +"&code=" +e +
-              "&workProcessRouteId=" +
-              routeId
-            : "api/ProductHistories/GetByQrCodeHistories?code=" +
-              e +
-              "&workProcessRouteId=" +
-              routeId;
-        axios
-          .get(process.env.REACT_APP_API_ENDPOINT + choseMethod)
-          .then((response) => {
-            if (response.data.success) {
-              let datas = {
-                productId : response.data.data,
-                workProcessRouteId: routeId,
-                productQrCode: e,
-                beginDate: new Date(),
-                elapsedTime: 0,
-              };
-              setData([...data, datas]);
-              setLastData(datas);
-              toastData(e + " kodlu panel okutulmuştur...!", true);
-            } else {
-              toastData(e + " kodlu panel bulunamadı...!", false);
-            }
-          });
       }
     } else {
       toastData("Barkod Okutmadan İş Akışını Başlatınız!", false);
     }
   };
 
+  // const updateState = async (e) => {
+  //   if (readerState) {
+
+
+  //     if (lastData != null && (lastData.productQrCode == e))
+  //     { 
+  //       lastData.endDate = await new Date();
+  //       if (lastData.endDate != undefined)
+  //       {
+        
+  //       lastData.elapsedTime = (lastData.endDate.getTime() - lastData.beginDate.getTime()) / 1000;
+  //       lastData.isFininshed = 1;
+  //       lastData.nextProcessRouteId = nextRouteId;
+  //       lastData.productionId = id;
+  //       lastData.order = order;
+
+  //       addData(lastData);
+  //       }
+ 
+  //     } else {
+  //       let choseMethod =
+  //        isMaterialPage == 1
+  //           ? "api/Material/GetByCodeMaterial?productionId=" +
+  //             id +"&code=" +e +
+  //             "&workProcessRouteId=" +
+  //             routeId
+  //           : "api/MaterialHistories/GetByCodeHistories?code=" +
+  //             e +
+  //             "&workProcessRouteId=" +
+  //             routeId;
+  //       axios
+  //         .get(process.env.REACT_APP_API_ENDPOINT + choseMethod)
+  //         .then((response) => {
+  //           if (response.data.success) {
+  //             let datas = {
+  //               productId : response.data.data,
+  //               workProcessRouteId: routeId,
+  //               productQrCode: e,
+  //               beginDate: new Date(),
+  //               elapsedTime: 0,
+  //             };
+  //             setData([...data, datas]);
+  //             setLastData(datas);
+  //             toastData(e + " kodlu panel okutulmuştur...!", true);
+  //           } else {
+  //             toastData(e + " kodlu panel bulunamadı...!", false);
+  //           }
+  //         });
+  //     }
+  //   } else {
+  //     toastData("Barkod Okutmadan İş Akışını Başlatınız!", false);
+  //   }
+  // };
+
   return (
     <Fragment>
       <Row>
+      <DetailModal
+        modalState={modalState}
+        modalStateChange={modalStateChange}
+        modalDetailRow={rowData}
+        modalRowFunc={barcodController}
+      />
         <Col xl="12" md="12" xs="12" style={{ minHeight: 100 }}>
           <TimerCalculate
             finishController={finishData}
@@ -176,48 +262,11 @@ function MaterialProvision(props) {
         <div>
           <div className="content-header row">
             <div className="content-header-right text-md-end col-md-12 col-12 d-md-block d-none">
-              {/* <div className="row">
-                <div className="col-10 text-right"></div>
-                {finishStateButton ? (
-                  <div className="col-1 text-right">
-                    <Button.Ripple
-                      className="btn-icon"
-                      color="primary"
-                      id="newProductionOrders"
-                      onClick={() => vardiyaTamamla()}
-                    >
-                      <CheckCircle size={20} /> Vardiya Bitir
-                    </Button.Ripple>
-                    <UncontrolledTooltip
-                      placement="left"
-                      target="newProductionOrders"
-                    >
-                      Vardiya Bitir
-                    </UncontrolledTooltip>
-                  </div>
-                ) : null}
-                <div className="col-1 text-right">
-                  <Button.Ripple
-                    className="btn-icon"
-                    color="warning"
-                    id="newProductionOrder"
-                    onClick={() => isTamamla()}
-                  >
-                    <CheckSquare size={20} /> İş Emrini Bitir
-                  </Button.Ripple>
-                  <UncontrolledTooltip
-                    placement="left"
-                    target="newProductionOrder"
-                  >
-                    Bitir
-                  </UncontrolledTooltip>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>
         <Row>
-          <Col xl="3" md="3" xs="32">
+          <Col xl="2" md="2" xs="32">
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
@@ -231,48 +280,68 @@ function MaterialProvision(props) {
               </Table>
             ) : null}
           </Col>
-          <Col xl="9" md="9" xs="9">
+          <Col xl="10" md="10" xs="32">
             {tableState ? (
-              <Table responsive style={{ marginTop: 10 }} size="sm">
+              <Table responsive style={{ marginTop: 10 }} size="md">
                 <thead>
                   <tr>
-                    <th>QrCode</th>
-                    <th>Baslangıc Tarihi</th>
-                    <th>Bitiş Tarihi</th>
-                    <th>Gecen Süre</th>
+                    <th>Code</th>
+                    <th>Hammadde Adı</th>
+                    <th>Depo Adı</th>
+                    <th>Birim</th>
+                    <th>Miktar</th>
+                    <th>Düşüm Miktarı</th>
                     <th>Kullanıcı</th>
+    
                     <th style={{ textAlign: "right" }}></th>
                   </tr>
                 </thead>
                 <tbody>
                   {data?.length > 0 ? (
+                 
                     <>
                       {data.map((obj) => (
+                        obj.isRead == false ? (
                         <tr
-                          style={{ backgroundColor: "#3e92cc", color: "white" }}
+                          style={{  backgroundColor: "transparent", color: "white" }}
                           key={`${obj.id}`}
                         >
-                          <td style={{ color: "white" }}>{obj.productQrCode}</td>
-                          <td style={{ color: "white" }}>
-                            {obj.beginDate
-                              ? new Date(obj.beginDate).toLocaleDateString()
-                              : null}{" "}
-                            {obj.beginDate
-                              ? new Date(obj.beginDate).toLocaleTimeString()
-                              : null}
-                          </td>
-                          <td style={{ color: "white" }}>
-                            {obj.endDate
-                              ? new Date(obj.endDate).toLocaleDateString()
-                              : null}{" "}
-                            {obj.endDate
-                              ? new Date(obj.endDate).toLocaleTimeString()
-                              : null}
-                          </td>
-                          <td style={{ color: "white" }}>{obj.elapsedTime}</td>
+                          <td style={{ color: "white" }}>{obj.code}</td>
+                          <td style={{ color: "white" }}>{obj.name}</td>
+                          <td style={{ color: "white" }}>{obj.depoAdi}</td>
+                          <td style={{ color: "white" }}>{obj.unit}</td>
+                          <td style={{ color: "white" }}>{obj.quantity}</td>
+                          <td style={{ color: "white" }}>{obj.decreaseQuantity}</td>
+                          <td style={{ color: "white" }}>{userName}</td>
+                          <td style={{ textAlign: "right" }}>
+                      <Button.Ripple
+                        className="btn-icon pull-right"
+                        color="secondary"
+                        onClick={() => {
+                          buttonRowUpdate(obj);
+                        }}
+                      >
+                        <CheckCircle size={12} />
+                      </Button.Ripple>
+                    </td>
+                        </tr>
+                        ) : 
+                        (
+                        <tr
+                          style={{  backgroundColor: "green", color: "white" }}
+                          key={`${obj.id}`}
+                        >
+                          <td style={{ color: "white" }}>{obj.code}</td>
+                          <td style={{ color: "white" }}>{obj.name}</td>
+                          <td style={{ color: "white" }}>{obj.depoAdi}</td>
+                          <td style={{ color: "white" }}>{obj.unit}</td>
+                          <td style={{ color: "white" }}>{obj.quantity}</td>
+                          <td style={{ color: "white" }}>{obj.decreaseQuantity}</td>
                           <td style={{ color: "white" }}>{userName}</td>
                           <td></td>
+                          
                         </tr>
+                        )
                       ))}
                     </>
                   ) : null}
