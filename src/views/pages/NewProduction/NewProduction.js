@@ -1,7 +1,7 @@
 import "@styles/base/core/menu/menu-types/vertical-menu.scss";
 import "@styles/base/core/menu/menu-types/vertical-overlay-menu.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { Form, Popconfirm, Table } from 'antd';
+import { Form, Popconfirm, Table, InputNumber } from 'antd';
 import React, { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -13,8 +13,11 @@ import {
     Input,
     Row
 } from "reactstrap";
+import axios from "axios";
 import FormInput from "../../../@core/components/FormInput";
 import './NewProduction.css';
+import { useHistory } from "react-router-dom";
+import toastData from "../../../@core/components/toastData";
 const EditableContext = React.createContext(null);
 const EditableRow = ({ index, ...props }) => {
     const [form] = Form.useForm();
@@ -29,6 +32,7 @@ const EditableRow = ({ index, ...props }) => {
 const EditableCell = ({
     title,
     editable,
+    inputType,
     children,
     dataIndex,
     record,
@@ -47,7 +51,11 @@ const EditableCell = ({
         setEditing(!editing);
         if (record[dataIndex] === "Ürün Adını Giriniz" ||
             record[dataIndex] === "Barkodu Okutun" ||
-            record[dataIndex] === "Düşüm Miktarını Girin")
+            record[dataIndex] === "Açıklama Giriniz" ||
+            record[dataIndex] === "Parti Numarasını Giriniz" ||
+            record[dataIndex] === "Miktar Giriniz" ||
+            record[dataIndex] === "Birim Giriniz" ||
+            record[dataIndex] === "Düşüm Miktarını Giriniz")
             form.setFieldsValue({
                 [dataIndex]: "",
             });
@@ -69,6 +77,7 @@ const EditableCell = ({
         }
     };
     let childNode = children;
+    const inputNode = inputType === 'number' ? <InputNumber ref={inputRef} onPressEnter={save} onBlur={save} /> : <Input ref={inputRef} onPressEnter={save} onBlur={save} />;
     if (editable) {
         childNode = editing ? (
             <Form.Item
@@ -78,12 +87,12 @@ const EditableCell = ({
                 name={dataIndex}
                 rules={[
                     {
-                        required: false,
+                        required: true,
                         message: `${title} is required.`,
                     },
                 ]}
             >
-                <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+                {inputNode}
             </Form.Item>
         ) : (
             <div
@@ -102,6 +111,7 @@ const EditableCell = ({
 
 
 const NewProduction = () => {
+    const history = useHistory();
     const [dataSource, setDataSource] = useState([]);
     const { t } = useTranslation();
     const [count, setCount] = useState(2);
@@ -112,9 +122,8 @@ const NewProduction = () => {
     const defaultColumns = [
         {
             title: 'Ürün Adı',
-            dataIndex: 'productName',
-            width: '30%',
-            editable: true,
+            dataIndex: 'name',
+            editable: true
         },
         {
             title: 'Kod',
@@ -122,8 +131,28 @@ const NewProduction = () => {
             editable: true
         },
         {
+            title: 'Açıklama',
+            dataIndex: 'description',
+            editable: true
+        },
+        {
+            title: 'Parti Numarası',
+            dataIndex: 'partyNumber',
+            editable: true
+        },
+        {
+            title: 'Miktar',
+            dataIndex: 'quantity',
+            editable: true
+        },
+        {
             title: 'Düşüm Miktarı',
-            dataIndex: 'decreaseQty',
+            dataIndex: 'decreaseQuantity',
+            editable: true
+        },
+        {
+            title: 'Birim',
+            dataIndex: 'unit',
             editable: true
         },
         {
@@ -141,9 +170,13 @@ const NewProduction = () => {
     const handleAdd = () => {
         const newData = {
             key: count,
-            productName: "Ürün Adını Giriniz",
+            name: "Ürün Adını Giriniz",
             code: 'Barkodu Okutun',
-            decreaseQty: `Düşüm Miktarını Girin`
+            decreaseQuantity: `Düşüm Miktarını Giriniz`,
+            description: "Açıklama Giriniz",
+            partyNumber: "Parti Numarasını Giriniz",
+            quantity: "Miktar Giriniz",
+            unit: "Birim Giriniz"
         };
         setDataSource([...dataSource, newData]);
         setCount(count + 1);
@@ -162,7 +195,6 @@ const NewProduction = () => {
                 code: data.code.replaceAll("ç", ".")
             };
         });
-        console.log(modified)
         setDataSource(modified);
     };
     const components = {
@@ -179,6 +211,7 @@ const NewProduction = () => {
             ...col,
             onCell: (record) => ({
                 record,
+                inputType: col.dataIndex === 'quantity' || col.dataIndex === "decreaseQuantity" ? 'number' : 'text',
                 editable: col.editable,
                 dataIndex: col.dataIndex,
                 title: col.title,
@@ -186,13 +219,21 @@ const NewProduction = () => {
             }),
         };
     });
-    const handleSaveProduction = (data) => {
+    const handleSaveProduction = async (data) => {
         const uretimBilgisi = data;
-        const hammadeBilgisi= dataSource
-        console.log(uretimBilgisi);
-        console.log(hammadeBilgisi)
-        // axios.post(process.env.REACT_APP_API_ENDPOINT+"")
-    };
+        const hammadeBilgisi = dataSource
+        let productionId = null;
+        await axios.post(process.env.REACT_APP_API_ENDPOINT + "api/Production/Add", uretimBilgisi).then((res) => productionId = res.data.data).catch(err => {
+            toastData(err.message, false);
+            return;
+        })
+        hammadeBilgisi.forEach(async (data) => {
+            data.productionId = productionId;
+            await axios.post(process.env.REACT_APP_API_ENDPOINT + "api/Material/Add", data).then(res => console.log(res.data)).catch(err => console.log(err));
+        });
+        history.push("production/" + productionId);
+    }
+
     const { register, handleSubmit, formState: { errors } } = useForm();
     const onSubmit = data => handleSaveProduction(data);
     return (
@@ -213,16 +254,32 @@ const NewProduction = () => {
                                                 <dl>
                                                     <Row className={"align-items-center"}>
                                                         <Col sm="3" className=" text-end text-uppercase">
+                                                            <dt>{t('Üretim Emri').toLocaleUpperCase()}</dt>
+                                                        </Col>
+                                                        <Col className="mx-2" >
+                                                            <dd>
+                                                                <FormInput
+                                                                    type="text"
+                                                                    placeholder="Üretim Emri Giriniz"
+                                                                    name="orderNo"
+                                                                    register={register}
+                                                                /></dd>
+                                                        </Col>
+                                                    </Row>
+                                                </dl>
+                                                <dl>
+                                                    <Row className={"align-items-center"}>
+                                                        <Col sm="3" className=" text-end text-uppercase">
                                                             <dt>{t('Üretim Adı').toLocaleUpperCase()}</dt>
                                                         </Col>
                                                         <Col className="mx-2" >
                                                             <dd>
                                                                 <FormInput
-                                                            type="text"
-                                                            placeholder="Üretim Adı Giriniz"
-                                                                name="productionName"
-                                                               register={register}
-                                                            /></dd>
+                                                                    type="text"
+                                                                    placeholder="Üretim Adı Giriniz"
+                                                                    name="uretimAdi"
+                                                                    register={register}
+                                                                /></dd>
                                                         </Col>
                                                     </Row>
                                                 </dl>
@@ -234,9 +291,9 @@ const NewProduction = () => {
                                                         <Col className="mx-2" >
                                                             <dd>
                                                                 <FormInput placeholder="Açıklama Giriniz"
-                                                                name="description"
-                                                                register={register}
-                                                            /></dd>
+                                                                    name="aciklama"
+                                                                    register={register}
+                                                                /></dd>
                                                         </Col>
                                                     </Row>
                                                 </dl>
@@ -247,16 +304,16 @@ const NewProduction = () => {
                                                         </Col>
                                                         <Col className="mx-2" >
                                                             <dd>
-                                                                 <FormInput
-                                                                onKeyPress={(event) => {
-                                                                    if (!/[0-9]/.test(event.key)) {
-                                                                        event.preventDefault();
-                                                                    }
-                                                                }}
-                                                                placeholder="Üretim Adedi Giriniz"
-                                                                name="desciptionQty"
-                                                                register={register}
-                                                            /></dd>
+                                                                <FormInput
+                                                                    onKeyPress={(event) => {
+                                                                        if (!/[0-9]/.test(event.key)) {
+                                                                            event.preventDefault();
+                                                                        }
+                                                                    }}
+                                                                    placeholder="Üretim Adedi Giriniz"
+                                                                    name="quantity"
+                                                                    register={register}
+                                                                /></dd>
                                                         </Col>
                                                     </Row>
                                                 </dl>
@@ -268,35 +325,18 @@ const NewProduction = () => {
                                                         <Col className="mx-2" >
                                                             <dd>
                                                                 <FormInput
-                                                                onKeyPress={(event) => {
-                                                                    if (!/[0-9]/.test(event.key)) {
-                                                                        event.preventDefault();
-                                                                    }
-                                                                }}
-                                                                type="date"
-                                                                name="startDate"
-                                                                register={register}
-                                                            /></dd>
+                                                                    onKeyPress={(event) => {
+                                                                        if (!/[0-9]/.test(event.key)) {
+                                                                            event.preventDefault();
+                                                                        }
+                                                                    }}
+                                                                    type="date"
+                                                                    name="startDate"
+                                                                    register={register}
+                                                                /></dd>
                                                         </Col>
                                                     </Row>
                                                 </dl>
-                                                <dl>
-                                                    <Row className={"align-items-center"}>
-                                                        <Col sm="3" className=" text-end text-uppercase">
-                                                            <dt>{t('Ürün Geçiş Süresi').toLocaleUpperCase()}</dt>
-                                                        </Col>
-                                                        <Col className="mx-2" >
-                                                            <dd>
-                                                                <FormInput
-                                                                type="time"
-                                                                name="transitionTime"
-                                                                register={register}
-                                                            />
-                                                            </dd>
-                                                        </Col>
-                                                    </Row>
-                                                </dl>
-
                                             </Card>
                                         </Col>
                                     </Row>
@@ -306,8 +346,9 @@ const NewProduction = () => {
                         <Col sm={8}>
                             <PerfectScrollbar
                                 className='main-menu-content'
-                                options={{ suppressScrollX: false }}
-                                style={{ height: "76vh" }}>
+                                options={{ suppressScrollX: true }}
+                                suppressScrollX
+                                style={{ height: "76vh", width: "100%" }}>
                                 <Row>
                                     <Col>
                                         <Row>
