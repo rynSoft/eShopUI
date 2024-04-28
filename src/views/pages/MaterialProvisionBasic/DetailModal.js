@@ -1,42 +1,21 @@
-import BarcodeReader from "react-barcode-reader";
-import React, { useState, useEffect, Fragment, useContext } from "react";
+import React, { useState } from "react";
 import {
   Table,
   Row,
-  Col,
-  ButtonGroup,
   Button,
-  Nav,
-  Card,
-  CardBody,
   Modal,
   ModalHeader,
   ModalBody,
-  Label,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
 } from "reactstrap";
-import axios from "axios";
-import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
-import {
-  AlignJustify,
-  Check,
-  CheckCircle,
-  ChevronDown,
-  Cloud,
-  CloudLightning,
-  CloudOff,
-  Printer,
-  X,
-  XOctagon,
+
+import {  X
 } from "react-feather";
 import Select from "react-select";
-import ReactPaginate from "react-paginate";
-import DataTable from "react-data-table-component";
+
+
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { selectThemeColors } from "@utils";
+
 function DetailModal(props) {
   const { modalDetailRow, modalStateChange, modalState ,modalRowFunc} = props;
 
@@ -45,6 +24,7 @@ function DetailModal(props) {
     { id: 2, name: "Eksik Malzeme" },
     { id: 3, name: "Üretim Sahasında" },
   ]);
+  
   const CloseBtn = (
     <X
       className="cursor-pointer"

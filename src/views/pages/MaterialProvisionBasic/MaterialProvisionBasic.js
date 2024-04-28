@@ -9,28 +9,25 @@ import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
 import toastData from "../../../@core/components/toastData/index.js";
 import DetailModal from "./DetailModal.js";
+import ApexChart from "../ProductionProcess/ApexChart.js";
 import { CheckCircle } from "react-feather";
 
 
-function MaterialProvision(props) {
+function MaterialProvisionBasic(props) {
   const [readerState, setReaderState] = React.useState(false);
   const [finishStateButton, setFinishStateButton] = React.useState(false);
   const [data, setData] = React.useState([]);
-  const [lastData, setLastData] = React.useState(null);
   const [finishData, setFinishData] = React.useState(false);
   const [tableState, setTableState] = React.useState(false);
   const [id, setId] = useState(props.match.params.id);
   const [rowData, setRowData] = React.useState();
   const [routeId, setRouteId] = useState(Number(props.match.params.routeId));
   const [modalState, modalStateChange] = React.useState(false);
-  const [lastReadData, setlastReadData] = React.useState("");
-  const [useblaState, setUseblaState] = React.useState(1);
+  const [order, setOrder] = useState();
   const [tabInfo, setTabInfo] = useState(
     JSON.parse(localStorage.getItem("lastTab"))
   );
   const [nextRouteId, setNextRouteId] = useState(0);
-  const [isMaterialPage, setMaterialPage] = useState(0);
-  const [order, setOrder] = useState();
   const [userName, setuserName] = useState(
     JSON.parse(localStorage.getItem("userData")).userNameSurname
   );
@@ -78,15 +75,17 @@ function MaterialProvision(props) {
     setTableState(true);
   };
 
-  const addData = (datas) => {
+
+  const addData = (arg) => {
+    debugger;
     axios
       .post(
         process.env.REACT_APP_API_ENDPOINT + "api/MaterialHistories/Add",
-        datas
+        arg
       )
       .then((res) => {
         if (res.data.success) {
-          setLastData(null);
+          setData([...data]);
           toastData("Kayıt Yapıldı !", true);
         } else {
           toastData("Kayıt Yapılamadı !", false);
@@ -106,131 +105,54 @@ function MaterialProvision(props) {
     }
   };
 
-  const barcodController = (e) => {
-    const newState = data.map((obj) => {
-      if (obj.id === e.id && obj.materialUsableState === 0)
-        return {
-          id : obj.id,
-          materialId : e.Id,
-          workProcessRouteId : routeId,
-          explanation : obj.explanation,
-          materialUsableState : useblaState
-        };
-      return obj;
-    });
-
-
-    addData(e);
-
-    toastData(e.material + " - " + e.partyNumber + " Başarıyla Okutuldu", true);
-    setData(newState);
-    const kitProvidedController = newState.find(
-      (obj) => obj.isKitProvided === 0
+  const barcodController = (e,value) => {
+    debugger;
+    let datas = data.find(
+      (obj) => obj.id === e.id
     );
 
-    if (kitProvidedController === undefined) {
-      toastData("Tüm Barkodlar Okutuldu", true);
-      setFinishData(true);
-    }
+    datas.materailReadState = value;
+    let addDatas = {
+      materialId: e.id,
+      workProcessRouteId: routeId,
+      nextProcessRouteId: nextRouteId,
+      materailReadState : value,
+      productionId : id
+    };
+
+    addData(addDatas);
     modalStateChange(false);
   };
 
 
   const updateState = (e) => {
     if (readerState) {
-      let lastReadDatas;
-
-      let tempDatas = data.filter((obj) => obj.code === e && obj.materialUsableState === 0);
-
-      if (tempDatas.length >= 1) {
-           lastReadDatas = e;
-           toastData(e.split("+")[0] + " Depo Barkodunu Okutunuz!", true);
-           setlastReadData(lastReadDatas);
-      } else if (lastReadData == "" && tempDatas.length === 0) {
-          toastData("Malzeme Bulunamadı", false);
-      }
-
-      if (lastReadData != "") {
-
-        let lastDatas = data.filter(
-          (obj) =>
-            obj.code === lastReadData &&
-            obj.wareHouseCode === e.replace("-", "*") &&
-            obj.materialUsableState === 0
-        );
-
-        if (lastDatas.length >= 1) {
-           barcodController(lastDatas[0], 1);
-            setlastReadData("");
-        } else {
-          let barcodeData = e.split("+");
-          let splitData = barcodeData[1].replace("*", "-");
-          var Controller = splitData.indexOf("DEPO");
-          if (Controller == -1) {
-            splitData = "DEPO-" + splitData;
-          }
-
-          newWareHouse(splitData, e.replace("-", "*"));
+      let datas = data.find((obj) => obj.code === e && obj.materialUsableState === 0);
+  
+      if (datas != undefined){
+       datas.materailReadState = 1;
+  
+      let addDatas = {
+        materialId: datas.id,
+        workProcessRouteId: routeId,
+        nextProcessRouteId: nextRouteId,
+        materailReadState : 1,
+        productionId : id
+      };
+  
+      addData(addDatas);
+      setData([...data]);
+      modalStateChange(false);
+    }else
+    {
+      toastData("Hammadde Bulunamadı", false);
         }
-      }
+      
     } else {
       toastData("Barkod Okutmadan İş Akışını Başlatınız!", false);
     }
-  };
+  }
 
-  // const updateState = async (e) => {
-  //   if (readerState) {
-
-
-  //     if (lastData != null && (lastData.productQrCode == e))
-  //     { 
-  //       lastData.endDate = await new Date();
-  //       if (lastData.endDate != undefined)
-  //       {
-        
-  //       lastData.elapsedTime = (lastData.endDate.getTime() - lastData.beginDate.getTime()) / 1000;
-  //       lastData.isFininshed = 1;
-  //       lastData.nextProcessRouteId = nextRouteId;
-  //       lastData.productionId = id;
-  //       lastData.order = order;
-
-  //       addData(lastData);
-  //       }
- 
-  //     } else {
-  //       let choseMethod =
-  //        isMaterialPage == 1
-  //           ? "api/Material/GetByCodeMaterial?productionId=" +
-  //             id +"&code=" +e +
-  //             "&workProcessRouteId=" +
-  //             routeId
-  //           : "api/MaterialHistories/GetByCodeHistories?code=" +
-  //             e +
-  //             "&workProcessRouteId=" +
-  //             routeId;
-  //       axios
-  //         .get(process.env.REACT_APP_API_ENDPOINT + choseMethod)
-  //         .then((response) => {
-  //           if (response.data.success) {
-  //             let datas = {
-  //               productId : response.data.data,
-  //               workProcessRouteId: routeId,
-  //               productQrCode: e,
-  //               beginDate: new Date(),
-  //               elapsedTime: 0,
-  //             };
-  //             setData([...data, datas]);
-  //             setLastData(datas);
-  //             toastData(e + " kodlu panel okutulmuştur...!", true);
-  //           } else {
-  //             toastData(e + " kodlu panel bulunamadı...!", false);
-  //           }
-  //         });
-  //     }
-  //   } else {
-  //     toastData("Barkod Okutmadan İş Akışını Başlatınız!", false);
-  //   }
-  // };
 
   return (
     <Fragment>
@@ -266,28 +188,29 @@ function MaterialProvision(props) {
           </div>
         </div>
         <Row>
-          <Col xl="2" md="2" xs="32">
+          <Col xl="3" md="3" xs="32">
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
                   <tr>
-                    <th>QrCode</th>
+                    <th>Hammadde Okutma Durumu</th>
                   </tr>
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
-                  " Chart Component Eklenecek ." " Chart Component Eklenecek ."
+                <div id="chart"  style={{ marginTop: 100 }}>
+                <ApexChart  type="pie" width={380} />
+              </div>
                 </tbody>
               </Table>
             ) : null}
           </Col>
-          <Col xl="10" md="10" xs="32">
+          <Col xl="9" md="9" xs="32">
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="md">
                 <thead>
                   <tr>
                     <th>Code</th>
                     <th>Hammadde Adı</th>
-                    <th>Depo Adı</th>
                     <th>Birim</th>
                     <th>Miktar</th>
                     <th>Düşüm Miktarı</th>
@@ -301,14 +224,13 @@ function MaterialProvision(props) {
                  
                     <>
                       {data.map((obj) => (
-                        obj.isRead == false ? (
+                        obj.materailReadState == 0 ? (
                         <tr
                           style={{  backgroundColor: "transparent", color: "white" }}
                           key={`${obj.id}`}
                         >
                           <td style={{ color: "white" }}>{obj.code}</td>
                           <td style={{ color: "white" }}>{obj.name}</td>
-                          <td style={{ color: "white" }}>{obj.depoAdi}</td>
                           <td style={{ color: "white" }}>{obj.unit}</td>
                           <td style={{ color: "white" }}>{obj.quantity}</td>
                           <td style={{ color: "white" }}>{obj.decreaseQuantity}</td>
@@ -325,15 +247,14 @@ function MaterialProvision(props) {
                       </Button.Ripple>
                     </td>
                         </tr>
-                        ) : 
-                        (
-                        <tr
+                        ) :
+                        obj.materailReadState == 1 ? (
+                          <tr
                           style={{  backgroundColor: "green", color: "white" }}
                           key={`${obj.id}`}
                         >
                           <td style={{ color: "white" }}>{obj.code}</td>
                           <td style={{ color: "white" }}>{obj.name}</td>
-                          <td style={{ color: "white" }}>{obj.depoAdi}</td>
                           <td style={{ color: "white" }}>{obj.unit}</td>
                           <td style={{ color: "white" }}>{obj.quantity}</td>
                           <td style={{ color: "white" }}>{obj.decreaseQuantity}</td>
@@ -341,7 +262,38 @@ function MaterialProvision(props) {
                           <td></td>
                           
                         </tr>
-                        )
+                          ) :
+                          obj.materailReadState == 2 ? (
+                            <tr
+                            style={{  backgroundColor: "#FFEA00", color: "black" }}
+                            key={`${obj.id}`}
+                          >
+                            <td style={{ color: "black" }}>{obj.code}</td>
+                            <td style={{ color: "black" }}>{obj.name}</td>
+                            <td style={{ color: "black" }}>{obj.unit}</td>
+                            <td style={{ color: "black" }}>{obj.quantity}</td>
+                            <td style={{ color: "black" }}>{obj.decreaseQuantity}</td>
+                            <td style={{ color: "black" }}>{userName}</td>
+                            <td></td>
+                            
+                          </tr>
+                            ) :
+                        
+                          obj.materailReadState == 3 ? (
+                            <tr
+                            style={{  backgroundColor: "#11599d", color: "white" }}
+                            key={`${obj.id}`}
+                          >
+                            <td style={{ color: "white" }}>{obj.code}</td>
+                            <td style={{ color: "white" }}>{obj.name}</td>
+                            <td style={{ color: "white" }}>{obj.unit}</td>
+                            <td style={{ color: "white" }}>{obj.quantity}</td>
+                            <td style={{ color: "white" }}>{obj.decreaseQuantity}</td>
+                            <td style={{ color: "white" }}>{userName}</td>
+                            <td></td>
+                            
+                          </tr>
+                            ) : null
                       ))}
                     </>
                   ) : null}
@@ -355,4 +307,4 @@ function MaterialProvision(props) {
   );
 }
 
-export default MaterialProvision;
+export default MaterialProvisionBasic;

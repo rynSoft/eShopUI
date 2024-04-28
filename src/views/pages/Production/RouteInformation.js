@@ -225,7 +225,7 @@ const RouteInformation = (props) => {
   <div className="react-dataTable">
         <PerfectScrollbar
           options={{ wheelPropagation: false, suppressScrollX: true }}
-          className="ScrollHeightAll"
+          className="ScrollHeightDynamic"
 
         >
           <DataTable
@@ -243,7 +243,7 @@ const RouteInformation = (props) => {
   <div className="react-dataTable">
         <PerfectScrollbar
           options={{ wheelPropagation: false, suppressScrollX: true }}
-          className="ScrollHeightAll"
+          className="ScrollHeightDynamic"
 
         >
           <DataTable
