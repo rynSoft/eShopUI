@@ -8,7 +8,7 @@ import {
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
 import toastData from "../../../@core/components/toastData/index.js";
-
+import ApexChart from "../ProductionProcess/ApexChart.js";
 
 function MaterialVerification(props) {
   const [readerState, setReaderState] = React.useState(false);
@@ -17,7 +17,7 @@ function MaterialVerification(props) {
   const [finishData, setFinishData] = React.useState(false);
   const [tableState, setTableState] = React.useState(false);
   const [id, setId] = useState(props.match.params.id);
-
+  const [modalState, modalStateChange] = React.useState(false);
   const [routeId, setRouteId] = useState(Number(props.match.params.routeId));
   const [tabInfo, setTabInfo] = useState(
     JSON.parse(localStorage.getItem("lastTab"))
@@ -28,7 +28,6 @@ function MaterialVerification(props) {
   );
 
   const handleError = (error) => {
-    console.log("Error " + error);
   };
 
   const readerStateFunction = (stateValue) => {
@@ -149,7 +148,7 @@ function MaterialVerification(props) {
           </div>
         </div>
         <Row>
-          <Col xl="2" md="2" xs="32">
+          <Col xl="3" md="3" xs="32">
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
@@ -158,12 +157,14 @@ function MaterialVerification(props) {
                   </tr>
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
-                  " Chart Component Eklenecek ." " Chart Component Eklenecek ."
+                <div id="chart"  style={{ marginTop: 100 }}>
+                {/* <ApexChart  type="pie" width={380} /> */}
+              </div>
                 </tbody>
               </Table>
             ) : null}
           </Col>
-          <Col xl="10" md="10" xs="32">
+          <Col xl="9" md="9" xs="32">
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="md">
                 <thead>

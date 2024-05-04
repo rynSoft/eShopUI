@@ -18,8 +18,8 @@ import { date } from "yup";
 function ProductHistoriesExtended(props) {
   const [readerState, setReaderState] = React.useState(false);
   const [productData, setProductData] = React.useState([]);
-  const [materailData, setmaterailData] = React.useState([]);
-  const [materailIds, setmaterailIds] = React.useState([]);
+  const [materailData, setMaterailData] = React.useState([]);
+  const [materailIds, setmMterailIds] = React.useState([]);
   const [lastData, setLastData] = React.useState(null);
 
   const [finishData, setFinishData] = React.useState(false);
@@ -38,7 +38,6 @@ function ProductHistoriesExtended(props) {
   );
 
   const handleError = (error) => {
-    console.log("Error " + error);
   };
 
   const readerStateFunction = (stateValue) => {
@@ -61,10 +60,13 @@ function ProductHistoriesExtended(props) {
           tabInfo.order
       )
       .then((response) => {
-        setNextRouteId(response.data.data.id);
-        setIsProductPage(response.data.data.isProductPage);
-        setOrder(response.data.data.order);
-        loadData(response.data.data.isProductPage);
+        if (response.data.data!= null )
+        {
+          setNextRouteId(response.data.data.id);
+          setIsProductPage(response.data.data.isProductPage);
+          setOrder(response.data.data.order);
+          loadData(response.data.data.isProductPage);
+        }
       });
   };
 
@@ -93,7 +95,7 @@ function ProductHistoriesExtended(props) {
       )
       .then((response) => {
         console.log(response.data.data);
-        setmaterailData(response.data.data);
+        setMaterailData(response.data.data);
       });
 
     console.log("this is:", id);
@@ -107,8 +109,8 @@ function ProductHistoriesExtended(props) {
       )
       .then((res) => {
         if (res.data.success) {
-          setmaterailData([]);
-          setmaterailIds([]);
+          setMaterailData([]);
+          setMaterailIds([]);
 
           toastData("Kayıt Yapıldı !", true);
         } else {
@@ -166,7 +168,7 @@ function ProductHistoriesExtended(props) {
         lastData.productionId = id;
         lastData.order = order;
         lastData.metarialds = materailIds;
-        // if (materailIds?.length > 0) {
+
           addData(lastData);
           setLastData(null);
 
@@ -198,7 +200,6 @@ function ProductHistoriesExtended(props) {
   };
 
   const material = async (e, code) => {
-    console.log("material" + e);
     let materialDatas = {
       materialCode: code,
       materialId: e.id,
@@ -210,8 +211,8 @@ function ProductHistoriesExtended(props) {
       materialId: e.id,
       quantity: e.decrease,
     };
-    setmaterailData([...materailData, materialDatas]);
-    setmaterailIds([...materailIds, addDatas]);
+    setMaterailData([...materailData, materialDatas]);
+    setMaterailIds([...materailIds, addDatas]);
   };
 
   const updateState = async (e) => {
@@ -236,9 +237,9 @@ function ProductHistoriesExtended(props) {
           />
         </Col>
         <BarcodeReader
-          onError={handleError}
+          //onError={handleError}
           onScan={(err, result) => {
-            updateState(err.replaceAll("*", "-"));
+            updateState(err);
           }}
         />
       </Row>
@@ -317,7 +318,7 @@ function ProductHistoriesExtended(props) {
                     <th>Düşüm Miktarı</th>
                   </tr>
                 </thead>
-                <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
+                <tbody style={{ marginTop: 10, color: "#7EA1FF", font: 30 }}>
                   {materailData?.length > 0 ? (
                     <>
                       {materailData.map((obj) => (

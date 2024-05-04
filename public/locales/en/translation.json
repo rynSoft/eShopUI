@@ -43,5 +43,6 @@
   "Üretim Adedi": "Production Quantity",
   "Açılış Tarihi": "Openıng Date",
   "Ürün Geçiş Süresi": "Product Transition Time",
-  "Panel Kart Adeti": "Number of Panel Cards"
+  "Panel Kart Adeti": "Number of Panel Cards",
+  "isEmri": "İş Emri Tanımı"
 }

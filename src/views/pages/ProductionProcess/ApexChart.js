@@ -4,12 +4,12 @@ import Chart from "react-apexcharts";
 const data = {
   series: [45, 55, ],
   options: {
-    colors : ['#FBBC54', '#3BE5A5'],
+    colors : ['#f3ca20', '#000000'],
     chart: {
       width: 380,
       type: 'pie',
     },
-    labels: ['Team A', 'Team B', ],
+    labels: ['Tamamlanan', 'Kalan', ],
     responsive: [{
       breakpoint: 480,
       options: {

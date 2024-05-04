@@ -54,7 +54,7 @@ const Login = () => {
     formState: { errors }
   } = useForm({ defaultValues })
 
-  const logo = require(`@src/assets/images/logo/techiz.png`).default;
+  const logo = require(`@src/assets/images/logo/techiz2.png`).default;
   const abilitys =  [
     {
       action: 'manage',
@@ -63,8 +63,10 @@ const Login = () => {
   ];
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
-    source = require(`@src/assets/images/pages/${illustration}`).default
-
+  
+  //source = require(`@src/assets/images/pages/${illustration}`).default
+  source = require(`@src/assets/images/pages/manifacture.gif`).default
+ 
   const onSubmit = data => {
     if (Object.values(data).every(field => field.length > 0)) {
       
@@ -95,7 +97,7 @@ const Login = () => {
   return (
     <div className='auth-wrapper auth-cover'>
         <span className='brand-logo'>
-          <img className='img-fluid' src={logo} alt='Not authorized page' height={150} width={150}/>
+          {/* <img className='img-fluid' src={logo} alt='Not authorized page' margi height={150} width={150}/> */}
         </span>
       <Row className='auth-inner m-0'>
          <Link className='brand-logo' to='/' onClick={e => e.preventDefault()}>
@@ -150,12 +152,18 @@ const Login = () => {
           {/* <h2 className='brand-text text-primary ms-1'>Udea</h2> */}
         
         </Link>
-        <Col className='d-none d-lg-flex align-items-center p-5' lg='8' sm='12'>
+        <Col>
+        <img  height="100%" width="100%"  src={source} alt='Login Cover' />
+        </Col>
+        {/* <Col className='d-none d-lg-flex align-items-center p-5' lg='8' sm='12'>
           <div className='w-100 d-lg-flex align-items-center justify-content-center px-5'>
             <img className='img-fluid' src={source} alt='Login Cover' />
           </div>
-        </Col>
+        </Col> */}
         <Col className='d-flex align-items-center auth-bg px-2 p-lg-5' lg='4' sm='12'>
+        <span className='brand-logo'>
+          <img className='img-fluid' src={logo} alt='Not authorized page' margi height={150} width={150}/>
+        </span>
           <Col className='px-xl-2 mx-auto' sm='8' md='6' lg='12'>
             <CardTitle tag='h2' className='fw-bold mb-1'>
               Hoşgeldiniz

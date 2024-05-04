@@ -1,19 +1,19 @@
 .ant-table-thead .ant-table-cell {
-    background-color: #283046!important;
+    background-color: #322e2f!important;
     
   }
   .ant-table-cell {
-background-color: #343d55;
+background-color: #12a4d9 ;
 }
 .ant-table-cell:focus{
-background-color: #283046!important;
+background-color: #5271c4!important;
 }
 .ant-table-cell:hover{
-background-color: #283046!important;
+background-color: #e2d810!important;
 }
 .ant-spin-container::after{
-    background-color: #283046!important;
+    background-color: #6983c9!important;
 }
 .ant-table{
-    background: #283046!important;
+    background: #95a3ca!important;
 }

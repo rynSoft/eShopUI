@@ -36,7 +36,6 @@ function MaterialProvisionExtended(props) {
   );
 
   const handleError = (error) => {
-    console.log("Error " + error);
   };
 
   const readerStateFunction = (stateValue) => {

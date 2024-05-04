@@ -45,8 +45,8 @@ const Material = (props) => {
       width: "250px",
     },
     {
-      name: t("Depo Bilgisi").toLocaleUpperCase(),
-      selector: (row) => row.soureProductPlace,
+      name: t("Depo Adı").toLocaleUpperCase(),
+      selector: (row) => row.wareHouseName,
       width: "220px",
     },
     {
@@ -60,7 +60,7 @@ const Material = (props) => {
       maxWidth: "400px",
       cell: (row) => {
         return (
-          <div>{row.explanation}</div>
+          <div>{row.description}</div>
         );
       },
     },

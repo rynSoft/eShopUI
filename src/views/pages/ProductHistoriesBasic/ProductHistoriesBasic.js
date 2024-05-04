@@ -1,5 +1,5 @@
 import BarcodeReader from "react-barcode-reader";
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment ,useRef} from "react";
 import {
   Table,
   Row,
@@ -8,6 +8,7 @@ import {
   Button,
   Nav,
   UncontrolledTooltip,
+  Input
 } from "reactstrap";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
@@ -43,10 +44,11 @@ function ProductHistoriesBasic(props) {
   const [userName, setuserName] = useState(
     JSON.parse(localStorage.getItem("userData")).userNameSurname
   );
-
-  const handleError = (error) => {
-    console.log("Error " + error);
-  };
+  const inputRef = useRef(null);
+  // const handleError = (error) => {
+  //   focusInput();
+  //   //console.log("Error " + error);
+  // };
 
   const readerStateFunction = (stateValue) => {
     setReaderState(stateValue);
@@ -75,6 +77,37 @@ function ProductHistoriesBasic(props) {
       });
   };
 
+  const getProductData = async (arg) => {
+    let choseMethod =
+    isProductPage == 1
+      ? "api/Product/GetByQrCodeProduct?productionId=" +
+        id +"&code=" +arg +
+        "&workProcessRouteId=" +
+        routeId
+      : "api/ProductHistories/GetByQrCodeHistories?code=" +
+      arg +
+        "&workProcessRouteId=" +
+        routeId;
+  axios
+    .get(process.env.REACT_APP_API_ENDPOINT + choseMethod)
+    .then((response) => {
+      if (response.data.success) {
+        let datas = {
+          productId : response.data.data.id,
+          workProcessRouteId: routeId,
+          productQrCode: arg,
+          beginDate: new Date(),
+          elapsedTime: 0,
+        };
+        setData([...data, datas]);
+        setLastData(datas);
+        toastData(arg + " kodlu panel okutulmuştur...!", true);
+      } else {
+        toastData(arg + " kodlu panel bulunamadı...!", false);
+      }
+    });
+  }
+
   const loadData = (args) => {
     axios
       .get(               
@@ -89,6 +122,7 @@ function ProductHistoriesBasic(props) {
   };
 
   const addData = (datas) => {
+    debugger;
     axios
       .post(
         process.env.REACT_APP_API_ENDPOINT + "api/ProductHistories/Add",
@@ -96,8 +130,9 @@ function ProductHistoriesBasic(props) {
       )
       .then((res) => {
         if (res.data.success) {
-          setLastData(null);
-          toastData("Kayıt Yapıldı !", true);
+          focusInput();
+          //setLastData(null);
+          //toastData("Kayıt Yapıldı !", true);s
         } else {
           toastData("Kayıt Yapılamadı !", false);
         }
@@ -105,16 +140,28 @@ function ProductHistoriesBasic(props) {
       .catch((err) => toastData("Kayıt Yapılamadı !", false));
   };
 
+  const handleScan = (data) => {
+     updateState(data);
+     focusInput();
+  }
+  const handleError = (err) => {
+    console.error(err);
+  }
+
+  const focusInput = () => {
+    inputRef.current.focus();
+  };
   const updateState = async (e) => {
+    debugger;
     if (readerState) {
 
-      if (lastData != null && lastData.productQrCode != e)
+      if (lastData != null && lastData.productQrCode == e)
       {
-        toastData(lastData.productQrCode + " Ürün üzerindeki iş bitmeden başka bir ürün okutulamaz...!", false);
+        toastData(lastData.productQrCode + "  ürün ikinci kez okutulamaz...!", false);
         return;
       }
 
-      if (lastData != null && (lastData.productQrCode == e))
+      if (lastData != null && (lastData.productQrCode != e))
       { 
         lastData.endDate = await new Date();
         if (lastData.endDate != undefined)
@@ -127,42 +174,19 @@ function ProductHistoriesBasic(props) {
         lastData.order = order;
 
         addData(lastData);
+        getProductData(e);
         }
  
       } else {
-        let choseMethod =
-          isProductPage == 1
-            ? "api/Product/GetByQrCodeProduct?productionId=" +
-              id +"&code=" +e +
-              "&workProcessRouteId=" +
-              routeId
-            : "api/ProductHistories/GetByQrCodeHistories?code=" +
-              e +
-              "&workProcessRouteId=" +
-              routeId;
-        axios
-          .get(process.env.REACT_APP_API_ENDPOINT + choseMethod)
-          .then((response) => {
-            if (response.data.success) {
-              let datas = {
-                productId : response.data.data,
-                workProcessRouteId: routeId,
-                productQrCode: e,
-                beginDate: new Date(),
-                elapsedTime: 0,
-              };
-              setData([...data, datas]);
-              setLastData(datas);
-              toastData(e + " kodlu panel okutulmuştur...!", true);
-            } else {
-              toastData(e + " kodlu panel bulunamadı...!", false);
-            }
-          });
+        getProductData(e);
+
       }
     } else {
       toastData("Barkod Okutmadan İş Akışını Başlatınız!", false);
     }
   };
+
+
 
   return (
     <Fragment>
@@ -178,53 +202,16 @@ function ProductHistoriesBasic(props) {
           />
         </Col>
         <BarcodeReader
-          onError={handleError}
-          onScan={(err, result) => {
-            updateState(err.replaceAll("*", "-"));
-          }}
+         avgTimeByChar={80}
+         onError={handleError}
+         onScan={handleScan}
         />
       </Row>
       <Row>
         <div>
           <div className="content-header row">
             <div className="content-header-right text-md-end col-md-12 col-12 d-md-block d-none">
-              {/* <div className="row">
-                <div className="col-10 text-right"></div>
-                {finishStateButton ? (
-                  <div className="col-1 text-right">
-                    <Button.Ripple
-                      className="btn-icon"
-                      color="primary"
-                      id="newProductionOrders"
-                      onClick={() => vardiyaTamamla()}
-                    >
-                      <CheckCircle size={20} /> Vardiya Bitir
-                    </Button.Ripple>
-                    <UncontrolledTooltip
-                      placement="left"
-                      target="newProductionOrders"
-                    >
-                      Vardiya Bitir
-                    </UncontrolledTooltip>
-                  </div>
-                ) : null}
-                <div className="col-1 text-right">
-                  <Button.Ripple
-                    className="btn-icon"
-                    color="warning"
-                    id="newProductionOrder"
-                    onClick={() => isTamamla()}
-                  >
-                    <CheckSquare size={20} /> İş Emrini Bitir
-                  </Button.Ripple>
-                  <UncontrolledTooltip
-                    placement="left"
-                    target="newProductionOrder"
-                  >
-                    Bitir
-                  </UncontrolledTooltip>
-                </div>
-              </div> */}
+            <button onClick={focusInput}>Focus on Input</button>
             </div>
           </div>
         </div>
@@ -239,13 +226,16 @@ function ProductHistoriesBasic(props) {
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
                   " Chart Component Eklenecek ." " Chart Component Eklenecek ."
+                  
+                  {/* <input type="text" ref={inputRef} /> */}
                 </tbody>
               </Table>
             ) : null}
           </Col>
           <Col xl="9" md="9" xs="9">
+            
             {tableState ? (
-              <Table responsive style={{ marginTop: 10 }} size="sm">
+              <Table  responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
                   <tr>
                     <th>QrCode</th>
