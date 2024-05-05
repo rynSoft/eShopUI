@@ -18,8 +18,8 @@ import { date } from "yup";
 function ProductHistoriesExtended(props) {
   const [readerState, setReaderState] = React.useState(false);
   const [productData, setProductData] = React.useState([]);
-  const [materailData, setMaterailData] = React.useState([]);
-  const [materailIds, setmMterailIds] = React.useState([]);
+  const [materialData, setMaterialData] = React.useState([]);
+  const [materialIds, setMaterialIds] = React.useState([]);
   const [lastData, setLastData] = React.useState(null);
 
   const [finishData, setFinishData] = React.useState(false);
@@ -60,12 +60,15 @@ function ProductHistoriesExtended(props) {
           tabInfo.order
       )
       .then((response) => {
-        if (response.data.data!= null )
+        if (response.data.data != null )
         {
           setNextRouteId(response.data.data.id);
           setIsProductPage(response.data.data.isProductPage);
           setOrder(response.data.data.order);
           loadData(response.data.data.isProductPage);
+        }else
+        {
+          loadData();
         }
       });
   };
@@ -95,7 +98,7 @@ function ProductHistoriesExtended(props) {
       )
       .then((response) => {
         console.log(response.data.data);
-        setMaterailData(response.data.data);
+        setMaterialData(response.data.data);
       });
 
     console.log("this is:", id);
@@ -109,15 +112,14 @@ function ProductHistoriesExtended(props) {
       )
       .then((res) => {
         if (res.data.success) {
-          setMaterailData([]);
-          setMaterailIds([]);
-
-          toastData("Kayıt Yapıldı !", true);
+          setMaterialData([]);
+          setMaterialIds([]);
+          toastData(res.data.message, true);
         } else {
-          toastData("Kayıt Yapılamadı !", false);
+          toastData(res.data.message, false);
         }
       })
-      .catch((err) => toastData("Kayıt Yapılamadı !", false));
+      .catch((err) => toastData("Kayıt Yapılamadı !" + err, false));
   };
 
   const isProductOrMaterial = async (e) => {
@@ -143,7 +145,7 @@ function ProductHistoriesExtended(props) {
           if (response.data.data != null && response.data.data?.type === true)
             product(response.data.data, e);
          
-            if (materailData?.findIndex((obj) => obj.materialCode === e) != -1) {
+            if (materialData?.findIndex((obj) => obj.materialCode === e) != -1 ) {
               toastData(e + " Daha önce kayıt edilmiş!", false);
               return;
             }
@@ -158,8 +160,15 @@ function ProductHistoriesExtended(props) {
   };
 
   const product = async (e, code) => {
+
     if (lastData != null) {
+      if (materialIds.length === 0)
+      {
+        toastData("Hammadde seçimi yapılmadan başka ürün kodu okutulamaz...!", false);
+        return;
+      }
       lastData.endDate = new Date();
+
       if (lastData.endDate != undefined) {
         lastData.elapsedTime =
           (lastData.endDate.getTime() - lastData.beginDate.getTime()) / 1000;
@@ -167,7 +176,7 @@ function ProductHistoriesExtended(props) {
         lastData.nextProcessRouteId = nextRouteId;
         lastData.productionId = id;
         lastData.order = order;
-        lastData.metarialds = materailIds;
+        lastData.metarialds = materialIds;
 
           addData(lastData);
           setLastData(null);
@@ -204,15 +213,16 @@ function ProductHistoriesExtended(props) {
       materialCode: code,
       materialId: e.id,
       workProcessRouteId: routeId,
-      materialRemainQuantity: e.materialRemainQuantity,
-      quantity: e.decrease,
+      remainQuantity: e.remainQuantity - e.decrease ,
+      decrease: e.decrease,
+      quantity: e.quantity,
     };
     let addDatas = {
       materialId: e.id,
       quantity: e.decrease,
     };
-    setMaterailData([...materailData, materialDatas]);
-    setMaterailIds([...materailIds, addDatas]);
+    setMaterialData([...materialData, materialDatas]);
+    setMaterialIds([...materialIds, addDatas]);
   };
 
   const updateState = async (e) => {
@@ -314,24 +324,24 @@ function ProductHistoriesExtended(props) {
                 <thead>
                   <tr>
                     <th>Malzeme Kodu</th>
-                    <th>Kalan Miktar</th>
+                    <th>Miktar</th>
                     <th>Düşüm Miktarı</th>
+                    <th>Kalan Miktar</th>
                   </tr>
                 </thead>
                 <tbody style={{ marginTop: 10, color: "#7EA1FF", font: 30 }}>
-                  {materailData?.length > 0 ? (
+                  {materialData?.length > 0 ? (
                     <>
-                      {materailData.map((obj) => (
+                      {materialData.map((obj) => (
                         <tr
                           style={{ backgroundColor: "#A3FFD6", color: "black" }}
                           key={`${obj.id}`}
                         >
                           <td style={{ color: "black" }}>{obj.materialCode}</td>
-                          <td style={{ color: "black" }}>
-                            {obj.materialRemainQuantity}
-                          </td>
-
                           <td style={{ color: "black" }}>{obj.quantity}</td>
+                          <td style={{ color: "black" }}>{obj.decrease}</td>
+                          <td style={{ color: "black" }}>{obj.remainQuantity}
+                          </td>
                         </tr>
                       ))}
                     </>

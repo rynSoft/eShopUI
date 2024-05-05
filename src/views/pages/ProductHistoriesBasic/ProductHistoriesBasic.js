@@ -1,5 +1,5 @@
 import BarcodeReader from "react-barcode-reader";
-import React, { useState, useEffect, Fragment ,useRef} from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import {
   Table,
   Row,
@@ -8,7 +8,6 @@ import {
   Button,
   Nav,
   UncontrolledTooltip,
-  Input
 } from "reactstrap";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
@@ -44,11 +43,10 @@ function ProductHistoriesBasic(props) {
   const [userName, setuserName] = useState(
     JSON.parse(localStorage.getItem("userData")).userNameSurname
   );
-  const inputRef = useRef(null);
-  // const handleError = (error) => {
-  //   focusInput();
-  //   //console.log("Error " + error);
-  // };
+
+  const handleError = (error) => {
+    //console.log("Error " + error);
+  };
 
   const readerStateFunction = (stateValue) => {
     setReaderState(stateValue);
@@ -122,7 +120,7 @@ function ProductHistoriesBasic(props) {
   };
 
   const addData = (datas) => {
-    debugger;
+
     axios
       .post(
         process.env.REACT_APP_API_ENDPOINT + "api/ProductHistories/Add",
@@ -130,29 +128,17 @@ function ProductHistoriesBasic(props) {
       )
       .then((res) => {
         if (res.data.success) {
-          focusInput();
-          //setLastData(null);
-          //toastData("Kayıt Yapıldı !", true);s
+
+          toastData(res.data.message, true);
         } else {
-          toastData("Kayıt Yapılamadı !", false);
+          toastData(res.data.message, false);
         }
       })
       .catch((err) => toastData("Kayıt Yapılamadı !", false));
   };
 
-  const handleScan = (data) => {
-     updateState(data);
-     focusInput();
-  }
-  const handleError = (err) => {
-    console.error(err);
-  }
-
-  const focusInput = () => {
-    inputRef.current.focus();
-  };
   const updateState = async (e) => {
-    debugger;
+
     if (readerState) {
 
       if (lastData != null && lastData.productQrCode == e)
@@ -163,6 +149,7 @@ function ProductHistoriesBasic(props) {
 
       if (lastData != null && (lastData.productQrCode != e))
       { 
+
         lastData.endDate = await new Date();
         if (lastData.endDate != undefined)
         {
@@ -202,16 +189,53 @@ function ProductHistoriesBasic(props) {
           />
         </Col>
         <BarcodeReader
-         avgTimeByChar={80}
-         onError={handleError}
-         onScan={handleScan}
+          onError={handleError}
+          onScan={(err, result) => {
+            updateState(err.replaceAll("*", "-"));
+          }}
         />
       </Row>
       <Row>
         <div>
           <div className="content-header row">
             <div className="content-header-right text-md-end col-md-12 col-12 d-md-block d-none">
-            <button onClick={focusInput}>Focus on Input</button>
+              {/* <div className="row">
+                <div className="col-10 text-right"></div>
+                {finishStateButton ? (
+                  <div className="col-1 text-right">
+                    <Button.Ripple
+                      className="btn-icon"
+                      color="primary"
+                      id="newProductionOrders"
+                      onClick={() => vardiyaTamamla()}
+                    >
+                      <CheckCircle size={20} /> Vardiya Bitir
+                    </Button.Ripple>
+                    <UncontrolledTooltip
+                      placement="left"
+                      target="newProductionOrders"
+                    >
+                      Vardiya Bitir
+                    </UncontrolledTooltip>
+                  </div>
+                ) : null}
+                <div className="col-1 text-right">
+                  <Button.Ripple
+                    className="btn-icon"
+                    color="warning"
+                    id="newProductionOrder"
+                    onClick={() => isTamamla()}
+                  >
+                    <CheckSquare size={20} /> İş Emrini Bitir
+                  </Button.Ripple>
+                  <UncontrolledTooltip
+                    placement="left"
+                    target="newProductionOrder"
+                  >
+                    Bitir
+                  </UncontrolledTooltip>
+                </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -226,16 +250,13 @@ function ProductHistoriesBasic(props) {
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
                   " Chart Component Eklenecek ." " Chart Component Eklenecek ."
-                  
-                  {/* <input type="text" ref={inputRef} /> */}
                 </tbody>
               </Table>
             ) : null}
           </Col>
           <Col xl="9" md="9" xs="9">
-            
             {tableState ? (
-              <Table  responsive style={{ marginTop: 10 }} size="sm">
+              <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
                   <tr>
                     <th>QrCode</th>
