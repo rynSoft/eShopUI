@@ -14,4 +14,11 @@
     background: #f8f8f8 !important;
   }
 
+  .center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 85vh;
+    width: 90vw;
+}
   

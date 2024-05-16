@@ -5,9 +5,10 @@ import React, { useState, useEffect } from "react";
 const data = {
   series: [45, 55, ],
   options: {
-    colors : ['', ''],
-    //colors : ['#864AF9', '#F8E559','#f3ca20', '#000000'],
+    
+    colors : ['#f3ca20', '#000000'],
     chart: {
+     
       animations: {
         enabled: true,
         easing: 'easeinout',
@@ -41,14 +42,16 @@ const data = {
   },
 };
 
-const  ApexChart = ({colorDones,colorRemains, data1, data2}) =>
+const  ApexChartSecond = ({
+  colorDones,
+  colorRemains
+}) =>
  {
 
-  data.options.colors[0] = colorDones;
-  data.options.colors[1] = colorRemains;
-
-  const data5 = {  series: [Number(data1),Number(data2) ] }
-  
+  const [colorDone, setcolorDone] = React.useState(colorDones);
+  const [colorRemain, setcolorRemain] = React.useState(colorRemains);
+  data.options.colors[0] = colorDone;
+  data.options.colors[1] = colorRemain;
 
   console.log(data.options.colors[0]);
   console.log(data.options.colors[1]);
@@ -57,12 +60,13 @@ const  ApexChart = ({colorDones,colorRemains, data1, data2}) =>
     <>
       <Chart
         options={data.options}
-        series={data5.series}
-        type="donut"
+        series={data.series}
+        type="pie"
         height= '454'
+   
       />
     </>
   );
 }
-export default ApexChart;
+export default ApexChartSecond;
 

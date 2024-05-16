@@ -54,14 +54,14 @@ const Routes = [
     component: lazy(() => import('../../views/pages/LineDefinition/LineList'))
   },
 
-  {
-    path: '/kitProvisionList/:id',
-    component: lazy(() => import('../../views/pages/KitProvision/Provision'))
-  },
-  {
-    path: '/kitProvisionList',
-    component: lazy(() => import('../../views/pages/KitProvision/ProvisionList'))
-  },
+  // {
+  //   path: '/kitProvisionList/:id',
+  //   component: lazy(() => import('../../views/pages/KitProvision/Provision'))
+  // },
+  // {
+  //   path: '/kitProvisionList',
+  //   component: lazy(() => import('../../views/pages/KitProvision/ProvisionList'))
+  // },
 
   {
     path: '/setupVerificationList/:id',
@@ -120,14 +120,14 @@ const Routes = [
   },
 
 
-  {
-    path: '/kitVerificationList/:id',
-    component: lazy(() => import('../../views/pages/KitVerification/Verification'))
-  },
-  {
-    path: '/kitVerificationList',
-    component: lazy(() => import('../../views/pages/KitVerification/VerificationList'))
-  },
+  // {
+  //   path: '/kitVerificationList/:id',
+  //   component: lazy(() => import('../../views/pages/KitVerification/Verification'))
+  // },
+  // {
+  //   path: '/kitVerificationList',
+  //   component: lazy(() => import('../../views/pages/KitVerification/VerificationList'))
+  // },
 
   
   {
@@ -160,49 +160,7 @@ const Routes = [
     component: lazy(() => import('../../views/Error')),
     layout: 'BlankLayout'
   },
-  {
-    path: '/detachFromPanel/:id/:previousProcess',
-    component: lazy(() => import('../../views/pages/ProductionStages/DetachFromPanel/DetachFromPanelDetail'))
-  },
-  {
-    path: '/detachFromPanel',
-    component: lazy(() => import('../../views/pages/ProductionStages/DetachFromPanel/DetachFromPanelList'))
-  },
-
-  {
-    path: '/displayAssembly/:id/:previousProcess',
-    component: lazy(() => import('../../views/pages/ProductionStages/DisplayAssembly/DisplayAssemblyDetail'))
-  },
-  {
-    path: '/displayAssembly',
-    component: lazy(() => import('../../views/pages/ProductionStages/DisplayAssembly/DisplayAssemblyList'))
-  },
   
-  {    
-    path: '/labeling/:id/:previousProcess',
-    component: lazy(() => import('../../views/pages/ProductionStages/Labeling/LabelingDetail'))
-  },
-  {
-    path: '/labeling',
-    component: lazy(() => import('../../views/pages/ProductionStages/Labeling/LabelingList'))
-  },
-  {
-    path: '/productionTest/:id',
-    component: lazy(() => import('../../views/pages/ProductionStages/ProductionTest/ProductionTestDetail'))
-  },
-  {
-    path: '/productionTest',
-    component: lazy(() => import('../../views/pages/ProductionStages/ProductionTest/ProductionTestList'))
-  },
-
-  {
-    path: '/programming/:id/:previousProcess',
-    component: lazy(() => import('../../views/pages/ProductionStages/Programming/ProgrammingDetail'))
-  },
-  {
-    path: '/programming',
-    component: lazy(() => import('../../views/pages/ProductionStages/Programming/ProgrammingList'))
-  },
   {
     path: '/product',
     component: lazy(() => import('../../views/pages/Product/Product'))

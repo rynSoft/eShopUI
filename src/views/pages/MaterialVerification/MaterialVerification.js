@@ -158,7 +158,7 @@ function MaterialVerification(props) {
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
                 <div id="chart"  style={{ marginTop: 100 }}>
-                <ApexChart  type="pie" width={380} />
+                <ApexChart colorDones="#F96167" colorRemains="#F9E795" type="" width={380} />
               </div>
                 </tbody>
               </Table>

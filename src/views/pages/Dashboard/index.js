@@ -7,6 +7,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   Label,
+  Card,
 } from "reactstrap";
 import GeneralInformation from "./GeneralInformation";
 import Select from "react-select";
@@ -23,6 +24,8 @@ import "./Dashboard.css";
 import { selectThemeColors } from "@utils";
 import { useSkin } from "@hooks/useSkin";
 import axios from "axios";
+import background from "../../../assets/images/icons/grafik-accels.gif";
+
 
 function Dashboard(props) {
   const [charHeight, SetCharHeight] = React.useState(window.innerHeight / 3.2);
@@ -42,90 +45,121 @@ function Dashboard(props) {
   const [hourCount, setHourCount] = React.useState([]);
   const [lineData, setLineData] = useState([{ id: 0, name: "Hat Yok" }]);
   const [lineDetail, setLineDetail] = useState({ value: 0, label: "Hat Yok" });
-  useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_API_ENDPOINT + "api/Line/GetAllFilter")
-      .then((response) => {
-        if (response.data.data.length > 0) {
-          setLineData(response.data.data);
-          setLineDetail({
-            value: response.data.data[0].id,
-            label: response.data.data[0].name,
-          });
-        }
-        changeDashboard(response.data.data[0].id);
-      });
-  }, []);
 
-  let changeDashboard = (e) => {
-    axios
-      .get(
-        process.env.REACT_APP_API_ENDPOINT +
-        "api/Dashboard/GetProduction_1?LineId=" +
-        e
-      )
-      .then((response) => {
+  const source = require(`@src/assets/images/icons/grafik-accels.gif`).default;
+  // useEffect(() => {
+  //   axios
+  //     .get(process.env.REACT_APP_API_ENDPOINT + "api/Line/GetAllFilter")
+  //     .then((response) => {
+  //       if (response.data.data.length > 0) {
+  //         setLineData(response.data.data);
+  //         setLineDetail({
+  //           value: response.data.data[0].id,
+  //           label: response.data.data[0].name,
+  //         });
+  //       }
+  //       changeDashboard(response.data.data[0].id);
+  //     });
+  // }, []);
+
+  // let changeDashboard = (e) => {
+  //   axios
+  //     .get(
+  //       process.env.REACT_APP_API_ENDPOINT +
+  //       "api/Dashboard/GetProduction_1?LineId=" +
+  //       e
+  //     )
+  //     .then((response) => {
         
         
-        if (response.data.data!== null){
+  //       if (response.data.data!== null){
       
-        setData(response.data.data);
+  //       setData(response.data.data);
          
 
-        let names = [];
-        let elapsedTimes = [];
-        if(response.data.data["restCauseElapsed"]){
-          response.data.data["restCauseElapsed"].forEach(element => {
-          debugger
-            names.push(element["name"]);
-            elapsedTimes.push(
-              element["sumElapsedTime"]
-            );
-         });
-        }
+  //       let names = [];
+  //       let elapsedTimes = [];
+  //       if(response.data.data["restCauseElapsed"]){
+  //         response.data.data["restCauseElapsed"].forEach(element => {
+  //         debugger
+  //           names.push(element["name"]);
+  //           elapsedTimes.push(
+  //             element["sumElapsedTime"]
+  //           );
+  //        });
+  //       }
 
 
-        setName(names);
-        setElapsadTime(elapsedTimes);
+  //       setName(names);
+  //       setElapsadTime(elapsedTimes);
 
 
-        let hours = [];
-        let hourCounts = [];
+  //       let hours = [];
+  //       let hourCounts = [];
 
-        if( response.data.data["getProductionHoursCount"]){
-          response.data.data["getProductionHoursCount"].forEach(element => {
+  //       if( response.data.data["getProductionHoursCount"]){
+  //         response.data.data["getProductionHoursCount"].forEach(element => {
           
-            hours.push(element["hour"]);
-            hourCounts.push(
-              element["productionCount"]
-            );
-         });
+  //           hours.push(element["hour"]);
+  //           hourCounts.push(
+  //             element["productionCount"]
+  //           );
+  //        });
   
-        }      
+  //       }      
 
 
 
-        setHour(hours);
-        setHourCount(hourCounts);
-      }
+  //       setHour(hours);
+  //       setHourCount(hourCounts);
+  //     }
      
-    }
-      ).catch(res=>{
-        setData([]);
-        setName([]);
-        setElapsadTime([]);
-        setHour([]);
-        setHourCount([]);
-      });
-  };
+  //   }
+  //     ).catch(res=>{
+  //       setData([]);
+  //       setName([]);
+  //       setElapsadTime([]);
+  //       setHour([]);
+  //       setHourCount([]);
+  //     });
+  // };
 
   return (
-    <FullScreen
-      handle={handle}
-      className={skin == "dark" ? "dark-theme" : "light-theme"}
-      onChange={()=>handle.active ? SetCharHeight(window.innerHeight / 2.5):SetCharHeight(window.innerHeight / 3.2)}
-    >
-      <div className="content-header row" style={{ margin: 10 }}>
+    // <FullScreen
+    //   handle={handle}
+    //   className={skin == "dark" ? "dark-theme" : "light-theme"}
+    //   onChange={()=>handle.active ? SetCharHeight(window.innerHeight / 2.5):SetCharHeight(window.innerHeight / 3.2)}
+    // >
+
+  //   <div
+  //   style={{
+  //     display: "flex",
+  //     alignItems: "center",
+  //     justifyContent:'center',
+  //     backgroundRepeat: 'no-repeat',
+  //     width:"85vw",
+  //     height: "95vh",backgroundImage: `url(${background})`
+  //   }}
+  // >
+  //   <div style={{ background: "red" }}>content</div>
+  // </div>
+
+  <div className="center">
+<Card>
+           <img  src={source} alt='Login Cover' />
+           </Card>
+        </div>
+
+  
+
+    // </FullScreen>
+  );
+}
+
+export default Dashboard;
+
+
+  {/* <div className="content-header row" style={{ margin: 10 }}>
         <div className="content-header-left col-md-9 col-12 mb-2">
           <div className="row breadcrumbs-top">
             <div className="col-12">
@@ -240,9 +274,4 @@ function Dashboard(props) {
             data={datas}
           />
         </Col>
-      </Row> */}
-    </FullScreen>
-  );
-}
-
-export default Dashboard;
+            </Row> */}

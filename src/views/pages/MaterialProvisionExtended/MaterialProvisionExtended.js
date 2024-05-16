@@ -10,7 +10,7 @@ import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
 import toastData from "../../../@core/components/toastData/index.js";
 import DetailModal from "./DetailModal.js";
 import { CheckCircle } from "react-feather";
-
+import ApexChart from "../ProductionProcess/ApexChart.js";
 
 function MaterialProvisionExtended(props) {
   const [readerState, setReaderState] = React.useState(false);
@@ -203,7 +203,7 @@ function MaterialProvisionExtended(props) {
           </div>
         </div>
         <Row>
-          <Col xl="2" md="2" xs="32">
+          <Col xl="3" md="3" xs="32">
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
@@ -212,12 +212,14 @@ function MaterialProvisionExtended(props) {
                   </tr>
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
-                  " Chart Component Eklenecek ." " Chart Component Eklenecek ."
+                <div id="chart"  style={{ marginTop: 100 }}>
+                <ApexChart colorDones="#f3ca20" colorRemains="#000000" type="pie" width={380} />
+              </div>
                 </tbody>
               </Table>
             ) : null}
           </Col>
-          <Col xl="10" md="10" xs="32">
+          <Col xl="9" md="9" xs="32">
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="md">
                 <thead>

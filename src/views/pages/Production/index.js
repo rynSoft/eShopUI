@@ -5,6 +5,8 @@ import axios from "axios";
 import { Fragment, useEffect, useState } from "react";
 import { Save } from "react-feather";
 import { useTranslation } from "react-i18next";
+import ApexChart from "../ProductionProcess/ApexChart";
+import ApexChartSecond from "../ProductionProcess/ApexChartSecond";
 import {
   Button,
   Card,
@@ -237,83 +239,10 @@ const statesArr = [
     }
   }
 ]
-const projectsArr = [
-  {
-    progress: 60,
-    progressColor: 'info',
-    subtitle: 'Giril',
-    title: 'Ürün Giriş',
-    img: require('@src/assets/images/icons/brands/react-label.png').default
-  },
-  {
-    progress: 40,
-    progressColor: 'danger',
-    subtitle: 'Yazılım',
-    title: 'PCB Karta Yazılım Yükleme',
-    img: require('@src/assets/images/icons/brands/xd-label.png').default
-  },
-  {
-    progress: 25,
-    progressColor: '#F44336',
-    subtitle: 'Lehimleme',
-    title: 'Switch Lehimleme ve Takma (Alt Kapak)',
-    img: require('@src/assets/images/icons/brands/vue-label.png').default
-  },
-  {
-    progress: 35,
-    progressColor: '#E91E63',
-    subtitle: 'Takma',
-    title: 'Pano Aparatı Takma',
-    img: require('@src/assets/images/icons/brands/sketch-label.png').default
-  },
 
-  {
-    progress: 44,
-    progressColor: 'info',
-    subtitle: 'Kesici',
-    title: 'Akım Trafosu ve Kesici',
-    img: require('@src/assets/images/icons/brands/react-label.png').default
-  },
-  {
-    progress: 36,
-    progressColor: 'warning',
-    subtitle: 'RS485 Lehimleme',
-    title: 'Alt PCB Karta RS485 Lehimleme',
-    img: require('@src/assets/images/icons/brands/vue-label.png').default
-  },
-  {
-    progress: 54,
-    progressColor: 'danger',
-    title: ' Lehimleme',
-    subtitle: 'Power PCB Kart Header Lehimleme',
-    img: require('@src/assets/images/icons/brands/html-label.png').default
-  },
-  
-  {
-    progress: 44,
-    progressColor: 'red',
-    subtitle: 'Lehimleme',
-    title: 'Power PCB ile MCU PCB Lehimleme',
-    img: require('@src/assets/images/icons/brands/react-label.png').default
-  },
-  {
-    progress: 36,
-    progressColor: 'success',
-    subtitle: 'Lazerleme',
-    title: 'Üst Kapak Lazer',
-    img: require('@src/assets/images/icons/brands/vue-label.png').default
-  },
-  {
-    progress: 41,
-    progressColor: 'info',
-    title: 'Yapıştırma',
-    subtitle: 'Buton Hazırlık Yapıştırma',
-    img: require('@src/assets/images/icons/brands/html-label.png').default
-  }
-
-]
 const ProductionDetail = (props) => {
   const [id, setId] = useState(props.match.params.id);
+  const [projectsArr, setProjectsArr] = useState([]);
   const [materialData, setMaterialData] = useState([]);
   const [infoBlock, setInfoBlock] = useState(false);
   const [routeData, setRouteData] = useState([]);
@@ -328,14 +257,19 @@ const ProductionDetail = (props) => {
   const [tab, setTab] = useState(null);
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+
   const toggle = (tab) => {
     setActive(tab);
   };
+
   useEffect(() => {
     loadInfoData();
     loadNavItem();
     loadMaterialData();
+    loadProductionHistoryData();
   }, []);
+
+
   useEffect(() => {
     if (
       loading &&
@@ -349,7 +283,7 @@ const ProductionDetail = (props) => {
     _tab.productionId = id;
     window.localStorage.setItem('lastTab', JSON.stringify(_tab))
     setTab(_tab)
-    // setTab(...tab,tab.productionId=id)
+
   }
   const loadNavItem = () => {
     axios
@@ -366,6 +300,9 @@ const ProductionDetail = (props) => {
         process.env.REACT_APP_API_ENDPOINT + "api/Production/GetById?id=" + id
       )
       .then((response) => {
+        
+        window.localStorage.setItem('productionData', JSON.stringify(response.data))
+
         setProductionData(response.data);
         setEstimatedTime(
           response.data?.estimatedTime == null
@@ -382,6 +319,7 @@ const ProductionDetail = (props) => {
       .finally(() => {
         setInfoBlock(false);
       });
+     
   };
   const loadMaterialData = () => {
     setMaterialBlock(true);
@@ -400,6 +338,27 @@ const ProductionDetail = (props) => {
         setLoading(true)
       });
   };
+
+  const loadProductionHistoryData = () => {
+   
+    axios
+      .get(
+        process.env.REACT_APP_API_ENDPOINT +
+        "api/WorkProcessRoute/GetAllProductIdDashboard?Id=" +
+        id
+      )
+      .then((response) => {
+        
+        console.log(response.data);
+        debugger;
+        setProjectsArr(response.data);
+       
+      })
+      .finally(() => {
+      });
+  };
+  
+
   return (
     <Fragment>
       <div>
@@ -455,7 +414,7 @@ const ProductionDetail = (props) => {
                 <TabContent className="py-50" activeTab={active}>
                   <TabPane tabId="1">
                     <Row style={{ paddingTop: 10 }}>
-                      <Col sm={4} style={{ paddingTop: 5 }}>
+                      <Col sm={3} style={{ paddingTop: 5 }}>
                         <Card style={{ height: "69vh" }}>
                           <br></br>
                           <br></br>
@@ -556,12 +515,25 @@ const ProductionDetail = (props) => {
                           <br></br>
                         </Card>
                       </Col>
-                      <Col sm={4} style={{ paddingTop: 5 }}>
+                      <Col sm={5} style={{ paddingTop: 5 }}>
                         <ActiveProject projectsArr={projectsArr} />
                       </Col>
                       <Col sm={4} style={{ paddingTop: 5 }}>
+                        <Row>
                         
-                        <BrowserState statesArr={statesArr} />
+                          <Card> 
+                          Product
+                            <ApexChart  colorDones="#7BC9FF" colorRemains="#A3FFD6" data1={65} data2={35}  width={350} /></Card>
+                       
+                        </Row>
+                        <Row>
+                      <Card>
+                        Material
+                      <ApexChartSecond colorDones="#864AF9" colorRemains="#F8E559" type="pie" width={350} />
+                      </Card>
+                        </Row>
+                 
+                        {/* <BrowserState statesArr={statesArr} /> */}
                       </Col>
                      
                     </Row>

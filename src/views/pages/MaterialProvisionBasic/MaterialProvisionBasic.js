@@ -44,6 +44,7 @@ function MaterialProvisionBasic(props) {
   }, []);
 
   const getProductState = () => {
+
     axios
       .get(
         process.env.REACT_APP_API_ENDPOINT +
@@ -55,8 +56,12 @@ function MaterialProvisionBasic(props) {
           tabInfo.order
       )
       .then((response) => {
-        setNextRouteId(response.data.data.id);
-        setOrder(response.data.data.order);
+        debugger;
+        if (response.data.data != null){
+          setNextRouteId(response.data.data.id);
+          setOrder(response.data.data.order);
+        }
+
         loadData();
       });
   };
@@ -197,7 +202,7 @@ function MaterialProvisionBasic(props) {
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
                 <div id="chart"  style={{ marginTop: 100 }}>
-                <ApexChart  type="pie" width={380} />
+                <ApexChart colorDones="#9195F6" colorRemains="#B7C9F2" type="pie" width={380} />
               </div>
                 </tbody>
               </Table>

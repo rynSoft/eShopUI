@@ -74,28 +74,28 @@ const HorizontalLayout = props => {
       });
 
 
-      permissionList.map(permission => {
+      // // permissionList.map(permission => {
 
-        permission == "Kit Hazırlama" ? menuList.push({
-          id: 'kitProvisionList',
-          title: 'Kit Hazırlama',
-          icon: <Inbox size={20} />,
-          navLink: '/kitProvisionList'
-        }) : null;   //Kit Hazırlama
+      // //   permission == "Kit Hazırlama" ? menuList.push({
+      // //     id: 'kitProvisionList',
+      // //     title: 'Kit Hazırlama',
+      // //     icon: <Inbox size={20} />,
+      // //     navLink: '/kitProvisionList'
+      // //   }) : null;   //Kit Hazırlama
 
-      });
+      // // });
 
-      permissionList.map(permission => {
+      // // permissionList.map(permission => {
 
-        permission == "Kit Doğrulama" ? menuList.push({
-          id: 'kitVerificationList',
-          title: 'Kit Doğrulama',
-          icon: <Clipboard sie={20} />,
-          navLink: '/kitVerificationList'
-        }) : null;   //Kit Dogrulama
+      // //   permission == "Kit Doğrulama" ? menuList.push({
+      // //     id: 'kitVerificationList',
+      // //     title: 'Kit Doğrulama',
+      // //     icon: <Clipboard sie={20} />,
+      // //     navLink: '/kitVerificationList'
+      // //   }) : null;   //Kit Dogrulama
 
 
-      });
+      // });
       permissionList.map(permission => {
         permission == "Setup Verification" ? menuList.push({
           id: 'setupVerificationList',
@@ -116,52 +116,52 @@ const HorizontalLayout = props => {
         }) : null;   //Üretim Bandı
       });
 
-      permissionList.map(permission => {
-        permission == "Etiketleme" ? uretimList.push({
+      // permissionList.map(permission => {
+      //   permission == "Etiketleme" ? uretimList.push({
 
-          id: 'labeling',
-          title: 'Etiketleme',
-          icon: <Tag size={12} />,
-          navLink: '/labeling'
+      //     id: 'labeling',
+      //     title: 'Etiketleme',
+      //     icon: <Tag size={12} />,
+      //     navLink: '/labeling'
 
-        }) : null;   //Etiketleme
-      });
+      //   }) : null;   //Etiketleme
+      // });
 
-      permissionList.map(permission => {
-        permission == "Display Montajı" ? uretimList.push({
-          id: 'displayAssembly',
-          title: 'Display Montajı',
-          icon: <Monitor size={12} />,
-          navLink: '/displayAssembly'
-        }) : null;   //Display Montajı
-      });
+      // permissionList.map(permission => {
+      //   permission == "Display Montajı" ? uretimList.push({
+      //     id: 'displayAssembly',
+      //     title: 'Display Montajı',
+      //     icon: <Monitor size={12} />,
+      //     navLink: '/displayAssembly'
+      //   }) : null;   //Display Montajı
+      // });
 
-      permissionList.map(permission => {
-        permission == "Programlama" ? uretimList.push({
-          id: 'programming',
-          title: 'Programlama',
-          icon: <LifeBuoy size={12} />,
-          navLink: '/programming'
-        }) : null;   //Programlama
-      });
+      // permissionList.map(permission => {
+      //   permission == "Programlama" ? uretimList.push({
+      //     id: 'programming',
+      //     title: 'Programlama',
+      //     icon: <LifeBuoy size={12} />,
+      //     navLink: '/programming'
+      //   }) : null;   //Programlama
+      // });
 
-      permissionList.map(permission => {
-        permission == "Panelden Ayırma" ? uretimList.push({
-          id: 'detachFromPanel',
-          title: 'Panelden Ayırma',
-          icon: <Shuffle size={12} />,
-          navLink: '/detachFromPanel'
-        }) : null;   //Panelden Ayırma
-      });
+      // permissionList.map(permission => {
+      //   permission == "Panelden Ayırma" ? uretimList.push({
+      //     id: 'detachFromPanel',
+      //     title: 'Panelden Ayırma',
+      //     icon: <Shuffle size={12} />,
+      //     navLink: '/detachFromPanel'
+      //   }) : null;   //Panelden Ayırma
+      // });
 
-      permissionList.map(permission => {
-        permission == "Test" ? uretimList.push({
-          id: 'productionTest',
-          title: 'Test',
-          icon: <Pocket size={12} />,
-          navLink: '/productionTest'
-        }) : null;   //Test
-      });
+      // permissionList.map(permission => {
+      //   permission == "Test" ? uretimList.push({
+      //     id: 'productionTest',
+      //     title: 'Test',
+      //     icon: <Pocket size={12} />,
+      //     navLink: '/productionTest'
+      //   }) : null;   //Test
+      // });
 
 
       uretimList.length > 0 ? menuList.push({

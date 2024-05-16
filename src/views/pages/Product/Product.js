@@ -1,6 +1,6 @@
 import BarcodeReader from "react-barcode-reader";
 import React, { useState, useEffect, Fragment } from "react";
-import { Table, Row, Col, ButtonGroup, Button, Nav } from "reactstrap";
+import { Table, Row, Col, ButtonGroup, Button, Nav, Card } from "reactstrap";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
@@ -8,6 +8,7 @@ import toastData from "../../../@core/components/toastData/index.js";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "./Product.css";
 import ClassicDataTable from '../../../@core/components/gridTable/ClassicDataTable';
+import ApexChart from "../ProductionProcess/ApexChart.js";
 
 function Product(props) {
   const [data, setData] = React.useState([]);
@@ -20,6 +21,9 @@ function Product(props) {
   const [id, setId] = useState(props.match.params.id);
   const [routeId, setRouteId] = useState(props.match.params.routeId);
   const [userName, setuserName] = useState(JSON.parse(localStorage.getItem("userData")).userNameSurname);
+  const [productQuantity, setProductQuantity] = useState(JSON.parse(localStorage.getItem("productionData")).quantity);
+  const [productDoneCount, setProductDoneCount] = useState(0);
+  const [productRemainCount, setProductRemainCount] = useState(0);
   const [tabInfo, setTabInfo] = useState(JSON.parse(localStorage.getItem("lastTab")));
   const [nextRouteId, setNextRouteId] = useState(0);
  
@@ -62,6 +66,8 @@ function Product(props) {
       )
       .then((response) => {
         setData(response.data.data);
+        setProductDoneCount(response.data.data.length);
+        setProductRemainCount(productQuantity-response.data.data.length);
       });
 
       await axios
@@ -70,7 +76,8 @@ function Product(props) {
           "api/WorkProcessRoute/GetOrderNextId?productionId="+id+"&workProcessRouteId="+ routeId +"&order="+ tabInfo.order 
       )
       .then((response) => {
-        setNextRouteId(response.data.data.id);
+        debugger;
+        setNextRouteId(response?.data?.data?.id);
       });
   };
 
@@ -100,6 +107,14 @@ function Product(props) {
             ...data,
             { qrcode: args, userAdSoyAd: userName, createDate: new Date() },
           ]);
+
+          console.log("Done : "+productDoneCount);
+          console.log("Pr : " +productQuantity);
+          setProductDoneCount(productDoneCount + 1);
+          setProductRemainCount(productQuantity - productDoneCount);
+          console.log("Done : "+productDoneCount);
+          console.log("Pr : " +productQuantity);
+
         } else {
           toastData("Ürün Kaydedilemedi !", false);
         }
@@ -110,6 +125,12 @@ function Product(props) {
 
   const updateState = (e) => {
     if (readerState) {
+      if (data.length >= productQuantity)
+        {
+         setFinishData(true);
+         toastData("Okutulacak ürün sayısı Üretilecek Ürün Sayısını Geçemez...!", false);
+        return;
+        }
       if (!data.find((obj) => obj === e)) addProduct(e);
       else toastData("Ürün Kodu Daha önce okutulmuş!", false);
     } else
@@ -140,6 +161,7 @@ function Product(props) {
 
       <Row>
       <Col xl="3" md="3" xs="32">
+        <Card style={{ height: '100%', width: '100%' }}>
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
@@ -148,10 +170,13 @@ function Product(props) {
                   </tr>
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
-                  " Chart Component Eklenecek ." " Chart Component Eklenecek ."
+                <div id="chart"  style={{ marginTop: 100 }}>
+                <ApexChart colorDones="#ff9a8d" colorRemains="#4a536b" data1={productDoneCount} data2={productRemainCount} width={380} />
+              </div>
                 </tbody>
               </Table>
             ) : null}
+            </Card>
           </Col>
           <Col xl="9" md="9" xs="32">
           <div className='react-dataTable' style={{ height: '100%', width: '100%', overflow: 'auto' }}  >
@@ -161,6 +186,7 @@ function Product(props) {
           </Col>
     
       </Row>
+    
     </>
   );
 }

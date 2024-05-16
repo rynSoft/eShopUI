@@ -25,7 +25,7 @@ const ActiveProject = ({projectsArr}) => {
                 <Row className='align-items-center mb-2'>
                     <Col sm={6} key={state.title}>
                         <div className='d-flex'>
-                            <img className='rounded me-1' src={state.img} height='30' alt={state.title} />
+                            <img className='rounded me-1' src={state.img} height='30'/>
                             <div className='d-flex flex-column'>
                                 <span className='text-truncate fw-bolder'>{state.title}</span>
                                 <small className='text-muted'>{state.subtitle}</small>
