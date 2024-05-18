@@ -261,6 +261,7 @@ function ProductHistoriesExtended(props) {
         </div>
         <Row>
           <Col xl="8" md="8" xs="8">
+          <Card style={{ height: '100%', width: '100%' }}>
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
@@ -317,8 +318,10 @@ function ProductHistoriesExtended(props) {
                 </tbody>
               </Table>
             ) : null}
+            </Card>
           </Col>
           <Col xl="4" md="4" xs="32">
+          <Card style={{ height: '100%', width: '100%' }}>
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
@@ -349,6 +352,7 @@ function ProductHistoriesExtended(props) {
                 </tbody>
               </Table>
             ) : null}
+            </Card>
           </Col>
         </Row>
       </Row>

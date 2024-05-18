@@ -331,6 +331,9 @@ const ProductionDetail = (props) => {
       )
       .then((response) => {
         setMaterialData(response.data.data);
+
+        window.localStorage.setItem('materialDataCount', JSON.stringify(response.data.data.length))
+
         setMaterialBlock(false);
       })
       .finally(() => {
@@ -348,10 +351,11 @@ const ProductionDetail = (props) => {
         id
       )
       .then((response) => {
-        
-        console.log(response.data);
-        debugger;
-        setProjectsArr(response.data);
+        if (response.data.length >0)
+          {
+            setProjectsArr(response.data);
+          }
+     
        
       })
       .finally(() => {

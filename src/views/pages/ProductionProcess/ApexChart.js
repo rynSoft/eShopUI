@@ -48,11 +48,7 @@ const  ApexChart = ({colorDones,colorRemains, data1, data2}) =>
   data.options.colors[1] = colorRemains;
 
   const data5 = {  series: [Number(data1),Number(data2) ] }
-  
-
-  console.log(data.options.colors[0]);
-  console.log(data.options.colors[1]);
-
+  console.log(data5.series);
   return (
     <>
       <Chart

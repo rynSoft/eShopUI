@@ -3,7 +3,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import {
   Table,
   Row,
-  Col,Button
+  Col,Button , Card
 } from "reactstrap";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
@@ -20,6 +20,9 @@ function MaterialProvisionBasic(props) {
   const [finishData, setFinishData] = React.useState(false);
   const [tableState, setTableState] = React.useState(false);
   const [id, setId] = useState(props.match.params.id);
+  const [materailQuantity, setMaterialQuantity] = useState(JSON.parse(localStorage.getItem("materialDataCount")));
+  const [materailDoneCount, setMaterailDoneCount] = useState(0);
+  const [materailRemainCount, setMaterailRemainCount] = useState(0);
   const [rowData, setRowData] = React.useState();
   const [routeId, setRouteId] = useState(Number(props.match.params.routeId));
   const [modalState, modalStateChange] = React.useState(false);
@@ -56,7 +59,6 @@ function MaterialProvisionBasic(props) {
           tabInfo.order
       )
       .then((response) => {
-        debugger;
         if (response.data.data != null){
           setNextRouteId(response.data.data.id);
           setOrder(response.data.data.order);
@@ -71,6 +73,11 @@ function MaterialProvisionBasic(props) {
       .get(               
         process.env.REACT_APP_API_ENDPOINT + "api/MaterialHistories/GetAllMaterialHistories?productionId=" + id + "&workProcessRouteId=" + routeId )
       .then((response) => {
+        let datass = response.data.data.filter(
+          (obj) => obj.materailReadState != 0
+        ); 
+        setMaterailDoneCount(datass.length);
+        setMaterailRemainCount(materailQuantity -  datass.length);
         setData(response.data.data);
       });
   };
@@ -90,6 +97,12 @@ function MaterialProvisionBasic(props) {
       .then((res) => {
         if (res.data.success) {
           setData([...data]);
+        
+          let done = materailDoneCount + 1;
+          setMaterailDoneCount(done);
+          let rm = materailQuantity -  done;
+          setMaterailRemainCount(rm);
+
           toastData("Kayıt Yapıldı !", true);
         } else {
           toastData("Kayıt Yapılamadı !", false);
@@ -193,22 +206,25 @@ function MaterialProvisionBasic(props) {
         </div>
         <Row>
           <Col xl="3" md="3" xs="32">
+          <Card style={{ height: '100%', width: '100%' }}>
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
                   <tr>
-                    <th>Hammadde Okutma Durumu</th>
+                    <th>Grafik Gösterim</th>
                   </tr>
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
                 <div id="chart"  style={{ marginTop: 100 }}>
-                <ApexChart colorDones="#9195F6" colorRemains="#B7C9F2" type="pie" width={380} />
+                <ApexChart colorDones="#9195F6" colorRemains="#B7C9F2" data1={materailDoneCount} data2={materailRemainCount} width={380} />
               </div>
                 </tbody>
               </Table>
             ) : null}
+                </Card>
           </Col>
           <Col xl="9" md="9" xs="32">
+          <Card style={{ height: '100%', width: '100%' }}>
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="md">
                 <thead>
@@ -304,6 +320,7 @@ function MaterialProvisionBasic(props) {
                 </tbody>
               </Table>
             ) : null}
+            </Card>
           </Col>
         </Row>
       </Row>

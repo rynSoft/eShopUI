@@ -8,6 +8,7 @@ import {
   Button,
   Nav,
   UncontrolledTooltip,
+  Card
 } from "reactstrap";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
@@ -20,6 +21,7 @@ import {
 } from "react-feather";
 import toastData from "../../../@core/components/toastData/index.js";
 import { date } from "yup";
+import ApexChart from "../ProductionProcess/ApexChart.js";
 
 function ProductHistoriesBasic(props) {
   const [readerState, setReaderState] = React.useState(false);
@@ -30,6 +32,9 @@ function ProductHistoriesBasic(props) {
   const [tableState, setTableState] = React.useState(false);
   const [id, setId] = useState(props.match.params.id);
   const [routeId, setRouteId] = useState(Number(props.match.params.routeId));
+  const [productQuantity, setProductQuantity] = useState(JSON.parse(localStorage.getItem("productionData")).quantity);
+  const [productDoneCount, setProductDoneCount] = useState(0);
+  const [productRemainCount, setProductRemainCount] = useState(0);
   const [previousProcess, setbackRoute] = useState(
     props.match.params.previousProcess
   );
@@ -76,18 +81,26 @@ function ProductHistoriesBasic(props) {
   };
 
   const getProductData = async (arg) => {
-    let choseMethod =
-    isProductPage == 1
-      ? "api/Product/GetByQrCodeProduct?productionId=" +
-        id +"&code=" +arg +
-        "&workProcessRouteId=" +
-        routeId
-      : "api/ProductHistories/GetByQrCodeHistories?code=" +
-      arg +
-        "&workProcessRouteId=" +
-        routeId;
+    // let choseMethod =
+    // isProductPage == 1
+    //   ? "api/Product/GetByQrCodeProduct?productionId=" +
+    //     id +"&code=" +arg +
+    //     "&workProcessRouteId=" +
+    //     routeId
+    //   : "api/ProductHistories/GetByQrCodeHistories?code=" +
+    //   arg +
+    //     "&workProcessRouteId=" +
+    //     routeId;
   axios
-    .get(process.env.REACT_APP_API_ENDPOINT + choseMethod)
+  .get(
+    process.env.REACT_APP_API_ENDPOINT +
+      "api/Product/GetByQrCodeProduct?productionId=" +
+      id +
+      "&code=" +
+      arg +
+      "&workProcessRouteId=" +
+      routeId
+  )
     .then((response) => {
       if (response.data.success) {
         let datas = {
@@ -112,6 +125,8 @@ function ProductHistoriesBasic(props) {
         process.env.REACT_APP_API_ENDPOINT + "api/ProductHistories/GetAllAsyncProductHistories?workProcessRouteId=" + routeId )
       .then((response) => {
         setData(response.data.data);
+        setProductDoneCount(response.data.data.length);
+        setProductRemainCount(productQuantity - response.data.data.length);
       });
   };
 
@@ -128,6 +143,11 @@ function ProductHistoriesBasic(props) {
       )
       .then((res) => {
         if (res.data.success) {
+
+          let done = productDoneCount + 1;
+          setProductDoneCount(done);
+          let rm = productQuantity - done;
+          setProductRemainCount(rm);
 
           toastData(res.data.message, true);
         } else {
@@ -240,21 +260,26 @@ function ProductHistoriesBasic(props) {
           </div>
         </div>
         <Row>
-          <Col xl="3" md="3" xs="32">
+        <Col xl="3" md="3" xs="32">
+          <Card style={{ height: '100%', width: '100%' }}>
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
                   <tr>
-                    <th>QrCode</th>
+                    <th>Grafik Gösterim</th>
                   </tr>
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
-                  " Chart Component Eklenecek ." " Chart Component Eklenecek ."
+                  <div id="chart" style={{ marginTop: 100 }}>
+                    <ApexChart colorDones="#f3ca20" colorRemains="#000000" data1={productDoneCount} data2={productRemainCount} width={380} />
+                  </div>
                 </tbody>
               </Table>
             ) : null}
-          </Col>
+          </Card>
+        </Col>
           <Col xl="9" md="9" xs="9">
+          <Card style={{ height: '100%', width: '100%' }}>
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
@@ -302,6 +327,7 @@ function ProductHistoriesBasic(props) {
                 </tbody>
               </Table>
             ) : null}
+           </Card>
           </Col>
         </Row>
       </Row>

@@ -3,7 +3,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import {
   Table,
   Row,
-  Col,Button
+  Col,Button, Card
 } from "reactstrap";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
@@ -18,6 +18,9 @@ function MaterialVerification(props) {
   const [tableState, setTableState] = React.useState(false);
   const [id, setId] = useState(props.match.params.id);
   const [modalState, modalStateChange] = React.useState(false);
+  const [materailDoneCount, setMaterailDoneCount] = useState(0);
+  const [materailRemainCount, setMaterailRemainCount] = useState(0);
+  const [materailQuantity, setMaterialQuantity] = useState(JSON.parse(localStorage.getItem("materialDataCount")));
   const [routeId, setRouteId] = useState(Number(props.match.params.routeId));
   const [tabInfo, setTabInfo] = useState(
     JSON.parse(localStorage.getItem("lastTab"))
@@ -60,6 +63,13 @@ function MaterialVerification(props) {
       .get(               
         process.env.REACT_APP_API_ENDPOINT + "api/MaterialHistories/GetAllMaterialHistories?productionId=" + id + "&workProcessRouteId=" + routeId )
       .then((response) => {
+        
+        let datass = response.data.data.filter(
+          (obj) => obj.materailReadState != 0
+        ); 
+        setMaterailDoneCount(datass.length);
+        setMaterailRemainCount(materailQuantity -  datass.length);
+
         setData(response.data.data);
       });
   };
@@ -79,6 +89,12 @@ function MaterialVerification(props) {
       .then((res) => {
         if (res.data.success) {
           setData([...data]);
+
+          let done = materailDoneCount + 1;
+          setMaterailDoneCount(done);
+          let rm = materailQuantity -  done;
+          setMaterailRemainCount(rm);
+
           toastData("Kayıt Yapıldı !", true);
         } else {
           toastData("Kayıt Yapılamadı !", false);
@@ -149,22 +165,25 @@ function MaterialVerification(props) {
         </div>
         <Row>
           <Col xl="3" md="3" xs="32">
+          <Card style={{ height: '100%', width: '100%' }}>
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
                   <tr>
-                    <th>QrCode</th>
+                    <th>Grafik Gösterim</th>
                   </tr>
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
                 <div id="chart"  style={{ marginTop: 100 }}>
-                <ApexChart colorDones="#F96167" colorRemains="#F9E795" type="" width={380} />
+                <ApexChart colorDones="#F96167" colorRemains="#F9E795" data1={materailDoneCount} data2={materailRemainCount} width={380} />
               </div>
                 </tbody>
               </Table>
             ) : null}
+            </Card>
           </Col>
           <Col xl="9" md="9" xs="32">
+          <Card style={{ height: '100%', width: '100%' }}>
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="md">
                 <thead>
@@ -251,6 +270,7 @@ function MaterialVerification(props) {
                 </tbody>
               </Table>
             ) : null}
+              </Card>
           </Col>
         </Row>
       </Row>

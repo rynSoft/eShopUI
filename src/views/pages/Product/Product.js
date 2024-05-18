@@ -26,7 +26,7 @@ function Product(props) {
   const [productRemainCount, setProductRemainCount] = useState(0);
   const [tabInfo, setTabInfo] = useState(JSON.parse(localStorage.getItem("lastTab")));
   const [nextRouteId, setNextRouteId] = useState(0);
- 
+
 
   const col = [
     {
@@ -61,19 +61,19 @@ function Product(props) {
     await axios
       .get(
         process.env.REACT_APP_API_ENDPOINT +
-          "api/Product/GetAllProductId?id=" +
-          id
+        "api/Product/GetAllProductId?id=" +
+        id
       )
       .then((response) => {
         setData(response.data.data);
         setProductDoneCount(response.data.data.length);
-        setProductRemainCount(productQuantity-response.data.data.length);
+        setProductRemainCount(productQuantity - response.data.data.length);
       });
 
-      await axios
+    await axios
       .get(
         process.env.REACT_APP_API_ENDPOINT +
-          "api/WorkProcessRoute/GetOrderNextId?productionId="+id+"&workProcessRouteId="+ routeId +"&order="+ tabInfo.order 
+        "api/WorkProcessRoute/GetOrderNextId?productionId=" + id + "&workProcessRouteId=" + routeId + "&order=" + tabInfo.order
       )
       .then((response) => {
         debugger;
@@ -90,51 +90,46 @@ function Product(props) {
   };
 
   const addProduct = async (args) => {
-    if (args != null)
-    {
-    let addParameters = { qrcode: args, productionId: id, order : tabInfo.order + 1 , nextWPRId : nextRouteId };
+    if (args != null) {
+      let addParameters = { qrcode: args, productionId: id, order: tabInfo.order + 1, nextWPRId: nextRouteId };
 
-    await axios
-      .post(
-        process.env.REACT_APP_API_ENDPOINT + "api/Product/Add",
-        addParameters
-      )
-      .then((res) => {
-        if (res.data.success) {
-          toastData("Ürün Kaydedildi", true);
+      await axios
+        .post(
+          process.env.REACT_APP_API_ENDPOINT + "api/Product/Add",
+          addParameters
+        )
+        .then((res) => {
+          if (res.data.success) {
+            toastData("Ürün Kaydedildi", true);
 
-          setData([
-            ...data,
-            { qrcode: args, userAdSoyAd: userName, createDate: new Date() },
-          ]);
+            setData([
+              ...data,
+              { qrcode: args, userAdSoyAd: userName, createDate: new Date() },
+            ]);
 
-          console.log("Done : "+productDoneCount);
-          console.log("Pr : " +productQuantity);
-          setProductDoneCount(productDoneCount + 1);
-          setProductRemainCount(productQuantity - productDoneCount);
-          console.log("Done : "+productDoneCount);
-          console.log("Pr : " +productQuantity);
-
-        } else {
-          toastData("Ürün Kaydedilemedi !", false);
-        }
-      })
-      .catch((err) => toastData("Ürün Kaydedilemedi !", false));
+            let done = productDoneCount + 1;
+            setProductDoneCount(done);
+            let rm = productQuantity - done;
+            setProductRemainCount(rm);
+          } else {
+            toastData("Ürün Kaydedilemedi !", false);
+          }
+        })
+        .catch((err) => toastData("Ürün Kaydedilemedi !", false));
     }
   };
 
   const updateState = (e) => {
     if (readerState) {
-      if (data.length >= productQuantity)
-        {
-         setFinishData(true);
-         toastData("Okutulacak ürün sayısı Üretilecek Ürün Sayısını Geçemez...!", false);
+      if (data.length >= productQuantity) {
+        setFinishData(true);
+        toastData("Okutulacak ürün sayısı Üretilecek Ürün Sayısını Geçemez...!", false);
         return;
-        }
+      }
       if (!data.find((obj) => obj === e)) addProduct(e);
       else toastData("Ürün Kodu Daha önce okutulmuş!", false);
     } else
-       toastData("Ürün giriş yapılmadan önce süreci başlatmalısınız (Devam Et)!", false); 
+      toastData("Ürün giriş yapılmadan önce süreci başlatmalısınız (Devam Et)!", false);
 
   };
 
@@ -160,33 +155,34 @@ function Product(props) {
       </Row>
 
       <Row>
-      <Col xl="3" md="3" xs="32">
-        <Card style={{ height: '100%', width: '100%' }}>
+        <Col xl="3" md="3" xs="32">
+          <Card style={{ height: '100%', width: '100%' }}>
             {tableState ? (
               <Table responsive style={{ marginTop: 10 }} size="sm">
                 <thead>
                   <tr>
-                    <th>QrCode</th>
+                    <th>Grafik Gösterim</th>
                   </tr>
                 </thead>
                 <tbody style={{ marginTop: 10, color: "yellow", font: 30 }}>
-                <div id="chart"  style={{ marginTop: 100 }}>
-                <ApexChart colorDones="#ff9a8d" colorRemains="#4a536b" data1={productDoneCount} data2={productRemainCount} width={380} />
-              </div>
+                  <div id="chart" style={{ marginTop: 100 }}>
+                    <ApexChart colorDones="#ff9a8d" colorRemains="#4a536b" data1={productDoneCount} data2={productRemainCount} width={380} />
+                  </div>
                 </tbody>
               </Table>
             ) : null}
-            </Card>
-          </Col>
-          <Col xl="9" md="9" xs="32">
-          <div className='react-dataTable' style={{ height: '100%', width: '100%', overflow: 'auto' }}  >
-                    <ClassicDataTable key={key} data={data} columns={col} noDataText="Ürün Bulunamadı" searchValue={searchValue}  />
-                </div>
-      
-          </Col>
-    
+          </Card>
+        </Col>
+        <Col xl="9" md="9" xs="32">
+          <Card style={{ height: '100%', width: '100%' }}>
+            <div className='react-dataTable' style={{ height: '100%', width: '100%', overflow: 'auto' }}  >
+              <ClassicDataTable key={key} data={data} columns={col} noDataText="Ürün Bulunamadı" searchValue={searchValue} />
+            </div>
+          </Card>
+        </Col>
+
       </Row>
-    
+
     </>
   );
 }
