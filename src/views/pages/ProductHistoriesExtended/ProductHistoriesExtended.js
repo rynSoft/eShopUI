@@ -7,6 +7,7 @@ import {
   Col,
   ButtonGroup,
   Button,
+  Card ,
   Nav,
   UncontrolledTooltip,
 } from "reactstrap";
