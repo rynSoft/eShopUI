@@ -18,6 +18,7 @@ import FormInput from "../../../@core/components/FormInput";
 import "./NewProduction.css";
 import { useHistory } from "react-router-dom";
 import toastData from "../../../@core/components/toastData";
+
 const EditableContext = React.createContext(null);
 const EditableRow = ({ index, ...props }) => {
     const [form] = Form.useForm();
@@ -235,6 +236,7 @@ const NewProduction = () => {
 
 
     const handleSaveProduction = async (data) => {
+        debugger;
         const uretimBilgisi = data;
         if (productionId == null) {
             await axios
@@ -252,7 +254,7 @@ const NewProduction = () => {
                 });
         }
 
-        if (productionId != null) {
+        if (productionId != null && dataSource[0]?.decreaseQuantity > 0 ) {
             const hammadeBilgisi = dataSource;
             hammadeBilgisi.forEach(async (data) => {
                 data.productionId = productionId;

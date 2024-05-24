@@ -18,18 +18,18 @@ const ProductionLogs = (props) => {
         {
             name: 'Tarih',
             selector: row => row.date,
-            width: '200px',
+            width: '180px',
             cell: row => row.date != null ? moment(row.date, serverDateFormat).format(dateFormat) : null
         },
         {
             name: 'Personel Bilgisi',
             selector: row => row.date,
-            width: '200px',
+            width: '180px',
             cell: row => row.userAd + " "+row.userSoyad
         },
         {
             name: 'Log',
-            width: '400px',
+            width: '200px',
             cell: (row) => {
                 return (
                     <div className="d-flex">
@@ -60,7 +60,7 @@ const ProductionLogs = (props) => {
                 columns={columns}
                 data={logs}
                 pagination
-                paginationPerPage={20}
+                paginationPerPage={10}
                 paginationDefaultPage={currentPage + 1}
                 // paginationComponent={() => CustomPagination(searchValue.length ? filteredData : logs, currentPage, (value) => setCurrentPage(value))}
             />

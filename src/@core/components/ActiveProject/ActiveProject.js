@@ -57,11 +57,11 @@ const ActiveProject = ({projectsArr}) => {
     }
 
     return (
-        <Card className='card-browser-states' style={{ height: "69vh" }}>
+        <Card className='card-browser-states' style={{ height: "82vh" }}>
             <CardHeader>
                 <div>
                     <CardTitle tag='h4'>Rota Süreç Özet Bilgileri</CardTitle>
-                    <CardText className='font-small-2'>Mart 28 2024</CardText>
+                    {/* <CardText className='font-small-2'>Mart 28 2024</CardText> */}
                 </div>
                 <UncontrolledDropdown className='chart-dropdown'>
                     <DropdownToggle color='' className='bg-transparent btn-sm border-0 p-50'>
