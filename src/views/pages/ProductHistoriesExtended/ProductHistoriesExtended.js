@@ -311,6 +311,12 @@ function ProductHistoriesExtended(props) {
                             >
                               <ArrowRightCircle size={16} />
                             </Button>
+                            <Button
+                              className="btn btn-warning"
+                              onClick={() => getHistories(obj.id)}
+                            >
+                              <ArrowRightCircle size={16} />
+                            </Button>
                           </td>
                         </tr>
                       ))}
