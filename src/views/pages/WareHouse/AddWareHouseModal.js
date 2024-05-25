@@ -36,15 +36,19 @@ import axios from "axios";
 
 import { UseSelector, useDispatch } from "react-redux";
 import toastData from "../../../@core/components/toastData";
-// import { ctgTableRst } from "../../../redux/refreshData";
 const AddWareHouseModal = ({ modalState ,refreshFunction}) => {
   const modalClose = () => setModalActive(false);
   const refreshData = useDispatch();
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
+  const [description, setDescription] = useState("");
+  const [barcodeCode, setBarcodeCode] = useState("");
+  
   const searchParameters = {
     code: code,
     name: name,
+    description : description,
+    barcodeCode : barcodeCode
 
   };
   const [modalActive, setModalActive] = useState(false);
@@ -100,15 +104,37 @@ const AddWareHouseModal = ({ modalState ,refreshFunction}) => {
             value={code}
           />
         </div>
-        <div className='mb-1'>
-          <Label className='form-label' for='name'>
-            Aciklama
+      <div className='mb-1'>
+          <Label className='form-label' for='ad'>
+            Ad
           </Label>
           <Input
-            id='name'
-            placeholder='Açıklama'
+            id='ad'
+            placeholder='Depo Ad'
             onChange={(event) => setName(event.target.value)}
             value={name}
+          />
+        </div>
+        <div className='mb-1'>
+          <Label className='form-label' for='barcodeCode'>
+            Barkod Kodu
+          </Label>
+          <Input
+            id='barcodeCode'
+            placeholder='barkod kodu'
+            onChange={(event) => setBarcodeCode(event.target.value)}
+            value={barcodeCode}
+          />
+        </div>
+        <div className='mb-1'>
+          <Label className='form-label' for='description'>
+            Açıklama
+          </Label>
+          <Input
+            id='description'
+            placeholder='Açıklama'
+            onChange={(event) => setDescription(event.target.value)}
+            value={description}
           />
         </div>
        

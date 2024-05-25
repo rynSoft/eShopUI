@@ -88,7 +88,6 @@ function MaterialProvisionBasic(props) {
 
 
   const addData = (arg) => {
-    debugger;
     axios
       .post(
         process.env.REACT_APP_API_ENDPOINT + "api/MaterialHistories/Add",
@@ -123,7 +122,6 @@ function MaterialProvisionBasic(props) {
   };
 
   const barcodController = (e,value) => {
-    debugger;
     let datas = data.find(
       (obj) => obj.id === e.id
     );

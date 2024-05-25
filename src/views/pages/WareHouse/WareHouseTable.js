@@ -115,6 +115,13 @@ const WareHouseTable = () => {
 
   const columns = [
     {
+      name: "Ad",
+      sortable: true,
+      minWidth: "200px",
+      
+      selector: (row) => row.name,
+    },
+    {
       name: "Kod",
       sortable: true,
       minWidth: "200px",

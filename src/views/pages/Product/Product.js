@@ -76,7 +76,6 @@ function Product(props) {
         "api/WorkProcessRoute/GetOrderNextId?productionId=" + id + "&workProcessRouteId=" + routeId + "&order=" + tabInfo.order
       )
       .then((response) => {
-        debugger;
         setNextRouteId(response?.data?.data?.id);
       });
   };

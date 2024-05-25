@@ -21,7 +21,10 @@ const UpdateWareModal = ({data,controller,refreshFunction}) => {
     setModalActive(controller);
     axios.get(process.env.REACT_APP_API_ENDPOINT + 'api/WareHouse/GetById?id='+data.id).then(response => {
       setName(response.data.name ===null ? "":response.data.name );
-      setCode(response.data.code===null ? "":response.data.code );
+      setCode(response.data.code ===null ? "":response.data.code );
+      setDescription(response.data.description ===null ? "":response.data.description );
+      setBarcodeCode(response.data.barcodeCode ===null ? "":response.data.barcodeCode );
+      
 
  })
     setCounter(1);
@@ -29,16 +32,18 @@ const UpdateWareModal = ({data,controller,refreshFunction}) => {
 
   const [name, setName] = useState("")
   const [code, setCode] = useState("")
+  const [description, setDescription] = useState("")
+  const [barcodeCode, setBarcodeCode] = useState("");
 
   const searchParameters = {
     id:data.id,
     code:code,
     name: name,
+    description : description,
+    barcodeCode : barcodeCode
 
   };
   const handleModal = () => setModalActive(false);
-
-
   const saveData = () => {
   
     try {    
@@ -71,7 +76,6 @@ const UpdateWareModal = ({data,controller,refreshFunction}) => {
       <h5 className='modal-title'>Depo Güncelle</h5>
     </ModalHeader>
     <ModalBody className='flex-grow-1'>
-
     <div className='mb-1'>
           <Label className='form-label' for='code'>
             Kod
@@ -86,14 +90,43 @@ const UpdateWareModal = ({data,controller,refreshFunction}) => {
             />
           </InputGroup>
         </div>       
-        <div className='mb-1'>
+    <div className='mb-1'>
           <Label className='form-label' for='name'>
+            Ad
+          </Label>
+          <InputGroup>
+  
+            <Input
+              id='name'
+          
+              onChange={(event) => setName(event.target.value)}
+              value={name}
+            />
+          </InputGroup>
+        </div>       
+        <div className='mb-1'>
+          <Label className='form-label' for='barcodeCode'>
+            Barkod Kodu
+          </Label>
+          <InputGroup>
+  
+            <Input
+              id='barcodeCode'
+          
+              onChange={(event) => setBarcodeCode(event.target.value)}
+              value={barcodeCode}
+            />
+          </InputGroup>
+        </div>       
+   
+        <div className='mb-1'>
+          <Label className='form-label' for='description'>
             Açıklama
           </Label>
           <Input
-            id='name'
-            onChange={(event) => setName(event.target.value)}
-            value={name}
+            id='description'
+            onChange={(event) => setDescription(event.target.value)}
+            value={description}
           />
         </div>
       

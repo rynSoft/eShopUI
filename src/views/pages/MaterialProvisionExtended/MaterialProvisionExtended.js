@@ -88,7 +88,6 @@ function MaterialProvisionExtended(props) {
   };
 
   const addData = (arg) => {
-    debugger;
     axios
       .post(
         process.env.REACT_APP_API_ENDPOINT + "api/MaterialHistories/Add",
