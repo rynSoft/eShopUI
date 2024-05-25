@@ -69,9 +69,32 @@ const Test = (props) => {
     "light-info",
     "error",
     "light-warning",
+    "danger",
     "success",
+    "danger",
     "light-error",
     "info",
+  ]);
+  const [colorListT, setcolorListT] = useState([
+    "#70d6ff",
+    "#758bfd",
+    "#ff9770",
+    "#80ed99",
+    "#ffd670",
+    "#ffa0ac",
+    "#9ef01a",
+    "#7fc8f8",
+    "#e9ff70",
+    "#ffafcc",
+    "#80ed99",
+    "#f9f9f9",
+    "#c77dff",
+    "#aceca1",
+    "#efb1ff",
+    "#00f5d4",
+    "#fe6d73",
+    "#ff8484",
+
   ]);
   const { skin} = useSkin()
   const { t } = useTranslation();
@@ -103,6 +126,7 @@ const Test = (props) => {
         if (res.data.success) {
           toastData("Rota Bilgisi Kaydedildi", true);
           loadData();
+          window.location.reload();
         } else {
           toastData("Rota Bilgisi Kaydedilemedi!", false);
           loadData();
@@ -114,6 +138,7 @@ const Test = (props) => {
   };
   const onDragEnd = (result) => {
     const { source, destination } = result;
+    debugger;
     // If the item is dropped outside a valid droppable
     if (!destination) {
       return;
@@ -143,6 +168,7 @@ const Test = (props) => {
       } else {
         tempItem.id = uuidv4();
         tempItem.workProcessTemplateId = result.draggableId;
+        tempItem.progressColor = colorListT[source.index];
       }
       const newData = { ...data };
 
@@ -153,13 +179,31 @@ const Test = (props) => {
     }
   };
   const removeItem = (index) => {
-    const updatedList = [...data.list2];
+    debugger;
+    let updatedList = [...data.list2];
+    let id = data.list2[index]?.id;
     updatedList.splice(index, 1);
     setData((prevData) => ({
       ...prevData,
       list2: updatedList,
     }));
+    deleteData(id);
   };
+
+  const deleteData = (index) => {
+    axios
+      .delete(process.env.REACT_APP_API_ENDPOINT + "api/WorkProcessRoute/Delete?Id=" + index)
+      .then((res) => {
+        if (res.data.success) {
+          toastData("Seçili Rota Silindi", true);
+        } else {
+          toastData("Seçili Rota Silinemedi !", false);
+        }
+      })
+      .catch((err) => toastData("Seçili Rota Silinemedi  !", false));
+  };
+
+
   const handleProcessName = (value, id) => {
     setData((prevData) => {
       const updatedList = prevData.list2.map((item) => {
@@ -181,6 +225,7 @@ const Test = (props) => {
       workProcessTemplateId: item.workProcessTemplateId,
       state: item.active,
       order: index + 1,
+      progressColor: item.progressColor,
       active: true,
     }));
 
@@ -196,6 +241,7 @@ const Test = (props) => {
     } else {
       handleSave(postData);
     }
+  
   };
 
   const showUserModal = (type, row) => {
@@ -265,7 +311,8 @@ const Test = (props) => {
                                       <CardBody style={{ marginTop: 10 }}>
                                         <Row style={{ height: "100%" }}>
                                           <Col sm={10}>
-                                            <span style={{ display: "inline-block" }}><Label style={{fontWeight:"bold"}}> {item.content}</Label></span>
+                                            <span style={{ display: "inline-block" }}>
+                                              <Label style={{fontWeight:"bold",fontSize:14 ,color:colorListT[index]}}> {item.content}</Label></span>
                                           </Col>
                                           <Col sm={1} style={{ position: "absolute", right: 20,top:25 }}>
                                             {item.icon ?
@@ -405,6 +452,15 @@ const Test = (props) => {
                                                   </Badge>
                                                 </Col>
                                               </Col>
+                                              <Col sm="1" key={index}>
+                                              {" "}
+                                              {/* Silme Butonu */}
+                                              <Trash color="#F98866"
+                                                onClick={() =>
+                                                  removeItem(index)
+                                                }
+                                              />
+                                            </Col>
                                             </Row>
                                           </>
                                         ) : (
@@ -434,8 +490,8 @@ const Test = (props) => {
                                                 }
                                               />
                                             </Col>
-                                            <Col sm="1" style={{width:"3%"}}>
-                                             <DynamicIcon name={item.icon}/>
+                                            <Col sm="1" style={{width:"3%" }}>
+                                             <DynamicIcon  color={colorListT[index]} name={item.icon}/>
                                             </Col>
 
                                             <Col sm="5" style={{ color: "white" }}>
@@ -526,7 +582,7 @@ const Test = (props) => {
                                             <Col sm="1" key={index}>
                                               {" "}
                                               {/* Silme Butonu */}
-                                              <Trash
+                                              <Trash color="#F98866"
                                                 onClick={() =>
                                                   removeItem(index)
                                                 }

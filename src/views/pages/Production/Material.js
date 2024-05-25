@@ -75,7 +75,7 @@ const Material = (props) => {
         columns={columnsMaterial}
         data={materialData}
         pagination
-        paginationPerPage={10}
+        paginationPerPage={20}
         paginationDefaultPage={currentPage + 1}
       />
     </div>

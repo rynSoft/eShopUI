@@ -3,6 +3,7 @@ import Chart from 'react-apexcharts'
 import { MoreVertical } from 'react-feather'
 import React from "react";
 // ** Reactstrap Imports
+import { Progress } from 'antd';
 import {
     Card,
     CardBody,
@@ -13,7 +14,7 @@ import {
     DropdownItem,
     DropdownToggle,
     UncontrolledDropdown,
-    Progress,
+  
     Col,
     Row
 } from 'reactstrap'
@@ -21,34 +22,48 @@ import {
 const ActiveProject = ({projectsArr}) => {
     const renderStates = () => {
         return projectsArr.map(state => {
+            
+       
             return (
                 <Row className='align-items-center mb-2'>
                     <Col sm={6} key={state.title}>
                         <div className='d-flex'>
                             <img className='rounded me-1' src={state.img} height='30'/>
                             <div className='d-flex flex-column'>
-                                <span className='text-truncate fw-bolder'>{state.title}</span>
-                                <small className='text-muted'>{state.subtitle}</small>
+                                <span className='text-truncate fw-bolder'  style={{color: state.progressColor}} >{state.title}</span>
+                                <small className='text-muted' style={{ color: 'red' }}>{state.subtitle}</small>
                             </div>
                         </div>
                     </Col>
                     <Col >
                         <Row className='align-items-center'>
-                            <Col sm={8}>
+                            <Col sm={4}>
                                 <div className='d-flex align-items-center'>
                                     <div className='d-flex flex-column w-100'>
 
                                         <Progress
-                                            value={state.progress}
-                                            style={{ height: '6px' }}
-                                            className={`w-100 progress-bar-${state.progressColor}`}
+                                        type="circle"
+                                            percent={state.progress}
+                                            width={60}
+                                            
+                                            // backgroundColor='black'
+                                            // className={`w-100 progress-bar-${state.progressColor}`}
                                         />
                                     </div>
                                 </div>
                             </Col>
-                            <Col sm={4} >
-                                <div className='fw-bold text-body-heading me-1'>{`${state.progress}%`}</div>
+                            <Col sm={4}>
+                                <div className='d-flex align-items-center'>
+                                    <div className='d-flex flex-column w-100'>
+
+                                          <Progress style={{ color: '#00c' }} percent={state.progress} />
+                                    </div>
+                                </div>
                             </Col>
+
+                            {/* <Col sm={4} >
+                                <div className='fw-bold text-body-heading me-1'>{`${state.progress}%`}</div>
+                            </Col> */}
                         </Row>
                     </Col>
                 </Row>

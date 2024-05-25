@@ -2,6 +2,7 @@ import "@styles/base/core/menu/menu-types/vertical-menu.scss";
 import "@styles/base/core/menu/menu-types/vertical-overlay-menu.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Form, Popconfirm, Table, InputNumber } from "antd";
+import { useDropzone } from "react-dropzone";
 import React, {
   Fragment,
   useContext,
@@ -9,6 +10,11 @@ import React, {
   useRef,
   useState,
 } from "react";
+import {
+    X,
+    DownloadCloud,
+    Save,
+  } from "react-feather";
 import XLSX from "xlsx";
 import Select from "react-select";
 import { useForm } from "react-hook-form";
@@ -44,6 +50,7 @@ const EditableCell = ({
 }) => {
   const [editing, setEditing] = useState(false);
   const inputRef = useRef(null);
+  
   const form = useContext(EditableContext);
   useEffect(() => {
     if (editing) {
@@ -122,18 +129,19 @@ const EditableCell = ({
 const NewProduction = () => {
   const history = useHistory();
   const [dataSource, setDataSource] = useState([]);
+  const [tempdataSource, setTempDataSource] = useState([]);
   const { t } = useTranslation();
   const [count, setCount] = useState(2);
   const [productionId, setproductionId] = useState();
   const [stateAdd, satStateAdd] = useState(false);
   const userData = JSON.parse(localStorage.getItem("userData"));
-
+  const [value, setValue] = useState("");
   const [wareHouseValue, setWareHouseValue] = useState({
     value: 0,
     label: "Seçiniz",
   });
   const [wareHouseData, setWareHouseData] = useState([
-    { id: 0, name: "Seçiniz" },
+    { id: 0, name: "Seçiniz", code:'' },
   ]);
 
   const handleDelete = (key) => {
@@ -196,6 +204,7 @@ const NewProduction = () => {
       key: count,
       name: "-",
       code: "-",
+      wareHouse: wareHouseValue.value > 0 ? wareHouseValue : '-',
       decreaseQuantity: 0,
       description: "-",
       partyNumber: "-",
@@ -253,14 +262,63 @@ const NewProduction = () => {
       .get(process.env.REACT_APP_API_ENDPOINT + "api/WareHouse/GetAll")
       .then((res) => {
         if (res.data.data.length > 0) {
-          setWareHouseData(res.data.data);
+          let data = [ { id: 0, name: "Seçiniz" }];
+          res.data.data.forEach(element => {
+            data.push({id:element.id,name:element.name,code:element.code})  ; 
+          });
+        
+          setWareHouseData(data);
           setWareHouseValue({
-            value: res.data.data[0].id,
-            label: res.data.data[0].name,
+            value: data[0].id,
+            label: data[0].name,
           });
         }
       });
   }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    multiple: false,
+    onDrop: (result) => {
+      const reader = new FileReader();
+      reader.onload = function () {
+        const fileData = reader.result;
+        const wb = XLSX.read(fileData, { type: "binary" });
+        let i = 0;
+        wb.SheetNames.forEach(function (sheetName) {
+            debugger;
+          if (i == 0) {
+            const rowObj = XLSX.utils.sheet_to_row_object_array(
+              wb.Sheets[sheetName],
+              { defval: "" }
+            );
+            let tempData = [];
+            rowObj.forEach(element => {
+                let data = {
+                    key: count,
+                    name: element.URUN_ADI,
+                    code: element.URUN_KODU,
+                    decreaseQuantity: element.DUSUM_MIKTARI,
+                    description: element.ACIKLAMA,
+                    partyNumber: element.PARTI_NO,
+                    quantity: element.MIKTAR,
+                    unit: element.BIRIM,
+                    wareHouseId:  wareHouseData.find(y=> y.code === element.URUN_YERI)?.id
+                }
+                debugger;
+                tempData.push(data);
+              });
+
+            setDataSource(tempData);
+          } 
+        });
+      };
+      if (result.length && result[0].name.endsWith("xlsx")) {
+        reader.readAsBinaryString(result[0]);
+      } else {
+        toast.error(<ErrorToast />, { icon: false, hideProgressBar: true });
+      }
+    },
+  });
 
   const handleSaveProduction = async (data) => {
     const uretimBilgisi = data;
@@ -299,7 +357,8 @@ const NewProduction = () => {
       const hammadeBilgisi = dataSource;
       hammadeBilgisi.forEach(async (data) => {
         data.productionId = productionId;
-        if (wareHouseValue.value > 0) data.wareHouseId = wareHouseValue.value;
+        if (wareHouseValue.value > 0) 
+            data.wareHouseId = wareHouseValue.value;
 
         await axios
           .post(process.env.REACT_APP_API_ENDPOINT + "api/Material/Add", data)
@@ -459,7 +518,8 @@ const NewProduction = () => {
               >
                 <Row>
                   <Col>
-                    <Row style={{ paddingTop: 10 }}>
+                    <Row style={{ paddingTop: 5 }}>
+                      
                       <Col sm={12} style={{ paddingTop: 5 }}>
                         <Card
                           style={{
@@ -471,27 +531,14 @@ const NewProduction = () => {
                           <h3>{t("Hammadde Tanım")}</h3>
                           <hr />
 
-                          <div style={{ textAlign: "right", paddingRight: 10,paddingTop:10 }}>
-                            <Button
-                              onClick={handleAdd}
-                              outline
-                              style={{
-                                width: "10%",
-                                height: 40,
-                                marginBottom: 5,
-                                color: "white",
-                                backgroundColor: "#d9138a",
-                              }}
-                            >
-                              Hammadde Ekle
-                            </Button>
-                          </div>
-                          <Row style={{ paddingTop: 10 }}> 
+                        
+                          
+                          <Row> 
                             <Col sm={1} style={{ paddingLeft: 10 }}>
-                              <Label style={{ paddingLeft: 10 }}>DEPO/RAF SEÇİMİ</Label>
+                              <Label style={{ paddingTop:40, paddingLeft: 10 }}>DEPO/RAF SEÇİMİ</Label>
                             </Col>
-                            <Col sm={3}>
-                              <Select
+                            <Col sm={3} style={{ paddingTop:30 }}>
+                              <Select 
                                 isClearable={false}
                                 className="react-select"
                                 classNamePrefix="select"
@@ -509,7 +556,22 @@ const NewProduction = () => {
                                 styles={{ width: "100%" }}
                               />
                             </Col>
-                            <Col sm={8}></Col>
+                            <Col sm={5}>
+                           
+                            </Col>
+                            <Col sm={3}>
+                            <div
+                                {...getRootProps({
+                                  className: "dropzone mt-1 mb-2",
+                                })}
+                              >
+                                <input {...getInputProps()} />
+                                <div className="d-flex align-items-center justify-content-center flex-column">
+                                  <DownloadCloud size={30} />
+                                  <h5>Dosya sürükle ya da seçmek için tıkla</h5>
+                                </div>
+                              </div>
+                            </Col>
                           </Row>
 
                           <Table style={{ paddingTop: 10 }}
@@ -522,18 +584,35 @@ const NewProduction = () => {
                           />
 
                           <Row className={"mt-2"}>
-                            <Col>
+                            <Col sm={6}>
+                            <div style={{ textAlign: "left", paddingRight: 10,paddingTop:10 }}>
+                            <Button
+                              onClick={handleAdd}
+                              outline
+                              style={{
+                                width: "40%",
+                                height: 40,
+                                marginBottom: 16,
+                                color: "white",
+                                backgroundColor: "#d9138a",
+                              }}
+                            >
+                              Hammadde Ekle
+                            </Button>
+                          </div>
+                            </Col>
+                            <Col sm={6}>
                               <div
                                 style={{
-                                  textAlign: "end",
-                                  paddingTop: 45,
-                                  paddingRight: 20,
+                                  textAlign: "right",
+                                  paddingTop: 10,
+                                  paddingRight: 10,
                                 }}
                               >
                                 <Button
                                   outline
                                   style={{
-                                    width: "10%",
+                                    width: "40%",
                                     height: 50,
                                     marginBottom: 16,
                                     color: "black",
