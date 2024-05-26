@@ -29,7 +29,7 @@
     background-color: #f1f1f1; /* Menü öğesine gelindiğinde arka plan rengini değiştirin */
   }
 
-  .btn-secondary {
-    border-color: #2059a2 !important;
-    background-color: #213651 !important;
+  .my-secondary-btn {
+    border-color: #1fd5db !important;
+    background-color: #249c88 !important;
   }

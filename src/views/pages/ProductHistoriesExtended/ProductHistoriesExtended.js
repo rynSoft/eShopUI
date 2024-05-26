@@ -314,7 +314,7 @@ function ProductHistoriesExtended(props) {
                           <td style={{ color: "white" }}>{userName}</td>
                           <td style={{ color: "red" }}>
                             <Button
-                              className="btn btn-warning"
+                              className=".my-secondary-btn"
                               onClick={() => getHistories(obj.id)}
                             >
                               <ArrowRightCircle size={16} />
