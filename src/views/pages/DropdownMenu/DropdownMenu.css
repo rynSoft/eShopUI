@@ -1,0 +1,35 @@
+.custom-dropdown .dropdown-toggle {
+    background-color: #2c793e; /* Buton arka plan rengini değiştirin */
+    border-color: #28a745; /* Buton kenar rengini değiştirin */
+    color: rgb(155, 32, 32); /* Buton metin rengini değiştirin */
+    padding: 5px 7px; /* Buton boyutunu ayarlayın */
+    border-radius: 5px; /* Buton köşelerini yuvarlatın */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Gölge ekleyin */
+    transition: background-color 0.3s ease; /* Tıklandığında renk geçişi */
+    font-size: 10px;
+  }
+  
+  .custom-dropdown .dropdown-toggle:hover,
+  .custom-dropdown .dropdown-toggle:focus {
+    background-color: #218838; /* Buton üzerine gelindiğinde arka plan rengini değiştirin */
+    border-color: #1e7e34; /* Buton üzerine gelindiğinde kenar rengini değiştirin */
+  }
+  
+  .custom-dropdown .dropdown-menu {
+    background-color: #fff; /* Açılır menü arka plan rengini değiştirin */
+    border-radius: 5px; /* Açılır menü köşelerini yuvarlatın */
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2); /* Açılır menüye gölge ekleyin */
+  }
+  
+  .custom-dropdown .dropdown-menu li {
+    padding: 10px; /* Menü öğelerinin boyutunu ayarlayın */
+  }
+  
+  .custom-dropdown .dropdown-menu li:hover {
+    background-color: #f1f1f1; /* Menü öğesine gelindiğinde arka plan rengini değiştirin */
+  }
+
+  .btn-secondary {
+    border-color: #2059a2 !important;
+    background-color: #213651 !important;
+  }
