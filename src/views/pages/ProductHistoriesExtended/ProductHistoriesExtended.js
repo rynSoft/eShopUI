@@ -1,6 +1,9 @@
 import BarcodeReader from "react-barcode-reader";
 import React, { useState, useEffect, Fragment } from "react";
 import { ArrowRightCircle } from "react-feather";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../DropdownMenu/DropdownMenu.css';
+import DropdownMenu from "../DropdownMenu/DropdownMenu.js";
 import {
   Table,
   Row,
@@ -10,13 +13,17 @@ import {
   Card ,
   Nav,
   UncontrolledTooltip,
+  Dropdown,
 } from "reactstrap";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
 import toastData from "../../../@core/components/toastData/index.js";
 import { date } from "yup";
 
+// import DropdownMenu from './views/pages/DropdownMenu/DropdownMenu';
+
 function ProductHistoriesExtended(props) {
+  const options = ['Açıklama Ekle', 'Hurdayı Ayır', 'Sil'];
   const [readerState, setReaderState] = React.useState(false);
   const [productData, setProductData] = React.useState([]);
   const [materialData, setMaterialData] = React.useState([]);
@@ -40,6 +47,7 @@ function ProductHistoriesExtended(props) {
 
   const handleError = (error) => {
   };
+  
 
   const readerStateFunction = (stateValue) => {
     setReaderState(stateValue);
@@ -306,11 +314,12 @@ function ProductHistoriesExtended(props) {
                           <td style={{ color: "white" }}>{userName}</td>
                           <td style={{ color: "red" }}>
                             <Button
-                              className="btn btn-warning"
+                              className=".my-secondary-btn"
                               onClick={() => getHistories(obj.id)}
                             >
                               <ArrowRightCircle size={16} />
                             </Button>
+                            <DropdownMenu options={options} />
 
                           </td>
                         </tr>
