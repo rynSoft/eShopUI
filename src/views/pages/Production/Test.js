@@ -17,9 +17,11 @@ import {
   Toast,
 } from "reactstrap";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import {  Modal } from 'antd';
 // ** Custom Components
 import AvatarGroup from "@components/avatar-group";
 import {
+  CheckCircle,
   Trash,
   UserMinus,
   UserPlus,
@@ -34,6 +36,8 @@ import toastData from "../../../@core/components/toastData";
 import { Translation, useTranslation } from "react-i18next";
 import { DynamicIcon, Icon } from "../../../@core/components/DynamicIcon/DynamicIcon";
 import { useSkin } from '@hooks/useSkin'
+import CheckableTag from "antd/lib/tag/CheckableTag";
+import MaterialMatchModal from "./MaterialMatchModal";
 const grid = 8;
 
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -61,6 +65,7 @@ const convertName = (name) => {
 const Test = (props) => {
   const [data, setData] = useState({ list1: [], list2: [] });
   const [userModalState, setUserModalState] = useState(false);
+  const [matchModalState, setMatchModalState] = useState(false);
   const [userModalData, setUserModalData] = useState({});
   const [modalType, setModalType] = useState("");
   const [colorList, setcolorList] = useState([
@@ -86,7 +91,7 @@ const Test = (props) => {
     "#7fc8f8",
     "#e9ff70",
     "#ffafcc",
-    "#80ed99",
+    "#80ec99",
     "#f9f9f9",
     "#c77dff",
     "#aceca1",
@@ -244,12 +249,45 @@ const Test = (props) => {
   
   };
 
+
+
+  const [open, setOpen] = useState(true);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalText, setModalText] = useState('Content of the modal');
+
+  const showModal = (index) => {
+    debugger;
+    console.log(index);
+    setOpen(true);
+  };
+  const handleOk = () => {
+    setModalText('The modal will be closed after two seconds');
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+    }, 2000);
+  };
+  const handleCancel = () => {
+    console.log('Clicked cancel button');
+    setOpen(false);
+  };
+
+  //#endregion
+
   const showUserModal = (type, row) => {
     setModalType(type);
     setUserModalState(!userModalState);
     setUserModalData(row);
     loadData();
   };
+
+  const showMatchModal = (row) => {
+    setMatchModalState(!matchModalState);
+    // setUserModalData(row);
+    // loadData();
+  };
+
   return (
     <Fragment>
       {userModalState && (
@@ -257,6 +295,13 @@ const Test = (props) => {
           modalType={modalType}
           closeModal={showUserModal}
           userModalData={userModalData}
+          productionId={props.productionId}
+        />
+      )}
+
+{matchModalState && (
+        <MaterialMatchModal
+          closeModal={showMatchModal}
           productionId={props.productionId}
         />
       )}
@@ -365,10 +410,11 @@ const Test = (props) => {
                         <div>
                           <Card>
                             <Row style={{ margin: 10, color: "white" }}>
-                              <Col sm="3" style={{ textAlign: "left" }}><Label style={{fontWeight:"bolder"}}>{(t('asama').toUpperCase())}</Label></Col>
+                              <Col sm="4" style={{ textAlign: "left" }}><Label style={{fontWeight:"bolder"}}>{(t('asama').toUpperCase())}</Label></Col>
                               <Col sm="1" style={{ textAlign: "left",width:"3%" }}></Col>
-                              <Col sm="5" style={{ textAlign: "center" }}><Label style={{fontWeight:"bolder"}}>{t('kullanici').toUpperCase()}</Label></Col>
-                              <Col sm="2" style={{ textAlign: "right" }}><Label style={{fontWeight:"bolder"}}>{t('durum').toUpperCase()}</Label></Col>
+                              <Col sm="3" style={{ textAlign: "center" }}><Label style={{fontWeight:"bolder"}}>{t('kullanici').toUpperCase()}</Label></Col>
+                              <Col sm="2" style={{ textAlign: "center" }}><Label style={{fontWeight:"bolder"}}>{t('durum').toUpperCase()}</Label></Col>
+                              <Col sm="1" style={{ textAlign: "right" }}><Label style={{fontWeight:"bolder"}}>{t('hammaddeEsleme').toUpperCase()}</Label></Col>
                               <Col sm="1" style={{ textAlign: "center" }}><Label style={{fontWeight:"bolder"}}>{t('sil').toUpperCase()}</Label></Col>
                             </Row>
                           </Card>
@@ -447,7 +493,6 @@ const Test = (props) => {
                                                       cursor: "pointer",
                                                     }}
                                                   >
-                                                    {console.log(item)}
                                                     {item.content}
                                                   </Badge>
                                                 </Col>
@@ -465,7 +510,7 @@ const Test = (props) => {
                                           </>
                                         ) : (
                                           <Row>
-                                            <Col sm="3">
+                                            <Col sm="4">
                                               {" "}
                                               {/* Input */}
                                               <Input
@@ -494,7 +539,7 @@ const Test = (props) => {
                                              <DynamicIcon  color={colorListT[index]} name={item.icon}/>
                                             </Col>
 
-                                            <Col sm="5" style={{ color: "white" }}>
+                                            <Col sm="3" style={{ color: "white" }}>
                                               <div >
                                                 {item?.userList?.map(
                                                   (user, keys) => (
@@ -547,7 +592,7 @@ const Test = (props) => {
                                               </div>
                                             </Col>
 
-                                            <Col sm="2" style={{ textAlign: "right" }}>
+                                            <Col sm="2" style={{ textAlign: "center" }}>
                                               <Col>
                                                 {" "}
                                                 {/* Aktif Pasif */}{" "}
@@ -580,6 +625,18 @@ const Test = (props) => {
                                               </Col>
                                             </Col>
                                             <Col sm="1" key={index}>
+                                              {" "}
+                                              {/* Hammadde Eşleme*/}
+                                              <CheckCircle color="#80ed99"
+                                                onClick={() =>
+                                                  showMatchModal(
+                                                    "insert",
+                                                    item
+                                                  )
+                                                }
+                                              />
+                                            </Col>
+                                             <Col sm="1" key={index}>
                                               {" "}
                                               {/* Silme Butonu */}
                                               <Trash color="#F98866"
@@ -622,7 +679,10 @@ const Test = (props) => {
           </Button>
         </Row>
       </Col>
+
     </Fragment>
+
+    
   );
 };
 
