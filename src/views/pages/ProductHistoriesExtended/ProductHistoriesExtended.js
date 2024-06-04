@@ -2,23 +2,16 @@ import BarcodeReader from "react-barcode-reader";
 import React, { useState, useEffect, Fragment } from "react";
 import { ArrowRightCircle } from "react-feather";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../DropdownMenu/DropdownMenu.css';
-import DropdownMenu from "../DropdownMenu/DropdownMenu.js";
 import {
   Table,
   Row,
   Col,
-  ButtonGroup,
   Button,
   Card ,
-  Nav,
-  UncontrolledTooltip,
-  Dropdown,
 } from "reactstrap";
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
 import toastData from "../../../@core/components/toastData/index.js";
-import { date } from "yup";
 
 // import DropdownMenu from './views/pages/DropdownMenu/DropdownMenu';
 
