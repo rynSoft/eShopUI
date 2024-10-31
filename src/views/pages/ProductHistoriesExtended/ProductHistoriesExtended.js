@@ -1,7 +1,7 @@
 import BarcodeReader from "react-barcode-reader";
 import React, { useState, useEffect, Fragment } from "react";
 import { ArrowRightCircle } from "react-feather";
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 import {
   Table,
   Row,
@@ -12,8 +12,6 @@ import {
 import axios from "axios";
 import TimerCalculate from "../TimerCalculate/TimerCalculate.js";
 import toastData from "../../../@core/components/toastData/index.js";
-
-// import DropdownMenu from './views/pages/DropdownMenu/DropdownMenu';
 
 function ProductHistoriesExtended(props) {
   const options = ['Açıklama Ekle', 'Hurdayı Ayır', 'Sil'];
@@ -312,7 +310,7 @@ function ProductHistoriesExtended(props) {
                             >
                               <ArrowRightCircle size={16} />
                             </Button>
-                            <DropdownMenu options={options} />
+                       
 
                           </td>
                         </tr>

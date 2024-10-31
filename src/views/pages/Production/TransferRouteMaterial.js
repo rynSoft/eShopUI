@@ -49,46 +49,48 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
 
 
 
-
-const mockTags = ['cat', 'dog', 'bird'];
-const mockData = Array.from({
-  length: 20,
-}).map((_, i) => ({
-  key: i.toString(),
-  title: `content${i + 1}`,
-  description: `description of content${i + 1}`,
-  tag: mockTags[i % 3],
-}));
 const columns = [
   {
-    dataIndex: 'title',
+    dataIndex: 'name',
     title: 'Name',
   },
   {
-    dataIndex: 'tag',
-    title: 'Tag',
-    render: (tag) => (
-      <Tag
-        style={{
-          marginInlineEnd: 0,
-        }}
-        color="cyan"
-      >
-        {tag.toUpperCase()}
-      </Tag>
-    ),
+    dataIndex: 'code',
+    title: 'Code',
   },
   {
     dataIndex: 'description',
     title: 'Description',
   },
+  {
+    dataIndex: 'quantity',
+    title: 'Miktar',
+  },
+  {
+    dataIndex: 'id',
+    title: 'Id',
+    render: (id) => (
+      <Tag
+        style={{
+          marginInlineEnd: 0,
+        }}
+        color="yellow"
+      >
+        {id}
+      {/* {tag.toUpperCase()} */}
+      </Tag>
+    ),
+  },
+  
 ];
+
+
 const TransferRouteMaterial = () => {
   const [targetKeys, setTargetKeys] = useState([]);
   const [disabled, setDisabled] = useState(false);
 
   const [data, setData] = useState([]);
-
+  
 const loadMaterialData = () => {
   axios
     .get(
@@ -96,15 +98,19 @@ const loadMaterialData = () => {
         "api/Material/GetAllMaterialId?productionId=728"
     )
     .then((response) => {
-      debugger;
+      
       setData(response.data.data);
 
+  
     });
 };
 
 
 useEffect(() => {
   loadMaterialData();
+
+ 
+
 }, []);
 
   const onChange = (nextTargetKeys) => {
@@ -113,17 +119,29 @@ useEffect(() => {
   const toggleDisabled = (checked) => {
     setDisabled(checked);
   };
+
+  const mockData  =  data.map(obj => ({
+          key: obj.id.toString(),
+          description: obj.description,
+          id: obj.id,
+          name : obj.name,
+          code: obj.code,
+          quantity : obj.quantity
+      } 
+  ));
+
+
   return (
     <>
       <TableTransfer
-        dataSource={data}
+        dataSource={mockData}
         targetKeys={targetKeys}
         disabled={disabled}
         showSearch
         showSelectAll={false}
         onChange={onChange}
         filterOption={(inputValue, item) =>
-          item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
+          item.name.indexOf(inputValue) !== -1 || item.id.indexOf(inputValue) !== -1
         }
         leftColumns={columns}
         rightColumns={columns}
